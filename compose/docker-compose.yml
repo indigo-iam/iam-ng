@@ -1,0 +1,21 @@
+version: "3.5"
+
+volumes:
+  data:
+
+services:
+  db:
+    container_name: db
+    image: ${MYSQL_IMAGE}
+    #    volumes:
+    #  - data:/var/lib/mysql
+    
+    environment:
+      TZ: Europe/Rome
+      MYSQL_ROOT_PASSWORD: pwd
+      MYSQL_USER: iam
+      MYSQL_PASSWORD: pwd
+      MYSQL_DATABASE: iam
+
+    ports:
+      - "3306:3306"

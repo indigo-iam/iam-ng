@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    include: no-flyway
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+
+  datasource:
+    url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/iam
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: iam
+    password: pwd

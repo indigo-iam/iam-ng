@@ -1,0 +1,2 @@
+insert into CONFIG(NAME,DESCRIPTION,CONFIG,CREATION_TIME,LAST_UPDATE_TIME) values 
+    ('one','The one and only realm','config:',CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());

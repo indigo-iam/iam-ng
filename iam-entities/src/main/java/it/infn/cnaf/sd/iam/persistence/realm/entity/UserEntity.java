@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "USERS")
 public class UserEntity {
@@ -29,7 +28,6 @@ public class UserEntity {
   private String uuid;
 
   @Column(name = "USERNAME", nullable = false, length = 128, unique = true)
-  @NotNull
   private String username;
 
   @Column(name = "PASSWORD", length = 128)

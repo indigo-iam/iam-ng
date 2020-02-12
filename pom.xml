@@ -378,6 +378,7 @@
 
   <modules>
     <module>iam-api</module>
+    <module>iam-entities</module>
     <module>iam-persistence-api</module>
   </modules>
 </project>

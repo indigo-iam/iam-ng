@@ -20,6 +20,7 @@
     <license-maven-plugin.version>3.0</license-maven-plugin.version>
     <start-class>it.infn.cnaf.sd.iam.api.IamApiApplication</start-class>
     <flyway-test-extensions.version>6.1.0</flyway-test-extensions.version>
+    <modulename>it.infn.cnaf.sd.iam</modulename>
     
     <!-- Keep these aligned with
 			https://github.com/spring-projects/spring-boot/blob/v2.2.3.RELEASE/spring-boot-project/spring-boot-dependencies/pom.xml

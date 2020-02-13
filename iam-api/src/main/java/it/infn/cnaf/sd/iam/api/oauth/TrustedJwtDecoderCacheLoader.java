@@ -41,7 +41,6 @@ public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder
 
   private final OidcConfigurationFetcher fetcher;
   private final ExecutorService executor;
-  private final IamProperties props;
   private final Set<String> trustedIssuers;
 
   @Autowired
@@ -49,7 +48,6 @@ public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder
       OidcConfigurationFetcher fetcher, ExecutorService executor) {
     this.fetcher = fetcher;
     this.executor = executor;
-    this.props = props;
     trustedIssuers = props.getRealms()
       .values()
       .stream()

@@ -11,15 +11,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.api.utils.ClockUtils;
-import it.infn.cnaf.sd.iam.api.utils.MySqlIntegrationTestSupport;
 import it.infn.cnaf.sd.iam.api.utils.MySqlIntegrationTest;
+import it.infn.cnaf.sd.iam.api.utils.MySqlIntegrationTestSupport;
 
 @RunWith(SpringRunner.class)
+@IfProfileValue(name = "test-groups", values = {"mysql-integration"})
 @MySqlIntegrationTest
 @AutoConfigureMockMvc
 public class RealmInfoTests extends MySqlIntegrationTestSupport implements ClockUtils {

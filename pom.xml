@@ -316,52 +316,6 @@
   </dependencyManagement>
   <profiles>
     <profile>
-      <id>fast</id>
-      <activation>
-        <property>
-          <name>fast</name>
-        </property>
-      </activation>
-      <properties>
-        <disable.checks>true</disable.checks>
-      </properties>
-    </profile>
-    <profile>
-      <id>full</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <source>${java.version}</source>
-            </configuration>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <inherited>true</inherited>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>eclipse.profile</id>
       <activation>
         <property>

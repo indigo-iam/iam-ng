@@ -13,10 +13,6 @@
   <name>IAM persistence API</name>
   <description>IAM persistence API</description>
 
-  <properties>
-    <java.version>1.8</java.version>
-  </properties>
-
   <packaging>jar</packaging>
 
   <dependencies>

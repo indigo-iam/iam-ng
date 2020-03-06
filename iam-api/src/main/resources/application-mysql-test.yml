@@ -1,24 +1,10 @@
 spring:
   datasource:
-    url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/iam
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: iam
-    password: pwd
-
-iam:
-  test-flyway-location-base-path: classpath:/db/migration/test
-  realms:
-    one:
-      oauth2:
-        issuer: https://kc.test.example/authn/one
-      datasource:
-        url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/one
-        username: one
-        password: pwd
-    two:
-      oauth2:
-        issuer: https://kc.test.example/authn/two
-      datasource:
-        url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/two
-        username: two
-        password: pwd
+    url: jdbc:tc:mysql:5.7:///iam?TC_DAEMON=true
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop

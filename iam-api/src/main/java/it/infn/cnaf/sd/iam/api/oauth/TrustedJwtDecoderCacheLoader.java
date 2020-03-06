@@ -15,11 +15,11 @@
  */
 package it.infn.cnaf.sd.iam.api.oauth;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,11 +48,12 @@ public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder
       OidcConfigurationFetcher fetcher, ExecutorService executor) {
     this.fetcher = fetcher;
     this.executor = executor;
-    trustedIssuers = props.getRealms()
-      .values()
-      .stream()
-      .map(r -> r.getOauth2().getIssuer())
-      .collect(Collectors.toSet());
+    // trustedIssuers = props.getRealms()
+    // .values()
+    // .stream()
+    // .map(r -> r.getOauth2().getIssuer())
+    // .collect(Collectors.toSet());
+    trustedIssuers = Collections.emptySet();
   }
 
   public Supplier<UnknownTokenIssuerError> unknownTokenIssuer(String issuer) {

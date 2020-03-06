@@ -13,10 +13,6 @@
   <name>IAM persistence entities</name>
   <description>IAM persistence entities</description>
 
-  <properties>
-    <java.version>1.8</java.version>
-  </properties>
-
   <packaging>jar</packaging>
 
   <dependencies>

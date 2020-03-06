@@ -1,7 +1,7 @@
 spring:
   profiles:
     include: h2-console
-  
+    
   datasource:
     url: jdbc:h2:mem:iam;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
     driver-class-name: org.h2.Driver
@@ -10,26 +10,11 @@ spring:
   
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+       
   h2:
     console:
       enabled: true
-iam:
-  test-flyway-location-base-path: classpath:/db/migration/test
-  realms:
-    one:
-      oauth2:
-        issuer: https://kc.test.example/authn/one
-      datasource:
-        url: jdbc:h2:mem:one;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
-        driver-class-name: org.h2.Driver
-        username: one
-        password:
-    two:
-      oauth2:
-        issuer: https://kc.test.example/authn/two
-      datasource:
-        url: jdbc:h2:mem:two;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
-        driver-class-name: org.h2.Driver
-        username: two
-        password:

@@ -15,13 +15,8 @@ spring:
     default-property-inclusion: non-null
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
     
-  h2:
-    console:
-      enabled: false
-  
   flyway:
-    locations:
-    - classpath:/db/migration/iam
+    enabled: false
 
 iam:
   oauth-keys-refresh-period-minutes: 60

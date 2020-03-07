@@ -41,6 +41,12 @@ public class RealmResolverTests {
     when(request.getRequestURI()).thenReturn("/api");
     assertThat(realmResolver.resolveRealmName(request), nullValue());
     
+    when(request.getRequestURI()).thenReturn("/api/");
+    assertThat(realmResolver.resolveRealmName(request), nullValue());
+    
+    when(request.getRequestURI()).thenReturn("/api ");
+    assertThat(realmResolver.resolveRealmName(request), nullValue());
+    
     when(request.getRequestURI()).thenReturn("/api/one");
     assertThat(realmResolver.resolveRealmName(request), is("one"));
     

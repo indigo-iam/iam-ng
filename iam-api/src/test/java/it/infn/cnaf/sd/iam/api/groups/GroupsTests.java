@@ -1,6 +1,7 @@
 package it.infn.cnaf.sd.iam.api.groups;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -14,10 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.api.utils.IamTest;
+import it.infn.cnaf.sd.iam.api.utils.WithMockAdminUser;
 
 @RunWith(SpringRunner.class)
 @IamTest
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
+@AutoConfigureMockMvc
 public class GroupsTests {
 
   @Autowired
@@ -35,8 +37,22 @@ public class GroupsTests {
   
   @WithMockUser
   @Test
-  public void testAuthenticatedAccess() throws Exception {
+  public void testUnauthorizedAccess() throws Exception {
+    mvc.perform(get("/api/alice/Groups")).andExpect(status().isForbidden());
+  }
+  
+  @WithMockAdminUser
+  @Test
+  public void testAuthorizedAccess() throws Exception {
     mvc.perform(get("/api/alice/Groups")).andExpect(status().isOk());
+  }
+  
+  @WithMockAdminUser
+  @Test
+  public void testUnknownRealmAccess() throws Exception {
+    mvc.perform(get("/api/unknown/Groups")).andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.error").value("not_found"))
+      .andExpect(jsonPath("$.error_description").value("Unknown realm: unknown"));
   }
 
 }

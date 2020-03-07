@@ -14,10 +14,12 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 
+import it.infn.cnaf.sd.iam.api.common.utils.RealmUtils;
 import it.infn.cnaf.sd.iam.api.oauth.CompositeJwtDecoder;
 import it.infn.cnaf.sd.iam.api.oauth.OidcConfigurationFetcher;
 import it.infn.cnaf.sd.iam.api.oauth.TrustedJwtDecoderCacheLoader;
 import it.infn.cnaf.sd.iam.api.properties.IamProperties;
+import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 
 @Configuration
 public class SecurityBeans {
@@ -31,32 +33,35 @@ public class SecurityBeans {
 
   @Bean
   public CompositeJwtDecoder jwtDecoder(IamProperties properties, RestTemplateBuilder builder,
-      OidcConfigurationFetcher fetcher, ExecutorService executor) {
+      OidcConfigurationFetcher fetcher, ExecutorService executor, RealmRepository repo,
+      RealmUtils utils) {
 
     TrustedJwtDecoderCacheLoader loader =
-        new TrustedJwtDecoderCacheLoader(properties, builder, fetcher, executor);
+        new TrustedJwtDecoderCacheLoader(properties, builder, fetcher, executor, utils);
 
     LoadingCache<String, JwtDecoder> decoders = CacheBuilder.newBuilder()
       .refreshAfterWrite(properties.getOauthKeysRefreshPeriodMinutes(), TimeUnit.MINUTES)
       .build(loader);
 
-//    properties.getRealms().forEach((name, r) -> {
-//      final String issuer = r.getOauth2().getIssuer();
-//      LOG.info("Initializing OAuth trusted issuer: {} for realm: {}", issuer, name);
-//      try {
-//        decoders.put(issuer, loader.load(issuer));
-//      } catch (Exception e) {
-//        LOG.warn("Error initializing trusted issuer: {}", e.getMessage());
-//        if (LOG.isDebugEnabled()) {
-//          LOG.warn("Error initializing trusted issuer: {}", e.getMessage(), e);
-//        }
-//      }
-//    });
+    repo.findAll().forEach(realm -> {
+      final String realmIssuer =
+          String.format("%s/%s", properties.getKeycloakBaseUrl(), realm.getName());
+      LOG.info("Initializing OAuth trusted issuer: {} for realm: {}", realmIssuer, realm.getName());
+
+      try {
+        decoders.put(realmIssuer, loader.load(realmIssuer));
+      } catch (Exception e) {
+        LOG.warn("Error initializing trusted issuer: {}", e.getMessage());
+        if (LOG.isDebugEnabled()) {
+          LOG.warn("Error initializing trusted issuer: {}", e.getMessage(), e);
+        }
+      }
+    });
 
     LOG.info("OAuth trusted issuer configuration will be refreshed every {} minutes",
         properties.getOauthKeysRefreshPeriodMinutes());
 
-    return new CompositeJwtDecoder(decoders);
+    return new CompositeJwtDecoder(decoders, utils);
   }
 
 }

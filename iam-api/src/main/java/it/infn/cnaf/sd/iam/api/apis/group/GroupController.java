@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,7 @@ public class GroupController {
     this.mapper = mapper;
   }
 
+  @PreAuthorize("hasRole('IAM_ADMIN')")
   @GetMapping("/Groups")
   public ListResponseDTO<GroupDTO> listGroups(@RequestParam(required = false) final Integer count,
       @RequestParam(required = false) final Integer startIndex) {

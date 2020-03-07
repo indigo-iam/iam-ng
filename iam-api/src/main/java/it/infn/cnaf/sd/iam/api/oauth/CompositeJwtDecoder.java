@@ -30,6 +30,8 @@ import com.google.common.cache.LoadingCache;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 
+import it.infn.cnaf.sd.iam.api.common.utils.RealmUtils;
+
 public class CompositeJwtDecoder implements JwtDecoder {
   
   private static final String DECODING_ERROR_MESSAGE_TEMPLATE =
@@ -38,16 +40,23 @@ public class CompositeJwtDecoder implements JwtDecoder {
   public static final Logger LOG = LoggerFactory.getLogger(CompositeJwtDecoder.class);
 
   final LoadingCache<String, JwtDecoder> decoders;
+  final RealmUtils realmUtils;
   
-  public CompositeJwtDecoder(LoadingCache<String, JwtDecoder> decoders) {
+  public CompositeJwtDecoder(LoadingCache<String, JwtDecoder> decoders, RealmUtils realmUtils) {
     this.decoders = decoders;
+    this.realmUtils = realmUtils;
   }
   
   protected JwtDecoder resolveDecoder(String token) {
 
     String issuer = resolveIssuerFromToken(token);
+    
+    if (!realmUtils.realmTrustedTokenIssuer().toString().equals(issuer)) {
+      throw new UnknownTokenIssuerError(issuer); 
+    }
+    
     try {
-      return decoders.get(issuer);
+      return decoders.get(realmUtils.realmTrustedTokenIssuer().toString());
     } catch (ExecutionException e) {
       LOG.warn("Error resolving OAuth issuer configuration for {}", issuer);
       if (LOG.isDebugEnabled()) {

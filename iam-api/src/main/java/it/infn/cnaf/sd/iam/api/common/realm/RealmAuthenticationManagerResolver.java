@@ -13,7 +13,9 @@ import org.springframework.security.authentication.AuthenticationManagerResolver
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.stereotype.Component;
 
+import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.api.oauth.CompositeJwtDecoder;
+import it.infn.cnaf.sd.iam.api.oauth.JwtAuthenticationConverter;
 
 @Component
 public class RealmAuthenticationManagerResolver
@@ -21,18 +23,21 @@ public class RealmAuthenticationManagerResolver
 
   private final CompositeJwtDecoder decoder;
   private final RealmNameResolver realmResolver;
+  private final JwtAuthenticationConverter converter;
+
   private final Map<String, AuthenticationManager> authenticationManagers =
       new ConcurrentHashMap<>();
 
   @Autowired
   public RealmAuthenticationManagerResolver(RealmNameResolver realmResolver,
-      CompositeJwtDecoder decoder) {
+      CompositeJwtDecoder decoder, JwtAuthenticationConverter converter) {
     this.realmResolver = realmResolver;
     this.decoder = decoder;
+    this.converter = converter;
   }
 
-  private Supplier<IllegalArgumentException> unknownTenant() {
-    return () -> new IllegalArgumentException("unknown realm");
+  private Supplier<RuntimeException> unknownRealm() {
+    return () -> new NotFoundError("Unknown realm");
   }
 
   private String toRealm(HttpServletRequest request) {
@@ -41,10 +46,16 @@ public class RealmAuthenticationManagerResolver
     return realm;
   }
 
+  private JwtAuthenticationProvider buildAuthenticationProvider(String issuer) {
+    JwtAuthenticationProvider provider = new JwtAuthenticationProvider(decoder);
+    provider.setJwtAuthenticationConverter(converter);
+    return provider;
+  }
+
   private AuthenticationManager createForRealm(String realm) {
     return Optional.ofNullable(realm)
-      .map(s -> new JwtAuthenticationProvider(decoder))
-      .orElseThrow(unknownTenant())::authenticate;
+      .map(this::buildAuthenticationProvider)
+      .orElseThrow(unknownRealm())::authenticate;
   }
 
   @Override

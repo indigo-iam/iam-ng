@@ -7,8 +7,8 @@ services:
 
   db:
     image: ${DB_IMAGE}
-    #volumes:
-    #  - data:/var/lib/mysql
+    volumes:
+      - data:/var/lib/mysql
     
     environment:
       TZ: Europe/Rome
@@ -29,10 +29,10 @@ services:
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
 
-    volumes:
-      - ./assets/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
-      - ./../iam-kc-user-storage-provider/target/iam-kc-user-storage-provider-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-provider.jar
-      - ./../iam-entities/target/iam-entities-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-entities.jar
+      # volumes:
+      # - ./assets/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      # - ./../iam-kc-user-storage-provider/target/iam-kc-user-storage-provider-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-provider.jar
+      # - ./../iam-entities/target/iam-entities-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-entities.jar
 
     depends_on:
       - db

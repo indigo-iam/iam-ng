@@ -15,16 +15,16 @@
  */
 package it.infn.cnaf.sd.iam.api.oauth;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -33,6 +33,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 
+import it.infn.cnaf.sd.iam.api.common.utils.RealmUtils;
 import it.infn.cnaf.sd.iam.api.properties.IamProperties;
 
 public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder> {
@@ -41,29 +42,27 @@ public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder
 
   private final OidcConfigurationFetcher fetcher;
   private final ExecutorService executor;
-  private final Set<String> trustedIssuers;
+  private final IamProperties props;
+
+
+  private final OAuth2TokenValidator<Jwt> validator;
 
   @Autowired
   public TrustedJwtDecoderCacheLoader(IamProperties props, RestTemplateBuilder builder,
-      OidcConfigurationFetcher fetcher, ExecutorService executor) {
+      OidcConfigurationFetcher fetcher, ExecutorService executor, RealmUtils realmUtils) {
     this.fetcher = fetcher;
     this.executor = executor;
-    // trustedIssuers = props.getRealms()
-    // .values()
-    // .stream()
-    // .map(r -> r.getOauth2().getIssuer())
-    // .collect(Collectors.toSet());
-    trustedIssuers = Collections.emptySet();
-  }
+    this.props = props;
 
-  public Supplier<UnknownTokenIssuerError> unknownTokenIssuer(String issuer) {
-    return () -> new UnknownTokenIssuerError(issuer);
+    validator = new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
+        new RealmAwareTokenIssuerValidator(realmUtils));
   }
 
   @Override
   public JwtDecoder load(String issuer) throws Exception {
-    if (!trustedIssuers.contains(issuer)) {
-      throw unknownTokenIssuer(issuer).get();
+
+    if (!issuer.startsWith(props.getKeycloakBaseUrl())) {
+      throw new UnknownTokenIssuerError(issuer);
     }
 
     Map<String, Object> oidcConfiguration = fetcher.loadConfigurationForIssuer(issuer);
@@ -71,7 +70,7 @@ public class TrustedJwtDecoderCacheLoader extends CacheLoader<String, JwtDecoder
     NimbusJwtDecoder decoder =
         NimbusJwtDecoder.withJwkSetUri(oidcConfiguration.get("jwks_uri").toString()).build();
 
-    decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer));
+    decoder.setJwtValidator(validator);
     return decoder;
   }
 

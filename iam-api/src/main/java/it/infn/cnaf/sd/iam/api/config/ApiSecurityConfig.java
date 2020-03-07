@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -25,9 +26,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     // @formatter:off
     http.authorizeRequests()
       .mvcMatchers("/api/**")
-        .authenticated()
+        .fullyAuthenticated()
         .and()
         .oauth2ResourceServer()
+          .authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
           .authenticationManagerResolver(authenticationManagerResolver);
     // @formatter:on
   }

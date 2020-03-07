@@ -13,9 +13,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import it.infn.cnaf.sd.iam.api.common.dto.ErrorDTO;
 import it.infn.cnaf.sd.iam.api.common.error.BadRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
+import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+  
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ValidationError.class)
+  public ErrorDTO handleValidationError(ValidationError e) {
+    return newError(HttpStatus.BAD_REQUEST, e.getMessage());
+  }
   
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(BadRequestError.class)

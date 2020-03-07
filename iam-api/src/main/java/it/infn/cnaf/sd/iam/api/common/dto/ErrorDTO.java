@@ -27,12 +27,5 @@ public class ErrorDTO {
   public static ErrorDTO newError(HttpStatus s, String errorDescription) {
     return new ErrorDTO(s.name().toLowerCase(), errorDescription);
   }
-  
-  public static ErrorDTO newError(String error, String errorDescription) {
-    return new ErrorDTO(error, errorDescription);
-  }
-  
-  public static ErrorDTO newError(String error) {
-    return new ErrorDTO(error);
-  }
+ 
 }

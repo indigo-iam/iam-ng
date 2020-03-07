@@ -43,8 +43,6 @@ public class RealmInterceptorTests {
   @Mock
   HttpServletResponse response;
 
-
-
   @Mock
   Object handler;
 

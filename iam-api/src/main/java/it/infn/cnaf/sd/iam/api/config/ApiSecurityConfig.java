@@ -30,7 +30,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .oauth2ResourceServer()
           .authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
-          .authenticationManagerResolver(authenticationManagerResolver);
+          .authenticationManagerResolver(authenticationManagerResolver)
+        .and()
+          .csrf().disable();
     // @formatter:on
   }
 }

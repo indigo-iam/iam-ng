@@ -1,10 +1,20 @@
 spring:
+  profiles:
+    include: test
+    
   datasource:
-    url: jdbc:tc:mysql:5.7:///iam?TC_DAEMON=true
+    url: jdbc:tc:mysql:5.7:///iam
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     show-sql: false
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
+      
+  flyway:
+    enabled: true
+    locations:
+    - classpath:/db/migration/iam
+    - classpath:/db/migration/test 

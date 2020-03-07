@@ -4,11 +4,10 @@
 
 By, default test run on H2 embedded database.
 
-To run MySQL integration tests, set the `test-groups` system property as
-follows:
+To run MySQL integration tests, use the following command:
 
 ```
-mvn -Dtest-groups=mysql-integration test
+mvn -Dspring.profiles.active=mysql-test test
 ```
 
 MySQL integration tests require a recent docker installation.

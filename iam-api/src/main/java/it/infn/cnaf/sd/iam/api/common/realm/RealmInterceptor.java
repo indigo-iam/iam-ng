@@ -10,13 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import it.infn.cnaf.sd.iam.api.common.error.BadRequestError;
+import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 
 public class RealmInterceptor implements HandlerInterceptor {
-  
-  public static final String REALM_KEY = "iam.realm";
 
   private final RealmNameResolver resolver;
   private final RealmRepository repo;
@@ -35,11 +33,9 @@ public class RealmInterceptor implements HandlerInterceptor {
       throws Exception {
     final String realm = resolver.resolveRealmName(request);
     if (isNull(realm)) {
-      throw new BadRequestError("Unspecified realm");
+      throw new InvalidRequestError("Unspecified realm");
     }
-    repo.findByName(realm).orElseThrow(realmNotFound(realm));
-    request.setAttribute(REALM_KEY, realm);
-    RealmContext.setCurrentRealm(realm);
+    RealmContext.setCurrentRealmEntity(repo.findByName(realm).orElseThrow(realmNotFound(realm)));
     return true;
   }
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import it.infn.cnaf.sd.iam.api.common.dto.ErrorDTO;
-import it.infn.cnaf.sd.iam.api.common.error.BadRequestError;
+import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
 
@@ -25,8 +25,8 @@ public class ApiExceptionHandler {
   }
   
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(BadRequestError.class)
-  public ErrorDTO handleBadRequestError(BadRequestError e) {
+  @ExceptionHandler(InvalidRequestError.class)
+  public ErrorDTO handleBadRequestError(InvalidRequestError e) {
     return newError(HttpStatus.BAD_REQUEST, e.getMessage());
   }
   

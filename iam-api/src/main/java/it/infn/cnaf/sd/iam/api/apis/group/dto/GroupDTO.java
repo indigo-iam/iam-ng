@@ -5,11 +5,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import it.infn.cnaf.sd.iam.api.apis.group.validator.CompositeGroupNameSize;
 import it.infn.cnaf.sd.iam.api.common.dto.MetadataDTO;
+import it.infn.cnaf.sd.iam.api.common.dto.RealmDTO;
 
+@CompositeGroupNameSize
 public class GroupDTO {
 
   public static final String GROUP_NAME_REGEXP = "^[a-zA-Z][a-zA-Z0-9\\-_.]*$";
+  public static final String GROUP_DESCRIPTION_REGEXP = "[a-zA-Z][a-zA-Z0-9\\-_.;\\s/]*$";
 
   private String id;
 
@@ -21,13 +25,17 @@ public class GroupDTO {
       message = "invalid group name (does not match with regexp: '" + GROUP_NAME_REGEXP + "')")
   private String name;
 
-  @Size(max = 512, message = "the group name cannot be longer than 512 chars")
+  @Size(max = 512, message = "the group description cannot be longer than 512 chars")
+  @Pattern(regexp = GROUP_DESCRIPTION_REGEXP,
+    message = "invalid group description (does not match with regexp: '" + GROUP_DESCRIPTION_REGEXP + "')")
   private String description;
 
   private MetadataDTO metadata;
 
   @Valid
   private GroupRefDTO parentGroup;
+
+  private RealmDTO realm;
 
   public String getId() {
     return id;
@@ -68,13 +76,21 @@ public class GroupDTO {
   public void setMetadata(MetadataDTO metadata) {
     this.metadata = metadata;
   }
-  
+
   public GroupRefDTO getParentGroup() {
     return parentGroup;
   }
-  
+
   public void setParentGroup(GroupRefDTO parentGroup) {
     this.parentGroup = parentGroup;
+  }
+
+  public RealmDTO getRealm() {
+    return realm;
+  }
+
+  public void setRealm(RealmDTO realm) {
+    this.realm = realm;
   }
 
 }

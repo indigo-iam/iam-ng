@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
 
+
 public interface GroupRepository extends PagingAndSortingRepository<GroupEntity, Long> {
   Page<GroupEntity> findByRealmName(String realmName, Pageable page);
   Optional<GroupEntity> findByNameAndRealmName(String name, String realmName);

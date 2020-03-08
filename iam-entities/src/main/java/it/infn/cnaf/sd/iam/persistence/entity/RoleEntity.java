@@ -40,7 +40,7 @@ public class RoleEntity {
   private MetadataEntity metadata;
   
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "REALM_ID")
+  @JoinColumn(name = "REALM_ID", nullable = false)
   RealmEntity realm;
 
   @ElementCollection

@@ -42,7 +42,7 @@ public class RealmAuthenticationManagerResolver
 
   private String toRealm(HttpServletRequest request) {
     String realm = realmResolver.resolveRealmName(request);
-    RealmContext.setCurrentRealm(realm);
+    RealmContext.setCurrentRealmName(realm);
     return realm;
   }
 

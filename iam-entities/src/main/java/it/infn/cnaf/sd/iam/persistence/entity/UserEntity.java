@@ -49,7 +49,7 @@ public class UserEntity {
   private boolean provisioned = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "REALM_ID")
+  @JoinColumn(name = "REALM_ID", nullable = false)
   RealmEntity realm;
 
   @ManyToMany

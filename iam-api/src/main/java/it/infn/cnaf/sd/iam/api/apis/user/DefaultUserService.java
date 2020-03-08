@@ -22,7 +22,7 @@ public class DefaultUserService implements UserService {
 
   @Override
   public Page<UserEntity> getUsers(Pageable page) {
-    return repo.findByRealmName(RealmContext.getCurrentRealm(), page);
+    return repo.findByRealmName(RealmContext.getCurrentRealmName(), page);
   }
 
   @Override

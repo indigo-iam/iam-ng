@@ -1,10 +1,8 @@
 package it.infn.cnaf.sd.iam.api.realm;
 
-import static it.infn.cnaf.sd.iam.api.common.realm.RealmInterceptor.REALM_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -17,10 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import it.infn.cnaf.sd.iam.api.common.error.BadRequestError;
+import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmInterceptor;
@@ -58,7 +55,7 @@ public class RealmInterceptorTests {
   }
 
 
-  @Test(expected = BadRequestError.class)
+  @Test(expected = InvalidRequestError.class)
   public void testNullRealmThrowsException() throws Exception {
     when(resolver.resolveRealmName(request)).thenReturn(null);
     interceptor.preHandle(request, response, handler);
@@ -83,13 +80,11 @@ public class RealmInterceptorTests {
 
     interceptor.preHandle(request, response, handler);
     
-    assertThat(RealmContext.getCurrentRealm(), is("test"));
-
-    verify(request).setAttribute(Mockito.eq(REALM_KEY), Mockito.eq("test"));
+    assertThat(RealmContext.getCurrentRealmName(), is("test"));
 
     interceptor.afterCompletion(request, response, testRealm, exception);
 
-    assertThat(RealmContext.getCurrentRealm(), nullValue());
+    assertThat(RealmContext.getCurrentRealmName(), nullValue());
 
   }
 

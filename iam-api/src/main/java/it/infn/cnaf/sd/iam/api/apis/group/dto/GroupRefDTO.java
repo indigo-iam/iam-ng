@@ -6,7 +6,7 @@ import it.infn.cnaf.sd.iam.api.apis.group.validator.GroupName;
 
 public class GroupRefDTO {
 
-  @NotBlank(message = "Group ref name cannot be blank")
+  @NotBlank(message = "group ref name cannot be blank")
   @GroupName
   String name;
 

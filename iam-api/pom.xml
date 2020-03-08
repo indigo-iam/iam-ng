@@ -147,14 +147,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>mysql-test</id>
-      <properties>
-        <spring.profiles.active>mysql-test</spring.profiles.active>
-      </properties>
-    </profile>
-  </profiles>
-
 </project>

@@ -1,13 +1,12 @@
 -- We will put here the schema once has stabilized, and will remove the mock table then
-
-create table GROUPS (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(512) not null, UUID varchar(36) not null, PARENT_GROUP_ID bigint, REALM_ID bigint, primary key (ID)) ;
+create table GROUPS (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(512) not null, UUID varchar(36) not null, PARENT_GROUP_ID bigint, REALM_ID bigint not null, primary key (ID)) ;
 create table GROUPS_ATTRIBUTES (GROUP_ID bigint not null, A_NAME varchar(64) not null, A_VAL varchar(256)) ;
 create table GROUPS_LABELS (GROUP_ID bigint not null, L_NAME varchar(64) not null, L_PREFIX varchar(256), L_VAL varchar(64)) ;
 create table REALMS (ID bigint not null auto_increment, CONFIG longtext not null, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(255), primary key (ID)) ;
-create table ROLES (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(128) not null, UUID varchar(36) not null, REALM_ID bigint, primary key (ID)) ;
+create table ROLES (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(128) not null, UUID varchar(36) not null, REALM_ID bigint not null, primary key (ID)) ;
 create table ROLES_ATTRIBUTES (ROLE_ID bigint not null, A_NAME varchar(64) not null, A_VAL varchar(256)) ;
 create table ROLES_LABELS (ROLE_ID bigint not null, L_NAME varchar(64) not null, L_PREFIX varchar(256), L_VAL varchar(64)) ;
-create table USERS (ID bigint not null auto_increment, ACTIVE bit not null, END_TIME datetime(6), FAMILY_NAME varchar(128) not null, GENDER varchar(1), GIVEN_NAME varchar(128) not null, LOCALE varchar(255), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, MIDDLE_NAME varchar(128), PASSWORD varchar(128), PICTURE varchar(128), PROFILE varchar(128), PROVISIONED bit not null, USERNAME varchar(128) not null, UUID varchar(36) not null, WEBSITE varchar(128), ZONE_INFO varchar(255), REALM_ID bigint, primary key (ID)) ;
+create table USERS (ID bigint not null auto_increment, ACTIVE bit not null, END_TIME datetime(6), FAMILY_NAME varchar(128) not null, GENDER varchar(1), GIVEN_NAME varchar(128) not null, LOCALE varchar(255), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, MIDDLE_NAME varchar(128), PASSWORD varchar(128), PICTURE varchar(128), PROFILE varchar(128), PROVISIONED bit not null, USERNAME varchar(128) not null, UUID varchar(36) not null, WEBSITE varchar(128), ZONE_INFO varchar(255), REALM_ID bigint not null, primary key (ID)) ;
 create table USERS_ATTRIBUTES (USER_ID bigint not null, A_NAME varchar(64) not null, A_VAL varchar(256)) ;
 create table USERS_EMAILS (USER_ID bigint not null, EMAIL varchar(128) not null, LABEL varchar(36), IS_PRIMARY bit not null, EMAIL_VERIFIED bit not null) ;
 create table USERS_GROUPS (USER_ID bigint not null, GROUP_ID bigint not null, primary key (USER_ID, GROUP_ID)) ;

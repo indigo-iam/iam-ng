@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import it.infn.cnaf.sd.iam.api.common.error.BadRequestError;
+import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.api.properties.IamProperties;
 
@@ -20,9 +20,9 @@ public class RealmUtils {
   }
 
   public URL realmTrustedTokenIssuer() {
-    String currentRealm = RealmContext.getCurrentRealm();
+    String currentRealm = RealmContext.getCurrentRealmName();
     if (Objects.isNull(currentRealm)) {
-      throw new BadRequestError("Unspecified realm");
+      throw new InvalidRequestError("Unspecified realm");
     }
 
     try {

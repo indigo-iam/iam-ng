@@ -45,7 +45,7 @@ public class GroupEntity {
   private GroupEntity parentGroup;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "REALM_ID")
+  @JoinColumn(name = "REALM_ID", nullable = false)
   RealmEntity realm;
 
   @OneToMany(mappedBy = "parentGroup", cascade = CascadeType.PERSIST)

@@ -16,4 +16,7 @@ public interface GroupService {
   Page<GroupEntity> getGroups(Pageable page);
   
   GroupEntity createGroup(GroupEntity group);
+  
+  void deleteGroupByUuid(String uuid);
+  
 }

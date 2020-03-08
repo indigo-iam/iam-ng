@@ -2,15 +2,16 @@ package it.infn.cnaf.sd.iam.api.common.dto;
 
 public class RealmDTO {
 
-  String realmName;
+  String name;
 
   public RealmDTO() {}
 
-  public String getRealmName() {
-    return realmName;
+  public String getName() {
+    return name;
   }
 
-  public void setRealmName(String realmName) {
-    this.realmName = realmName;
+  public void setName(String name) {
+    this.name = name;
   }
+
 }

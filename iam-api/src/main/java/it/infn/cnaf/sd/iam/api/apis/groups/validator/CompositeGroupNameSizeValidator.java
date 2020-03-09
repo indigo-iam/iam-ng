@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group.validator;
+package it.infn.cnaf.sd.iam.api.apis.groups.validator;
 
 import static java.util.Objects.isNull;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import it.infn.cnaf.sd.iam.api.apis.group.dto.GroupDTO;
+import it.infn.cnaf.sd.iam.api.apis.groups.dto.GroupDTO;
 
 public class CompositeGroupNameSizeValidator
     implements ConstraintValidator<CompositeGroupNameSize, GroupDTO> {

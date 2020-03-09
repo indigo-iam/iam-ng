@@ -13,36 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.user;
+package it.infn.cnaf.sd.iam.api.apis.users;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
-import it.infn.cnaf.sd.iam.persistence.repository.UserRepository;
 
+public interface UserService {
 
-@Service
-public class DefaultUserService implements UserService {
+  Page<UserEntity> getUsers(Pageable page);
 
-  private final UserRepository repo;
+  Optional<UserEntity> findUserByUuid(String userUuid);
 
-  public DefaultUserService(UserRepository repo) {
-    this.repo = repo;
-  }
+  Optional<UserEntity> findUserByUsername(String username);
 
-  @Override
-  public Page<UserEntity> getUsers(Pageable page) {
-    return repo.findByRealmName(RealmContext.getCurrentRealmName(), page);
-  }
+  UserEntity createUser(UserEntity user);
 
-  @Override
-  public Optional<UserEntity> findUserById(Long id) {
-    return repo.findById(id);
-  }
+  void deleteUserByUUid(String userUuid);
+
+  void changeUserPassword(String userUuid, String password);
 
 }

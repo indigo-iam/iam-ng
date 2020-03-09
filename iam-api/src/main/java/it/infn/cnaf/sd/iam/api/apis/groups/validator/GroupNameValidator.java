@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group.validator;
+package it.infn.cnaf.sd.iam.api.apis.groups.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import it.infn.cnaf.sd.iam.api.apis.group.GroupService;
+import it.infn.cnaf.sd.iam.api.apis.groups.GroupService;
 
 @Component
 @Scope("prototype")

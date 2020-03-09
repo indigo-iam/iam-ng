@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group;
+package it.infn.cnaf.sd.iam.api.apis.users.dto;
 
-import static java.lang.String.format;
+import javax.validation.constraints.Size;
 
-public interface GroupSupport {
+public class PasswordDTO {
 
-  public static final String GROUP_HAS_CHILDREN = "Group has children groups";
-  public static final String GROUP_NAME_TOO_LONG_ERROR = "Group name longer than 512 characters";
-  public static final String GROUP_NOT_FOUND_ERROR_TEMPLATE = "Group not found: %s";
+  @Size(min = 6, max = 20, message = "Invalid password length")
+  String password;
 
-  public default String groupNotFoundMessage(String uuidOrName) {
-    return format(GROUP_NOT_FOUND_ERROR_TEMPLATE, uuidOrName);
+  public PasswordDTO() {}
+
+  public String getPassword() {
+    return password;
   }
 
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public static PasswordDTO newInstance(String password) {
+    PasswordDTO dto = new PasswordDTO();
+    dto.setPassword(password);
+    return dto;
+
+  }
 }

@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.user.dto;
+package it.infn.cnaf.sd.iam.api.apis.users.dto;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class EmailDTO {
 
   private boolean primary;
 
+  @Size(max = 36, message = "label too long")
   private String label;
 
+  @Email(message = "value provided is not a valid email address")
+  @NotBlank(message = "email cannot be blank")
+  @Size(max = 128, message = "email too long")
   private String email;
 
   private boolean verified;

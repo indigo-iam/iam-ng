@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.persistence.repository;
+package it.infn.cnaf.sd.iam.api.apis.groups;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
+import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
 
-public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
+public interface GroupService {
   
-  Page<UserEntity> findByRealmName(String realmName, Pageable page);
+  Optional<GroupEntity> findByName(String name);
   
-  Optional<UserEntity> findByUsernameAndRealmName(String username, String realmName);
+  Optional<GroupEntity> findByUuid(String uuid);
   
-  Optional<UserEntity> findByUuidAndRealmName(String uuid, String realmName);
+  Page<GroupEntity> getGroups(Pageable page);
+  
+  GroupEntity createGroup(GroupEntity group);
+  
+  void deleteGroupByUuid(String uuid);
+  
 }

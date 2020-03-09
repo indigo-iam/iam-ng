@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.persistence.repository;
+package it.infn.cnaf.sd.iam.api.apis.common;
 
-import java.util.Optional;
+import java.time.Clock;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
+public abstract class BaseService<T extends CrudRepository<?,?>> {
 
-public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
+  protected final T repo;
+  protected final Clock clock;
   
-  Page<UserEntity> findByRealmName(String realmName, Pageable page);
-  
-  Optional<UserEntity> findByUsernameAndRealmName(String username, String realmName);
-  
-  Optional<UserEntity> findByUuidAndRealmName(String uuid, String realmName);
+  public BaseService(T repo, Clock clock) {
+    this.repo = repo;
+    this.clock = clock;
+  }
+
 }

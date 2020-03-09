@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group.validator;
+package it.infn.cnaf.sd.iam.api.utils;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.util.function.Supplier;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Retention(RUNTIME)
-@Target(TYPE)
-@Constraint(validatedBy = CompositeGroupNameSizeValidator.class)
-public @interface CompositeGroupNameSize {
+import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 
-  String message() default "composite group name exceeds 512 chars";
+public abstract class IntegrationTestSupport {
 
-  Class<?>[] groups() default {};
+  @Autowired
+  protected MockMvc mvc;
 
-  Class<? extends Payload>[] payload() default {};
+  @Autowired
+  protected ObjectMapper mapper;
 
+  @Before
+  public void setup() {
+    RealmContext.clear();
+  }
+
+  protected Supplier<AssertionError> assertionError(String message) {
+    return () -> new AssertionError(message);
+  }
 }

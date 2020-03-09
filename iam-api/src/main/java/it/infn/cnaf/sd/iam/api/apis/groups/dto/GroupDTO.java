@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group.dto;
+package it.infn.cnaf.sd.iam.api.apis.groups.dto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import it.infn.cnaf.sd.iam.api.apis.group.validator.CompositeGroupNameSize;
+import it.infn.cnaf.sd.iam.api.apis.groups.validator.CompositeGroupNameSize;
 import it.infn.cnaf.sd.iam.api.common.dto.MetadataDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.RealmDTO;
 

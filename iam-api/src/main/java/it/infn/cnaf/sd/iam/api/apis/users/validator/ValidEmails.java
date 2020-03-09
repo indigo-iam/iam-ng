@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.user;
+package it.infn.cnaf.sd.iam.api.apis.users.validator;
 
-import java.util.Optional;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface ValidEmails {
 
-public interface UserService {
-
-  Page<UserEntity> getUsers(Pageable page);
-  
-  Optional<UserEntity> findUserById(Long id);
-  
 }

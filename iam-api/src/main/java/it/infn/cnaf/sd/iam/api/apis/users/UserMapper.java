@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.persistence.repository;
+package it.infn.cnaf.sd.iam.api.apis.users;
 
-import java.util.Optional;
+import org.mapstruct.Mapper;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-
+import it.infn.cnaf.sd.iam.api.apis.users.dto.UserDTO;
 import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
 
-public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
-  
-  Page<UserEntity> findByRealmName(String realmName, Pageable page);
-  
-  Optional<UserEntity> findByUsernameAndRealmName(String username, String realmName);
-  
-  Optional<UserEntity> findByUuidAndRealmName(String uuid, String realmName);
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+
+  UserDTO userEntityToDto(UserEntity entity);
+  UserEntity userDtoToEntity(UserDTO dto);
 }

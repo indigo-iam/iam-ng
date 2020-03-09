@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.user.dto;
+package it.infn.cnaf.sd.iam.api.apis.users.dto;
 
 import java.util.List;
 
-import it.infn.cnaf.sd.iam.api.common.dto.MetadataDTO;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
+import it.infn.cnaf.sd.iam.api.apis.users.validator.ValidEmails;
+import it.infn.cnaf.sd.iam.api.common.dto.MetadataDTO;
+import it.infn.cnaf.sd.iam.api.common.dto.RealmDTO;
+
+@ValidEmails
 public class UserDTO {
+
+  public static final String USERNAME_REGEXP = "^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\\$)$";
+  
+  public static final String NO_SPECIAL_CHARACTERS_REGEXP = "^[^<>%$]*$";
 
   MetadataDTO metadata;
 
@@ -27,17 +37,26 @@ public class UserDTO {
 
   String uuid;
 
+  @Pattern(regexp = USERNAME_REGEXP,
+      message = "invalid username (does not match with regexp: '" + USERNAME_REGEXP + "')")
   String username;
 
+  @Pattern(regexp = NO_SPECIAL_CHARACTERS_REGEXP,
+      message = "name contains invalid characters")
   String givenName;
 
+  @Pattern(regexp = NO_SPECIAL_CHARACTERS_REGEXP,
+      message = "name contains invalid characters")
   String familyName;
 
   boolean active;
 
   boolean provisioned;
 
+  @Valid
   List<EmailDTO> emails;
+
+  RealmDTO realm;
 
   public UserDTO() {}
 
@@ -111,6 +130,14 @@ public class UserDTO {
 
   public void setFamilyName(String familyName) {
     this.familyName = familyName;
+  }
+
+  public void setRealm(RealmDTO realm) {
+    this.realm = realm;
+  }
+
+  public RealmDTO getRealm() {
+    return realm;
   }
 
 }

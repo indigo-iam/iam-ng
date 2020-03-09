@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.user;
+package it.infn.cnaf.sd.iam.api.apis.groups;
 
 import org.mapstruct.Mapper;
 
-import it.infn.cnaf.sd.iam.api.apis.user.dto.UserDTO;
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
+import it.infn.cnaf.sd.iam.api.apis.groups.dto.GroupDTO;
+import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
-
-  UserDTO userEntityToDto(UserEntity entity);
-  UserEntity userDtoToEntity(UserDTO dto);
+public interface GroupMapper {
+  GroupDTO groupEntityToDto(GroupEntity entity);
+  GroupEntity groupDtoToEntity(GroupDTO dto);
 }

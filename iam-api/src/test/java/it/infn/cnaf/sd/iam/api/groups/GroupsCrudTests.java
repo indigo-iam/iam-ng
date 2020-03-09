@@ -22,54 +22,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.persistence.EntityManager;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.infn.cnaf.sd.iam.api.apis.group.GroupService;
-import it.infn.cnaf.sd.iam.api.apis.group.dto.GroupDTO;
-import it.infn.cnaf.sd.iam.api.apis.group.dto.GroupRefDTO;
-import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
+import it.infn.cnaf.sd.iam.api.apis.groups.dto.GroupDTO;
+import it.infn.cnaf.sd.iam.api.apis.groups.dto.GroupRefDTO;
 import it.infn.cnaf.sd.iam.api.utils.IamTest;
+import it.infn.cnaf.sd.iam.api.utils.IntegrationTestSupport;
 import it.infn.cnaf.sd.iam.api.utils.WithMockAdminUser;
 
 @RunWith(SpringRunner.class)
 @IamTest
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
-@Transactional
-public class GroupsTests {
+public class GroupsCrudTests extends IntegrationTestSupport {
 
   public static final String ALICE_GROUP_UUID = "c6fe138f-2f55-4d1d-b2b5-968bdf3bdff4";
   public static final String ALICE_PRODUCTION_GROUP_UUID = "4b98e830-6e46-4051-b492-4f970d8c9260";
-
-  @Autowired
-  MockMvc mvc;
-
-  @Autowired
-  ObjectMapper mapper;
-
-  @Autowired
-  GroupService groupService;
-
-  @Autowired
-  EntityManager em;
-
-  @Before
-  public void setup() {
-    RealmContext.clear();
-  }
 
   @Test
   public void testUnauthenticatedAccess() throws Exception {

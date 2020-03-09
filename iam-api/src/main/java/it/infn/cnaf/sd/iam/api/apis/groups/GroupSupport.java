@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group;
+package it.infn.cnaf.sd.iam.api.apis.groups;
 
-import java.util.Optional;
+import static java.lang.String.format;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+public interface GroupSupport {
 
-import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
+  public static final String GROUP_HAS_CHILDREN = "Group has children groups";
+  public static final String GROUP_NAME_TOO_LONG_ERROR = "Group name longer than 512 characters";
+  public static final String GROUP_NOT_FOUND_ERROR_TEMPLATE = "Group not found: %s";
 
-public interface GroupService {
-  
-  Optional<GroupEntity> findByName(String name);
-  
-  Optional<GroupEntity> findByUuid(String uuid);
-  
-  Page<GroupEntity> getGroups(Pageable page);
-  
-  GroupEntity createGroup(GroupEntity group);
-  
-  void deleteGroupByUuid(String uuid);
-  
+  public default String groupNotFoundMessage(String uuidOrName) {
+    return format(GROUP_NOT_FOUND_ERROR_TEMPLATE, uuidOrName);
+  }
+
 }

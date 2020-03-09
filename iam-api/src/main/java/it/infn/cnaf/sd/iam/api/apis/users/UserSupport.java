@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group;
+package it.infn.cnaf.sd.iam.api.apis.users;
 
-import org.mapstruct.Mapper;
+import static java.lang.String.format;
 
-import it.infn.cnaf.sd.iam.api.apis.group.dto.GroupDTO;
-import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
+public interface UserSupport {
 
-@Mapper(componentModel = "spring")
-public interface GroupMapper {
-  GroupDTO groupEntityToDto(GroupEntity entity);
-  GroupEntity groupDtoToEntity(GroupDTO dto);
+  public static final String INVALID_USER_REPRESENTATION = "Invalid user";
+  public static final String USER_NOT_FOUND_ERROR_TEMPLATE = "User not found: %s";
+
+  public default String userNotFoundMessage(String uuidOrName) {
+    return format(USER_NOT_FOUND_ERROR_TEMPLATE, uuidOrName);
+  }
 }

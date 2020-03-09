@@ -13,21 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.persistence.repository;
+package it.infn.cnaf.sd.iam.api.apis.users.validator;
 
-import java.util.Optional;
+public class EmailValidator {
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+  public EmailValidator() {
+    // TODO Auto-generated constructor stub
+  }
 
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
-
-public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
-  
-  Page<UserEntity> findByRealmName(String realmName, Pageable page);
-  
-  Optional<UserEntity> findByUsernameAndRealmName(String username, String realmName);
-  
-  Optional<UserEntity> findByUuidAndRealmName(String uuid, String realmName);
 }

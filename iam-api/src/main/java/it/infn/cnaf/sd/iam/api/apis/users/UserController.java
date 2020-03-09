@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group;
+package it.infn.cnaf.sd.iam.api.apis.users;
 
 import static it.infn.cnaf.sd.iam.api.common.utils.ValidationHelper.handleValidationError;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,68 +40,73 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.infn.cnaf.sd.iam.api.apis.error.ErrorUtils;
-import it.infn.cnaf.sd.iam.api.apis.group.dto.GroupDTO;
+import it.infn.cnaf.sd.iam.api.apis.users.dto.PasswordDTO;
+import it.infn.cnaf.sd.iam.api.apis.users.dto.UserDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.ListResponseDTO;
 import it.infn.cnaf.sd.iam.api.common.utils.PageUtils;
-import it.infn.cnaf.sd.iam.persistence.entity.GroupEntity;
+import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
+
+
 
 @RestController
 @RequestMapping(value = "/api/{realm}")
-@Transactional
-public class GroupController implements GroupSupport, ErrorUtils {
+@PreAuthorize("hasRole('IAM_OWNER')")
+public class UserController implements UserSupport, ErrorUtils {
 
-  public static final String INVALID_GROUP_REPRESENTATION = "Invalid group representation";
+  private final UserService service;
+  private final UserMapper mapper;
 
-  private final GroupService service;
-  private final GroupMapper mapper;
-
-  public GroupController(GroupService service, GroupMapper mapper) {
+  @Autowired
+  public UserController(UserService service, UserMapper mapper) {
     this.service = service;
     this.mapper = mapper;
   }
 
-  @PreAuthorize("hasRole('IAM_OWNER')")
-  @GetMapping("/Groups")
-  public ListResponseDTO<GroupDTO> listGroups(@RequestParam(required = false) final Integer count,
+  @GetMapping("/Users")
+  public ListResponseDTO<UserDTO> listUsers(@RequestParam(required = false) final Integer count,
       @RequestParam(required = false) final Integer startIndex) {
 
     PageRequest pageRequest =
-        PageUtils.buildPageRequest(count, startIndex, 50, Sort.by("name").ascending());
+        PageUtils.buildPageRequest(count, startIndex, 50, Sort.by("familyName").ascending());
 
-    Page<GroupEntity> pagedResults = service.getGroups(pageRequest);
-    ListResponseDTO.Builder<GroupDTO> result = ListResponseDTO.builder();
+    Page<UserEntity> pagedResults = service.getUsers(pageRequest);
+
+    ListResponseDTO.Builder<UserDTO> result = ListResponseDTO.builder();
     result.fromPage(pagedResults);
 
-    result.resources(pagedResults.get().map(mapper::groupEntityToDto).collect(toList()));
+    result.resources(pagedResults.get().map(mapper::userEntityToDto).collect(toList()));
 
     return result.build();
   }
 
-  @PreAuthorize("hasRole('IAM_OWNER')")
-  @GetMapping("/Groups/{groupId}")
-  public GroupDTO getGroup(@PathVariable String groupId) {
-
-    GroupEntity group =
-        service.findByUuid(groupId).orElseThrow(notFoundError(groupNotFoundMessage(groupId)));
-
-    return mapper.groupEntityToDto(group);
-  }
-
-  @PreAuthorize("hasRole('IAM_OWNER')")
-  @PostMapping("/Groups")
+  @PostMapping("/Users")
   @ResponseStatus(CREATED)
-  public GroupDTO createGroup(@RequestBody @Validated final GroupDTO group,
+  public UserDTO createUser(@RequestBody @Validated final UserDTO user,
       final BindingResult validationResult) {
-    handleValidationError(INVALID_GROUP_REPRESENTATION, validationResult);
-    GroupEntity groupEntity = service.createGroup(mapper.groupDtoToEntity(group));
-    return mapper.groupEntityToDto(groupEntity);
+    handleValidationError(INVALID_USER_REPRESENTATION, validationResult);
+    UserEntity entity = service.createUser(mapper.userDtoToEntity(user));
+    return mapper.userEntityToDto(entity);
   }
 
-  @PreAuthorize("hasRole('IAM_OWNER')")
-  @DeleteMapping("/Groups/{groupId}")
+
+  @GetMapping("/Users/{userId}")
+  public UserDTO getUser(@PathVariable String userId) {
+    return service.findUserByUuid(userId)
+      .map(mapper::userEntityToDto)
+      .orElseThrow(notFoundError(userNotFoundMessage(userId)));
+  }
+
+  @PostMapping("/Users/{userId}/password")
+  @ResponseStatus(CREATED)
+  public void changeUserPassword(@PathVariable String userId,
+      @RequestBody @Valid PasswordDTO password) {
+    service.changeUserPassword(userId, password.getPassword());
+  }
+
+  @DeleteMapping("/Users/{userId}")
   @ResponseStatus(NO_CONTENT)
-  public void deleteGroup(@PathVariable String groupId) {
-    service.deleteGroupByUuid(groupId);
+  public void deleteUser(@PathVariable String userId) {
+    service.deleteUserByUUid(userId);
   }
 
 }

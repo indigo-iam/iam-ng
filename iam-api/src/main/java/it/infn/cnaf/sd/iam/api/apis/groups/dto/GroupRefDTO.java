@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group.dto;
+package it.infn.cnaf.sd.iam.api.apis.groups.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import it.infn.cnaf.sd.iam.api.apis.group.validator.GroupName;
+import it.infn.cnaf.sd.iam.api.apis.groups.validator.GroupName;
 
 public class GroupRefDTO {
 

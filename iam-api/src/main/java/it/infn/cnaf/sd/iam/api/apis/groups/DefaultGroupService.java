@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.group;
+package it.infn.cnaf.sd.iam.api.apis.groups;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;

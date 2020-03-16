@@ -1,8 +1,12 @@
--- We will put here the schema once has stabilized, and will remove the mock table then
 create table GROUPS (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(512) not null, UUID varchar(36) not null, PARENT_GROUP_ID bigint, REALM_ID bigint not null, primary key (ID)) ;
 create table GROUPS_ATTRIBUTES (GROUP_ID bigint not null, A_NAME varchar(64) not null, A_VAL varchar(256)) ;
 create table GROUPS_LABELS (GROUP_ID bigint not null, L_NAME varchar(64) not null, L_PREFIX varchar(256), L_VAL varchar(64)) ;
 create table REALMS (ID bigint not null auto_increment, CONFIG longtext not null, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(255), primary key (ID)) ;
+create table REG_REQUESTS (ID bigint not null auto_increment, EMAIL_CHALLENGE varchar(36) not null, CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, CHALLENGE varchar(36) not null, EMAIL varchar(128) not null, EMAIL_VERIFIED bit not null, FAMILY_NAME varchar(128) not null, GIVEN_NAME varchar(128) not null, USERNAME varchar(128) not null, STATUS varchar(50) not null, uuid varchar(36) not null, REALM_ID bigint not null, primary key (ID)) ;
+create table REG_REQUESTS_ATTACHMENTS (ID bigint not null auto_increment, CONTENT longtext not null, LABEL varchar(36) not null, CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, REG_REQ_ID bigint not null, primary key (ID)) ;
+create table REG_REQUESTS_LABELS (REQ_ID bigint not null, L_NAME varchar(64) not null, L_PREFIX varchar(256), L_VAL varchar(64)) ;
+create table REG_REQUESTS_MESSAGES (REQ_ID bigint not null, CREATION_TIME datetime(6) not null, MESSAGE varchar(512) not null, SENDER varchar(255)) ;
+create table REG_REQUESTS_OTHERINFO (RegistrationRequestEntity_ID bigint not null, OI_VAL varchar(255), OI_KEY varchar(255) not null, primary key (RegistrationRequestEntity_ID, OI_KEY)) ;
 create table ROLES (ID bigint not null auto_increment, DESCRIPTION varchar(512), CREATION_TIME datetime(6) not null, LAST_UPDATE_TIME datetime(6) not null, NAME varchar(128) not null, UUID varchar(36) not null, REALM_ID bigint not null, primary key (ID)) ;
 create table ROLES_ATTRIBUTES (ROLE_ID bigint not null, A_NAME varchar(64) not null, A_VAL varchar(256)) ;
 create table ROLES_LABELS (ROLE_ID bigint not null, L_NAME varchar(64) not null, L_PREFIX varchar(256), L_VAL varchar(64)) ;
@@ -20,6 +24,12 @@ create index IDXqe6tmrt2splq0dqskhq61acu on GROUPS_ATTRIBUTES (A_NAME, A_VAL);
 create index IDX2chuoabqivj2xpjwrl1p5i6kk on GROUPS_LABELS (L_PREFIX, L_NAME, L_VAL);
 create index IDXhw8rq8rmt97vb4wt7h6mf0n3t on GROUPS_LABELS (L_PREFIX, L_NAME);
 alter table REALMS add constraint UK_kixct1r0c522ddn7w0fp4utih unique (NAME);
+alter table REG_REQUESTS add constraint UK5tbld2lnkjpv2vex2j1u7nkvx unique (REALM_ID, CHALLENGE);
+alter table REG_REQUESTS add constraint UK52ehwln4qj7pa1g60lqf2gafg unique (REALM_ID, EMAIL_CHALLENGE);
+alter table REG_REQUESTS add constraint UK_47gob5kicryg0ejy3uh5rsy1b unique (CHALLENGE);
+alter table REG_REQUESTS add constraint UK_pggp2s4x6qliak45gc7xant1 unique (uuid);
+create index IDXgadcub52wuydckht0p7ppkusx on REG_REQUESTS_LABELS (L_PREFIX, L_NAME, L_VAL);
+create index IDX1lorot8kvvss7otjoxs5it8py on REG_REQUESTS_LABELS (L_PREFIX, L_NAME);
 alter table ROLES add constraint UK644n6dn1c9snjdf76uc4lkcr4 unique (REALM_ID, NAME);
 alter table ROLES add constraint UK_tj41cr26fvuhhul71j9alt378 unique (UUID);
 create index IDX4rso2kb8er4e2ie56oxpscwey on ROLES_ATTRIBUTES (A_NAME);
@@ -40,6 +50,11 @@ alter table GROUPS add constraint FKlrpdyeywdl5bm4cm3oi794ypl foreign key (PAREN
 alter table GROUPS add constraint FK1cd9tbmi6cgxjlvpsp3ipecsr foreign key (REALM_ID) references REALMS (ID);
 alter table GROUPS_ATTRIBUTES add constraint FKsc6vkubpe21ia6d3pk86yvvyt foreign key (GROUP_ID) references GROUPS (ID);
 alter table GROUPS_LABELS add constraint FK54qhf7g499h97fjjvy9pobqda foreign key (GROUP_ID) references GROUPS (ID);
+alter table REG_REQUESTS add constraint FK4hn9movuw1xux4n47oxnowdlo foreign key (REALM_ID) references REALMS (ID);
+alter table REG_REQUESTS_ATTACHMENTS add constraint FK94burs7fwk4bxd815qn8l2ogo foreign key (REG_REQ_ID) references REG_REQUESTS (ID);
+alter table REG_REQUESTS_LABELS add constraint FKenf2l9m53iqaovgeg0tncq12b foreign key (REQ_ID) references REG_REQUESTS (ID);
+alter table REG_REQUESTS_MESSAGES add constraint FKdtom5c7axvrj5o75getmtwk1b foreign key (REQ_ID) references REG_REQUESTS (ID);
+alter table REG_REQUESTS_OTHERINFO add constraint FKe93mpb27tttdsxkaxxsogmmal foreign key (RegistrationRequestEntity_ID) references REG_REQUESTS (ID);
 alter table ROLES add constraint FKr92sc035c06b3q1corg9967l5 foreign key (REALM_ID) references REALMS (ID);
 alter table ROLES_ATTRIBUTES add constraint FKnh5bbslmec04iba7mj7i2srb3 foreign key (ROLE_ID) references ROLES (ID);
 alter table ROLES_LABELS add constraint FKkn3tk8237penmm0im6g0017ca foreign key (ROLE_ID) references ROLES (ID);

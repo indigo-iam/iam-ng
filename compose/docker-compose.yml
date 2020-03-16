@@ -20,12 +20,11 @@ volumes:
   data:
 
 services:
-
   db:
     image: ${DB_IMAGE}
-    volumes:
-      - data:/var/lib/mysql
-    
+    # volumes:
+    # - data:/var/lib/mysql
+
     environment:
       TZ: Europe/Rome
 
@@ -33,7 +32,7 @@ services:
       - "3306:3306"
 
   kc:
-    image: ${KEYCLOAK_IMAGE} 
+    image: ${KEYCLOAK_IMAGE}
     environment:
       TZ: Europe/Rome
       KEYCLOAK_USER: admin
@@ -45,12 +44,15 @@ services:
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
 
-      # volumes:
-      # - ./assets/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
-      # - ./../iam-kc-user-storage-provider/target/iam-kc-user-storage-provider-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-provider.jar
-      # - ./../iam-entities/target/iam-entities-2.0.0-SNAPSHOT.jar:/opt/jboss/keycloak/standalone/deployments/iam-entities.jar
+    command: -b 0.0.0.0 --debug 0.0.0.0:8787
+
+    volumes:
+      - ./assets/keycloak/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml:rw
+      - ./../iam-kc-user-storage-provider-ear/target/iam-kc-user-storage-provider-ear-2.0.0-SNAPSHOT.ear:/opt/jboss/keycloak/standalone/deployments/iam-provider.ear
 
     depends_on:
       - db
+
     ports:
       - "8080:8080"
+      - "8787:8787"

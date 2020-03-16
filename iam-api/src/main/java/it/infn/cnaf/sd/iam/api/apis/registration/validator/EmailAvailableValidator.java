@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.error;
+package it.infn.cnaf.sd.iam.api.apis.registration.validator;
 
-import java.util.function.Supplier;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
-import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
+public class EmailAvailableValidator implements ConstraintValidator<EmailAvailable, String>{
 
-public interface ErrorUtils {
-
-  public static final String INVALID_HTTP_MESSAGE =
-      "There was an error parsing your HTTP request, which is very likely malformed.";
-
-  public default Supplier<NotFoundError> notFoundError(String message) {
-    return () -> new NotFoundError(message);
+  public EmailAvailableValidator() {
   }
+
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    return true;
+  }
+
 }

@@ -13,36 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.persistence.entity;
-
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-
-import java.io.Serializable;
+package it.infn.cnaf.sd.iam.api.common.dto;
 
 import javax.annotation.Generated;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-@Embeddable
-public class LabelEntity implements Serializable {
 
-  private static final long serialVersionUID = 1L;
 
-  @Column(name = "L_PREFIX", nullable = true, length = 256)
-  String prefix;
+public class LabelDTO {
 
-  @Column(name = "L_NAME", nullable = false, length = 64)
-  String name;
+  // Matches simple domain names
+  public static final String PREFIX_REGEXP = "^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$";
 
-  @Column(name = "L_VAL", nullable = true, length = 64)
-  String value;
+  public static final String NAME_REGEXP = "^[a-zA-Z][a-zA-Z0-9-_.]*$";
 
-  public LabelEntity() {
-    // default constructor
-  }
+  @Size(max = 256, message = "invalid prefix length")
+  @Pattern(regexp = PREFIX_REGEXP,
+      message = "invalid prefix (does not match with regexp: '" + PREFIX_REGEXP + "')")
+  private String prefix;
 
-  public LabelEntity(Builder builder) {
+  @NotBlank(message = "name is required")
+  @Size(max = 64, message = "invalid name length")
+  @Pattern(regexp = NAME_REGEXP,
+      message = "invalid name (does not match with regexp: '" + NAME_REGEXP + "')")
+  private String name;
+
+  @Size(max = 64, message = "invalid value length")
+  private String value;
+
+  public LabelDTO() {}
+
+  public LabelDTO(Builder builder) {
     this.prefix = builder.prefix;
     this.name = builder.name;
     this.value = builder.value;
@@ -72,14 +75,6 @@ public class LabelEntity implements Serializable {
     this.value = value;
   }
 
-  public String qualifiedName() {
-    if (!isNull(prefix)) {
-      return format("%s/%s", prefix, name);
-    }
-
-    return name;
-  }
-
   @Override
   @Generated("eclipse")
   public int hashCode() {
@@ -87,6 +82,7 @@ public class LabelEntity implements Serializable {
     int result = 1;
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
     return result;
   }
 
@@ -99,7 +95,7 @@ public class LabelEntity implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    LabelEntity other = (LabelEntity) obj;
+    LabelDTO other = (LabelDTO) obj;
     if (name == null) {
       if (other.name != null)
         return false;
@@ -110,13 +106,18 @@ public class LabelEntity implements Serializable {
         return false;
     } else if (!prefix.equals(other.prefix))
       return false;
+    if (value == null) {
+      if (other.value != null)
+        return false;
+    } else if (!value.equals(other.value))
+      return false;
     return true;
   }
 
   public static class Builder {
-    String prefix;
-    String name;
-    String value;
+    private String prefix;
+    private String name;
+    private String value;
 
     public Builder prefix(String prefix) {
       this.prefix = prefix;
@@ -133,13 +134,12 @@ public class LabelEntity implements Serializable {
       return this;
     }
 
-    public LabelEntity build() {
-      return new LabelEntity(this);
+    public LabelDTO build() {
+      return new LabelDTO(this);
     }
   }
 
   public static Builder builder() {
     return new Builder();
   }
-
 }

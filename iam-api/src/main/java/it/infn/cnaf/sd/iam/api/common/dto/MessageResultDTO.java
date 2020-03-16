@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.error;
+package it.infn.cnaf.sd.iam.api.common.dto;
 
-import java.util.function.Supplier;
+import lombok.Builder;
+import lombok.Getter;
 
-import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
-
-public interface ErrorUtils {
-
-  public static final String INVALID_HTTP_MESSAGE =
-      "There was an error parsing your HTTP request, which is very likely malformed.";
-
-  public default Supplier<NotFoundError> notFoundError(String message) {
-    return () -> new NotFoundError(message);
-  }
+@Builder
+@Getter
+public class MessageResultDTO {
+  
+  final String status;
+  final String message;
+  final String detail;
 }

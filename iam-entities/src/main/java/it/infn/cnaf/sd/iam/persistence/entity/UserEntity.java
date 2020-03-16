@@ -32,6 +32,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -39,7 +41,19 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "USERS",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"REALM_ID", "USERNAME"})})
+
+@NamedQueries({@NamedQuery(name = UserEntity.QUERY_GET_USER_BY_USERNAME,
+    query = "select u from UserEntity u where u.username = :username and u.realm.name = :realm"),
+    @NamedQuery(name = UserEntity.QUERY_GET_USER_BY_EMAIL,
+        query = "select u from UserEntity u join u.emails e where u.realm.name = :realm and e.email = :email"),
+    @NamedQuery(name = UserEntity.QUERY_GET_USER_BY_UUID,
+        query = "select u from UserEntity u where u.realm.name = :realm and u.uuid = :uuid")}
+)
 public class UserEntity {
+
+  public static final String QUERY_GET_USER_BY_USERNAME = "getUserByUsername";
+  public static final String QUERY_GET_USER_BY_EMAIL = "getUserByEmail";
+  public static final String QUERY_GET_USER_BY_UUID = "getUserByUuid";
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -129,7 +143,7 @@ public class UserEntity {
 
   @Column(name = "LOCALE")
   private String locale;
-  
+
   @Column(name = "END_TIME", nullable = true)
   private Instant endTime;
 

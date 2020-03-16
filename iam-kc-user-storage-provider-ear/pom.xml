@@ -26,16 +26,14 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>iam-kc-user-storage-provider</artifactId>
-  <name>IAM Keycloak user storage provider</name>
-  <description>IAM Keycloak user storage provider</description>
+  <artifactId>iam-kc-user-storage-provider-ear</artifactId>
+  <name>IAM Keycloak user storage provider EAR</name>
+  <description>IAM Keycloak user storage provider EAR</description>
 
-  <packaging>jar</packaging>
+  <packaging>ear</packaging>
 
   <properties>
     <keycloak.version>9.0.0</keycloak.version>
-    <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
-    <jboss-ejb-api_3.2_spec.version>1.0.0.Final</jboss-ejb-api_3.2_spec.version>
   </properties>
 
   <dependencyManagement>
@@ -51,44 +49,22 @@
   </dependencyManagement>
 
   <dependencies>
-
     <dependency>
       <groupId>it.infn.cnaf.sd.iam</groupId>
-      <artifactId>iam-entities</artifactId>
+      <artifactId>iam-kc-user-storage-provider</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-server-spi</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-      <version>${hibernate-jpa-2.1-api.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-      <scope>provided</scope>
-      <version>${jboss-ejb-api_3.2_spec.version}</version>
-    </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <configuration>
+            <includeLibInApplicationXml>true</includeLibInApplicationXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

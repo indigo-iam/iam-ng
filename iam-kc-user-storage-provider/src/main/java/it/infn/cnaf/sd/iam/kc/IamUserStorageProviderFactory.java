@@ -25,6 +25,8 @@ public class IamUserStorageProviderFactory
     implements UserStorageProviderFactory<IamUserStorageProvider> {
 
   public static final String IAM_USER_STORAGE_PROVIDER_ID = "iam-user-storage-provider";
+  public static final String MODULE_LOOKUP_ID =
+      "java:global/iam-provider/iam-kc-user-storage-provider-2.0.0-SNAPSHOT/IamUserStorageProvider";
 
   @Override
   public IamUserStorageProvider create(KeycloakSession session, ComponentModel model) {
@@ -32,8 +34,7 @@ public class IamUserStorageProviderFactory
 
       InitialContext ctx = new InitialContext();
       IamUserStorageProvider provider =
-          (IamUserStorageProvider) ctx.lookup(String.format("java:global/%s/%s",
-              IAM_USER_STORAGE_PROVIDER_ID, IamUserStorageProvider.class.getName()));
+          (IamUserStorageProvider) ctx.lookup(MODULE_LOOKUP_ID);
 
       provider.setModel(model);
       provider.setSession(session);

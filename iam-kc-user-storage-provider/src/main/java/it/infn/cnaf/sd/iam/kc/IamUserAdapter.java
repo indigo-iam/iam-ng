@@ -18,20 +18,24 @@ package it.infn.cnaf.sd.iam.kc;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.storage.adapter.AbstractUserAdapter;
+import org.keycloak.storage.StorageId;
+import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
 
 import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
 
 
 
-public class IamUserAdapter extends AbstractUserAdapter {
+public class IamUserAdapter extends AbstractUserAdapterFederatedStorage {
 
-  final UserEntity entity;
+  protected final UserEntity entity;
+  protected final String keycloakId;
 
   public IamUserAdapter(KeycloakSession session, RealmModel realm,
       ComponentModel storageProviderModel, UserEntity entity) {
     super(session, realm, storageProviderModel);
     this.entity = entity;
+    this.keycloakId = StorageId.keycloakId(storageProviderModel, entity.getUuid());
+    
   }
 
   @Override
@@ -48,9 +52,23 @@ public class IamUserAdapter extends AbstractUserAdapter {
   public String getLastName() {
     return entity.getFamilyName();
   }
-  
+
+
   @Override
   public boolean isEnabled() {
     return entity.isActive();
+  }
+
+  public String getPassword() {
+    return entity.getPassword();
+  }
+  
+  public void setPassword(String password) {
+    entity.setPassword(password);
+  }
+
+  @Override
+  public void setUsername(String username) {
+    entity.setUsername(username);
   }
 }

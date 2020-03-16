@@ -64,10 +64,10 @@ public class UsersCrudTests extends IntegrationTestSupport implements UserTestSu
 
   @WithMockAdminUser
   @Test
-  public void testUserAccessReturnsEmptyList() throws Exception {
+  public void testUserAccessReturnsCountWithDefaultTestUsers() throws Exception {
     mvc.perform(get(USERS_ENDPOINT))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$.totalResults").value(0));
+      .andExpect(jsonPath("$.totalResults").value(1));
   }
 
   @WithAnonymousUser

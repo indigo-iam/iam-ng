@@ -21,14 +21,16 @@ public class ErrorDTO {
   
   final String error;
   final String errorDescription;
+  final String errorDetail;
 
-  private ErrorDTO(String error, String errorDescription) {
+  private ErrorDTO(String error, String errorDescription, String detail) {
     this.error = error;
     this.errorDescription = errorDescription;
+    this.errorDetail = detail;
   }
   
   private ErrorDTO(String error) {
-    this(error,null);
+    this(error,null, null);
   }
 
   public String getError() {
@@ -39,8 +41,17 @@ public class ErrorDTO {
     return errorDescription;
   }
   
-  public static ErrorDTO newError(HttpStatus s, String errorDescription) {
-    return new ErrorDTO(s.name().toLowerCase(), errorDescription);
+  public String getErrorDetail() {
+    return errorDetail;
   }
+  
+  public static ErrorDTO newError(HttpStatus s, String errorDescription) {
+    return new ErrorDTO(s.name().toLowerCase(), errorDescription, null);
+  }
+  
+  public static ErrorDTO newError(HttpStatus s, String errorDescription, String detail) {
+    return new ErrorDTO(s.name().toLowerCase(), errorDescription, detail);
+  }
+  
  
 }

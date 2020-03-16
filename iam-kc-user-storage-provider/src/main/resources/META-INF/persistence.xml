@@ -21,19 +21,20 @@
   xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="iam-user-storage-provider">
+  <persistence-unit name="iam-user-storage-provider" transaction-type="JTA">
     <jta-data-source>java:jboss/datasources/IamDS</jta-data-source>
     
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.AttributeEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.ConfigurationEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.EmailEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.GroupEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.LabelEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.MetadataEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.PhoneNumberEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.RoleEntity</class>
-    <class>it.infn.cnaf.sd.iam.persistence.realm.entity.UserEntity</class>
     <class>it.infn.cnaf.sd.iam.kc.persistence.UserRepository</class>
+    
+    <class>it.infn.cnaf.sd.iam.persistence.entity.AttributeEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.EmailEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.GroupEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.LabelEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.MetadataEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.PhoneNumberEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.RealmEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.RoleEntity</class>
+    <class>it.infn.cnaf.sd.iam.persistence.entity.UserEntity</class>
 
     <properties>
       <property name="hibernate.show_sql" value="true" />

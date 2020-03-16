@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.kc.persistence;
+package it.infn.cnaf.sd.iam.api.apis.registration;
 
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import org.springframework.security.core.Authentication;
 
+import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
 
+public interface RegistrationService {
 
-@NamedQueries({@NamedQuery(name = UserRepository.QUERY_GET_USER_BY_USERNAME,
-    query = "select u from UserEntity u where u.username = :username and u.realm.name = :realm"),})
-public interface UserRepository {
-  public static final String QUERY_GET_USER_BY_USERNAME = "getUserByUsername";
+  RegistrationRequestEntity createRegistrationRequest(RegistrationRequestEntity request,
+      Authentication authentication);
+  
+  RegistrationRequestEntity confirmRegistrationRequest(String requestId, String emailChallenge);
+
 }

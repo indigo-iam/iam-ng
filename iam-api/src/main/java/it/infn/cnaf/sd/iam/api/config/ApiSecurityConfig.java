@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,15 +40,21 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // @formatter:off
-    http.authorizeRequests()
-      .mvcMatchers("/api/**")
-        .fullyAuthenticated()
-        .and()
-        .oauth2ResourceServer()
-          .authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
-          .authenticationManagerResolver(authenticationManagerResolver)
-        .and()
-          .csrf().disable();
+    http
+       .requestMatchers()
+         .mvcMatchers("/api/**")
+         .and()
+           .oauth2ResourceServer()
+           .authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
+           .authenticationManagerResolver(authenticationManagerResolver)
+         .and()
+           .anonymous()
+         .and()
+           .authorizeRequests()
+             .mvcMatchers(HttpMethod.POST,"/api/*/Registrations").permitAll()
+             .anyRequest().fullyAuthenticated()
+         .and()
+           .csrf().disable();
     // @formatter:on
   }
 }

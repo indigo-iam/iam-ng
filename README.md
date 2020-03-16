@@ -1,18 +1,27 @@
 # IAM NG
 
-## Running integration tests
+This repo hosts the initial code of the IAM NG API and Keycloak integration
+modules.
+
+This code is early stages of development.
+
+
+## Developer info
+
+### Running IAM API integration tests
 
 By, default test run on H2 embedded database.
 
 To run MySQL integration tests, use the following command:
 
 ```
-mvn -Dspring.profiles.active=mysql-test test
+mvn -Dspring.profiles.active=mysql-test-tc test
 ```
 
-MySQL integration tests require a recent docker installation.
+This will boostrap a MySQL container using [Testcontainers][testcontainers],
+a recent Docker installation is required.
 
-## Generating the schema code from Hibernate
+### Generating the schema code from Hibernate
 
 Start the api with the ddl profile.
 Hibernate is configured to print DDL statements to the standard output.

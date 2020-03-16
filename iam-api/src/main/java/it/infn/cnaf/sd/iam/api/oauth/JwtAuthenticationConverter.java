@@ -16,12 +16,12 @@
 package it.infn.cnaf.sd.iam.api.oauth;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -52,7 +52,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
         return realmRoles.stream()
           .map(r -> String.format("ROLE_%s", r.toUpperCase().replace('-', '_')))
           .map(SimpleGrantedAuthority::new)
-          .collect(Collectors.toSet());
+          .collect(toSet());
       }
     }
     return Collections.emptySet();

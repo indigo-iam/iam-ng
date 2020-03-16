@@ -20,6 +20,7 @@ package it.infn.cnaf.sd.iam.api.apis.error;
 import static it.infn.cnaf.sd.iam.api.common.dto.ErrorDTO.newError;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,20 +32,20 @@ import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
 
 @RestControllerAdvice
-public class ApiExceptionHandler {
-  
+public class ApiExceptionHandler implements ErrorUtils {
+
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(ValidationError.class)
   public ErrorDTO handleValidationError(ValidationError e) {
     return newError(HttpStatus.BAD_REQUEST, e.getMessage());
   }
-  
+
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(InvalidRequestError.class)
   public ErrorDTO handleBadRequestError(InvalidRequestError e) {
     return newError(HttpStatus.BAD_REQUEST, e.getMessage());
   }
-  
+
   @ResponseStatus(code = HttpStatus.NOT_FOUND)
   @ExceptionHandler(NotFoundError.class)
   public ErrorDTO handleNotFoundError(NotFoundError e) {
@@ -55,6 +56,12 @@ public class ApiExceptionHandler {
   @ExceptionHandler(AccessDeniedException.class)
   public ErrorDTO handleAccessDeniedError(AccessDeniedException e) {
     return newError(HttpStatus.FORBIDDEN, e.getMessage());
+  }
+
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ErrorDTO handleMessageNotReadableError(HttpMessageNotReadableException e) {
+    return newError(HttpStatus.BAD_REQUEST, INVALID_HTTP_MESSAGE, e.getMessage());
   }
 
 }

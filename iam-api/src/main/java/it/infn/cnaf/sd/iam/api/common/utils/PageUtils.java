@@ -51,4 +51,8 @@ public class PageUtils {
 
     return PageRequest.of(validStartIndex, validCount, sort);
   }
+
+  public static PageRequest buildPageRequest(Integer count, Integer startIndex, int maxPageSize) {
+    return buildPageRequest(count, startIndex, maxPageSize, null);
+  }
 }

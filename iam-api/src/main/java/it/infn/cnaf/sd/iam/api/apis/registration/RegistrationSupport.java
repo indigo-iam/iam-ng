@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.error;
+package it.infn.cnaf.sd.iam.api.apis.registration;
 
 import java.util.function.Supplier;
 
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 
-public interface ErrorUtils {
-
-  public static final String INVALID_HTTP_MESSAGE =
-      "There was an error parsing your HTTP request, which is very likely malformed.";
-
-  public default Supplier<NotFoundError> notFoundError(String message) {
-    return () -> new NotFoundError(message);
+public interface RegistrationSupport {
+  
+  public static final String INVALID_REQUEST_REPRESENTATION = "Invalid request representation";
+  public static final String INVALID_TOKEN = "Invalid token";
+  public static final String REQUEST_CREATED = "Request created";
+  
+  public static final String AUTHENTICATION_ATTACHMENT_LABEL = "iam.authentication";
+  
+  default Supplier<NotFoundError> requestNotFoundForId(String requestId){
+    return () -> new NotFoundError(String.format("Request not found for id: %s", requestId));
   }
+  
+
 }

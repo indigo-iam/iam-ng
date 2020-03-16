@@ -46,7 +46,7 @@ public class UserDTO {
   String givenName;
 
   @Pattern(regexp = NO_SPECIAL_CHARACTERS_REGEXP,
-      message = "name contains invalid characters")
+      message = "family name contains invalid characters")
   String familyName;
 
   boolean active;

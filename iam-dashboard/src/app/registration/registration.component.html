@@ -1,0 +1,61 @@
+<mat-card>
+
+<mat-card-title>Register at {{ iamName }}</mat-card-title>
+
+<form [formGroup]="RegistrationForm">
+  <mat-form-field appearance="outline">
+    <mat-label>Given Name</mat-label>
+    <input matInput formControlName="firstName">
+    <mat-error *ngIf="RegistrationForm.get('firstName').hasError('required')">Given Name is required</mat-error>
+  </mat-form-field>
+
+  <br>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Family Name</mat-label>
+    <input matInput formControlName="lastName">
+    <mat-error *ngIf="RegistrationForm.get('lastName').hasError('required')">Family Name is required</mat-error>
+  </mat-form-field>
+
+  <br>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" type="email">
+    <mat-error *ngIf="RegistrationForm.get('email').hasError('required')">Email address is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('email').hasError('email')">A valid email address is required</mat-error>
+  </mat-form-field>
+
+  <br>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput formControlName="username">
+    <mat-error *ngIf="RegistrationForm.get('username').hasError('required')">Username is required</mat-error>
+  </mat-form-field>
+
+  <br>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Notes</mat-label>
+    <textarea matInput formControlName="notes"></textarea>
+    <mat-error *ngIf="RegistrationForm.get('notes').hasError('required')">Notes is required</mat-error>
+    <mat-hint>Provide a clear explanation behind the motivation for this account request</mat-hint>
+  </mat-form-field>
+
+  <br>
+  <br>
+
+  <a href="{{ auplink }}" target="_blank">Acceptable Usage Policy</a>
+
+  <section>
+    <mat-label>I confirm I have read and accept the Acceptable Usage Policy (AUP) </mat-label>
+    <mat-checkbox formControlName="aup"></mat-checkbox>
+    <mat-error *ngIf="RegistrationForm.get('aup').hasError('required') || RegistrationForm.get('aup').hasError('requiredTrue')">You must confirm your acceptance of the AUP</mat-error>
+  </section>
+
+  <br>
+
+  <button mat-raised-button color="primary" [disabled]="!RegistrationForm.valid" (click)="register()">Register</button>
+</form>
+</mat-card>

@@ -1,18 +1,66 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
+import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
+
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RegistrationComponent } from './registration/registration.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+
+
+let keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent, RegistrationComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    KeycloakAngularModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatCardModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: KeycloakService,
+      useValue: keycloakService
+    },
+    FormBuilder
+  ],
+  entryComponents: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule implements DoBootstrap {
+  async ngDoBootstrap(app) {
+    const { keycloakConfig } = environment;
+
+    try {
+      await keycloakService.init({
+        config: keycloakConfig,
+        initOptions: {
+          onLoad: 'login-required',
+          checkLoginIframe: false
+          //promiseType: "native" Will's Note: keycloak-angular library does not currently support this.
+        },
+        enableBearerInterceptor: true,
+        bearerExcludedUrls: [],
+      });
+      app.bootstrap(AppComponent);
+    } catch (error) {
+      console.error('Keycloak init failed', error);
+    }
+  }
+}

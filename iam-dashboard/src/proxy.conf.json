@@ -1,0 +1,6 @@
+{
+  "/auth": {
+    "target": "https://host-172-16-114-90.nubes.stfc.ac.uk:8443/",
+    "secure": false
+  }
+}

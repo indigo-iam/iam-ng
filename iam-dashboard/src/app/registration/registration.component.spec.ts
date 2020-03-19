@@ -11,13 +11,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationService } from './registration.service';
 
-class MockRegistrationService {
-
-}
-
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
   let fixture: ComponentFixture<RegistrationComponent>;
+  let rs: RegistrationService;
+  let spy: any;
+  let fb: FormBuilder;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,19 +33,18 @@ describe('RegistrationComponent', () => {
       ],
       providers: [
         FormBuilder,
-        { provide: RegistrationService, useClass: MockRegistrationService }
+        RegistrationService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
 
-  let registrationServiceSpy: { usernameInUse: jasmine.Spy, emailInUse: jasmine.Spy}
-
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationComponent);
+    rs = fixture.debugElement.injector.get(RegistrationService);
+    fb = fixture.debugElement.injector.get(FormBuilder);
     component = fixture.componentInstance;
-    registrationServiceSpy = jasmine.createSpyObj('MockRegistrationService', ['usernameInUse', 'emailInUse'])
     fixture.detectChanges();
   });
 
@@ -131,18 +129,40 @@ describe('RegistrationComponent', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
   })
 
-  it('validator false with username not in use', () => {
-    registrationServiceSpy.usernameInUse.and.returnValue(false);
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    expect(component.usernameInUseValidator(component.RegistrationForm.controls['username'])).toBeFalsy();
-    expect(registrationServiceSpy.usernameInUse.calls.count()).toBe(1, 'one call');
+  it('validator null with username not in use', () => {
+    spy = spyOn(rs, 'usernameExists').and.returnValue(false);
+    let fg = fb.group({
+      username: [''],
+    })
+    expect(component.usernameInUseValidator(fg)).toBeNull();
+    expect(rs.usernameExists).toHaveBeenCalled();
   })
 
-  it('validator true with username not in use', () => {
-    registrationServiceSpy.usernameInUse.and.returnValue(true);
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    expect(component.usernameInUseValidator(component.RegistrationForm.controls['username'])).toBeTruthy();
-    expect(registrationServiceSpy.usernameInUse.calls.count()).toBe(1, 'one call');
+  it('validator true with username in use', () => {
+    spy = spyOn(rs, 'usernameExists').and.returnValue(true);
+    let fg = fb.group({
+      username: [''],
+    })
+    expect(component.usernameInUseValidator(fg)).toBeTruthy();
+    expect(rs.usernameExists).toHaveBeenCalled();
+  })
+
+  it('validator null with email not in use', () => {
+    spy = spyOn(rs, 'emailExists').and.returnValue(false);
+    let fg = fb.group({
+      email: [''],
+    })
+    expect(component.emailInUseValidator(fg)).toBeNull();
+    expect(rs.emailExists).toHaveBeenCalled();
+  })
+
+  it('validator true with email in use', () => {
+    spy = spyOn(rs, 'emailExists').and.returnValue(true);
+    let fg = fb.group({
+      email: [''],
+    })
+    expect(component.emailInUseValidator(fg)).toBeTruthy();
+    expect(rs.emailExists).toHaveBeenCalled();
   })
 
 

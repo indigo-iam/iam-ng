@@ -7,8 +7,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RegistrationService } from './registration.service';
+
+class MockRegistrationService {
+
+}
 
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
@@ -27,15 +32,21 @@ describe('RegistrationComponent', () => {
       declarations: [
         RegistrationComponent,
       ],
-      providers: [FormBuilder],
+      providers: [
+        FormBuilder,
+        { provide: RegistrationService, useClass: MockRegistrationService }
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
 
+  let registrationServiceSpy: { usernameInUse: jasmine.Spy, emailInUse: jasmine.Spy}
+
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationComponent);
     component = fixture.componentInstance;
+    registrationServiceSpy = jasmine.createSpyObj('MockRegistrationService', ['usernameInUse', 'emailInUse'])
     fixture.detectChanges();
   });
 
@@ -119,4 +130,20 @@ describe('RegistrationComponent', () => {
     component.RegistrationForm.controls['aup'].setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
   })
+
+  it('validator false with username not in use', () => {
+    registrationServiceSpy.usernameInUse.and.returnValue(false);
+    component.RegistrationForm.controls['username'].setValue("JSmith");
+    expect(component.usernameInUseValidator(component.RegistrationForm.controls['username'])).toBeFalsy();
+    expect(registrationServiceSpy.usernameInUse.calls.count()).toBe(1, 'one call');
+  })
+
+  it('validator true with username not in use', () => {
+    registrationServiceSpy.usernameInUse.and.returnValue(true);
+    component.RegistrationForm.controls['username'].setValue("JSmith");
+    expect(component.usernameInUseValidator(component.RegistrationForm.controls['username'])).toBeTruthy();
+    expect(registrationServiceSpy.usernameInUse.calls.count()).toBe(1, 'one call');
+  })
+
+
 });

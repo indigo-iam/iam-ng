@@ -24,6 +24,7 @@
     <input matInput formControlName="email" type="email">
     <mat-error *ngIf="RegistrationForm.get('email').hasError('required')">Email address is required</mat-error>
     <mat-error *ngIf="RegistrationForm.get('email').hasError('email')">A valid email address is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.errors?.emailInUse">This email address is already in use. Have you already created an account?</mat-error>
   </mat-form-field>
 
   <br>
@@ -32,6 +33,7 @@
     <mat-label>Username</mat-label>
     <input matInput formControlName="username">
     <mat-error *ngIf="RegistrationForm.get('username').hasError('required')">Username is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.errors?.usernameInUse">This username is already in use. Have you already created an account?</mat-error>
   </mat-form-field>
 
   <br>

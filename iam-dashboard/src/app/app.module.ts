@@ -14,12 +14,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './login/login.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
 let keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -51,7 +53,6 @@ export class AppModule implements DoBootstrap {
       await keycloakService.init({
         config: keycloakConfig,
         initOptions: {
-          onLoad: 'login-required',
           checkLoginIframe: false
           //promiseType: "native" Will's Note: keycloak-angular library does not currently support this.
         },

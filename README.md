@@ -3,7 +3,7 @@
 This repo hosts the initial code of the IAM NG API and Keycloak integration
 modules.
 
-This code is early stages of development.
+This code is in early stages of development.
 
 
 ## Developer info

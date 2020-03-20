@@ -31,6 +31,8 @@ import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 
 public class RealmInterceptor implements HandlerInterceptor {
 
+  public static final String API_PATH = "/api/";
+
   private final RealmNameResolver resolver;
   private final RealmRepository repo;
 
@@ -43,9 +45,19 @@ public class RealmInterceptor implements HandlerInterceptor {
     return () -> new NotFoundError(format("Unknown realm: %s", realm));
   }
 
+  protected boolean isApiRequest(HttpServletRequest request) {
+    return request.getRequestURI().startsWith(API_PATH);
+  }
+
+
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
+
+    if (!isApiRequest(request)) {
+      return true;
+    }
+    
     final String realm = resolver.resolveRealmName(request);
     if (isNull(realm)) {
       throw new InvalidRequestError("Unspecified realm");

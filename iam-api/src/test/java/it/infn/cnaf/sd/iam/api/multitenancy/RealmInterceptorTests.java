@@ -18,6 +18,7 @@ package it.infn.cnaf.sd.iam.api.multitenancy;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -67,8 +68,8 @@ public class RealmInterceptorTests {
   @Before
   public void setup() {
     RealmContext.clear();
+    when(request.getRequestURI()).thenReturn("/api/test");
   }
-
 
   @Test(expected = InvalidRequestError.class)
   public void testNullRealmThrowsException() throws Exception {
@@ -101,6 +102,16 @@ public class RealmInterceptorTests {
 
     assertThat(RealmContext.getCurrentRealmName(), nullValue());
 
+  }
+  
+  @Test
+  public void testResolverNotInvokedForNonApiRequests() throws Exception {
+    
+    when(request.getRequestURI()).thenReturn("/test");
+    interceptor.preHandle(request, response, handler);
+    
+    verifyNoInteractions(resolver);
+    
   }
 
 }

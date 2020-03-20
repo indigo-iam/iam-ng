@@ -328,11 +328,13 @@
           <useDefaultExcludes>true</useDefaultExcludes>
           <excludes>
             <exclude>.factorypath</exclude>
+            <exclude>.github/**</exclude>
             <exclude>compose/assets/**</exclude>
             <exclude>**/*.sql</exclude>
             <exclude>**/Dockerfile</exclude>
             <exclude>**/*.csv</exclude>
             <exclude>**/.env</exclude>
+            <exclude>iam-dashboard/**</exclude>
             <exclude>LICENSE</exclude>
           </excludes>
         </configuration>

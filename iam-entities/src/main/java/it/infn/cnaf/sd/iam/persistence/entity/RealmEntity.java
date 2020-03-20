@@ -43,7 +43,19 @@ public class RealmEntity {
   private String configuration;
 
   private MetadataEntity metadata;
+  
+  @Column(name = "REGISTRATION_ENABLED", nullable = false)
+  private boolean registrationEnabled;
+  
+  @Column(name = "PRIVACY_POLICY_URL", length = 128)
+  private String privacyPolicyUrl;
+  
+  @Column(name = "AUP_URL", length = 128)
+  private String aupUrl;
 
+  @Column(name = "LOGO_URL", length = 128)
+  private String logoUrl;
+  
   public RealmEntity() {}
 
   public Long getId() {
@@ -84,6 +96,38 @@ public class RealmEntity {
 
   public void setMetadata(MetadataEntity metadata) {
     this.metadata = metadata;
+  }
+  
+  public boolean isRegistrationEnabled() {
+    return registrationEnabled;
+  }
+
+  public void setRegistrationEnabled(boolean registrationEnabled) {
+    this.registrationEnabled = registrationEnabled;
+  }
+
+  public String getPrivacyPolicyUrl() {
+    return privacyPolicyUrl;
+  }
+
+  public void setPrivacyPolicyUrl(String privacyPolicyUrl) {
+    this.privacyPolicyUrl = privacyPolicyUrl;
+  }
+
+  public String getAupUrl() {
+    return aupUrl;
+  }
+
+  public void setAupUrl(String aupUrl) {
+    this.aupUrl = aupUrl;
+  }
+  
+  public String getLogoUrl() {
+    return logoUrl;
+  }
+  
+  public void setLogoUrl(String logoUrl) {
+    this.logoUrl = logoUrl;
   }
 
   @Override

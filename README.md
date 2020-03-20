@@ -8,6 +8,24 @@ This code is in early stages of development.
 
 ## Developer info
 
+### Changing the version number
+
+To change the version number, update the `revision` property in the
+[iam-dependencies pom.xml file](./project/iam-dependencies/pom.xml).
+
+The `mvn versions` plugin does not work with the current approach.
+
+### Docker compose development environment
+
+In the [compose](./compose) folder, a docker-compose can be found
+to bootstrap a development environment, composed of:
+
+- MySQL database, for the Keycloak and IAM API database
+- a Keycloak instance, with three tenants configured
+- IAM API
+
+Check instructions on how to use it [here](./compose/README.md).
+
 ### Running IAM API integration tests
 
 By, default test run on H2 embedded database.

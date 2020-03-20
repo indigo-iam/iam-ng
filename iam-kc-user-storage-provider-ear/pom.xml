@@ -23,7 +23,7 @@
   <parent>
     <groupId>it.infn.cnaf.sd.iam</groupId>
     <artifactId>iam</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>iam-kc-user-storage-provider-ear</artifactId>
@@ -63,6 +63,13 @@
         <artifactId>maven-ear-plugin</artifactId>
         <configuration>
             <includeLibInApplicationXml>true</includeLibInApplicationXml>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

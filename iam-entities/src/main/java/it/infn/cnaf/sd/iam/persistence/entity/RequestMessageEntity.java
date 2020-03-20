@@ -17,6 +17,7 @@ package it.infn.cnaf.sd.iam.persistence.entity;
 
 import java.util.Date;
 
+import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
@@ -24,19 +25,19 @@ import javax.persistence.TemporalType;
 
 @Embeddable
 public class RequestMessageEntity {
-  
+
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATION_TIME", nullable = false)
   Date creationTime;
-  
+
   @Column(name = "SENDER", nullable = true)
   private String sender;
-  
+
   @Column(name = "MESSAGE", nullable = false, length = 512)
   private String message;
-  
+
   public RequestMessageEntity() {
-    // TODO Auto-generated constructor stub
+    // This is empty on purpose
   }
 
   public Date getCreationTime() {
@@ -63,6 +64,7 @@ public class RequestMessageEntity {
     this.message = message;
   }
 
+  @Generated("eclipse")
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -72,6 +74,7 @@ public class RequestMessageEntity {
     return result;
   }
 
+  @Generated("eclipse")
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -92,6 +95,6 @@ public class RequestMessageEntity {
     } else if (!sender.equals(other.sender))
       return false;
     return true;
-  }  
+  }
 
 }

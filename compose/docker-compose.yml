@@ -22,14 +22,29 @@ volumes:
 services:
   db:
     image: ${DB_IMAGE}
-    # volumes:
-    # - data:/var/lib/mysql
+    volumes:
+    - data:/var/lib/mysql
 
     environment:
       TZ: Europe/Rome
 
     ports:
       - "3306:3306"
+
+  iam-api:
+    image: ${IAM_API_IMAGE}
+    environment:
+      TZ: Europe/Rome
+      IAM_JAVA_OPTS: -Dspring.profiles.active=mysql
+      IAM_KC_BASE_URL: http://kc:8080/auth/realms
+      IAM_DB_HOST: db
+
+    depends_on:
+      - db
+      - kc
+
+    ports:
+      - "9876:9876"
 
   kc:
     image: ${KEYCLOAK_IMAGE}
@@ -43,6 +58,8 @@ services:
       DB_USER: kc
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
+      IAM_DASHBOARD_BASE_URL: http://iam
+      IAM_KC_SKIP_SETUP: "true"
 
     command: -b 0.0.0.0 --debug 0.0.0.0:8787
 

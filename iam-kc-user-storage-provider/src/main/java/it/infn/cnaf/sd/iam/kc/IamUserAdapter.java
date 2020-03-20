@@ -71,4 +71,6 @@ public class IamUserAdapter extends AbstractUserAdapterFederatedStorage {
   public void setUsername(String username) {
     entity.setUsername(username);
   }
+  
+  
 }

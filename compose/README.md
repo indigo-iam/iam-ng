@@ -42,3 +42,8 @@ In each tenant, an IAM administrator user is created with the following credenti
 
 - username: `admin`
 - password: `password`
+
+## Docker images
+
+Docker images used in this compose are either available on Dockerhub and/or the
+definition can be found in the ../docker folder.

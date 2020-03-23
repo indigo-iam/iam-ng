@@ -5,8 +5,26 @@ modules.
 
 This code is in early stages of development.
 
-
 ## Developer info
+
+### Build instructions
+
+Build requirements:
+
+- Java 8
+- Maven >= 3.6.0
+
+To build iam-ng run the following command:
+
+```bash
+$ mvn package
+```
+
+To build a docker image for the IAM api, run the following command:
+
+```bash
+$ mvn package jib:dockerBuild
+```
 
 ### Changing the version number
 

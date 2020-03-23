@@ -16,6 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ActivatedRoute } from '@angular/router';
 
 
 let keycloakService: KeycloakService = new KeycloakService();
@@ -46,12 +47,31 @@ let keycloakService: KeycloakService = new KeycloakService();
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule implements DoBootstrap {
+
+  constructor(private route: ActivatedRoute) {
+
+  }
+
   async ngDoBootstrap(app) {
     const { keycloakConfig } = environment;
 
+    let patharray: string[] = window.location.pathname.split("/");
+
+    let userrealm: string = "";
+
+    if(patharray[1]) {
+      userrealm = patharray[1]; // index 0 is a /
+    } else {
+      userrealm = "master"; // Fall back to master realm if there isn't a realm found
+    }
+
     try {
       await keycloakService.init({
-        config: keycloakConfig,
+        config: {
+          url: 'https://localhost:8443/auth/',
+          realm: userrealm,
+          clientId: 'iam-dashboard'
+        },
         initOptions: {
           checkLoginIframe: false
           //promiseType: "native" Will's Note: keycloak-angular library does not currently support this.

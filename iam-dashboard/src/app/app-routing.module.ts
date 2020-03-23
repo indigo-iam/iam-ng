@@ -9,11 +9,11 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':realm',
     component: LoginComponent
   },
   {
-    path: 'register',
+    path: ':realm/register',
     canActivate: [AppAuthGuard],
     component: RegistrationComponent
   },

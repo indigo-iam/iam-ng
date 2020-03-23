@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { RegistrationService } from './registration.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -9,10 +10,16 @@ import { RegistrationService } from './registration.service';
 })
 export class RegistrationComponent implements OnInit {
 
-  iamName = "test";
-  auplink = "test";
+  iamName: string = "test";
+  auplink: string  = "test";
 
-  constructor(private fb: FormBuilder, public rs: RegistrationService) { }
+  realm: string = "";
+
+  constructor(private fb: FormBuilder, public rs: RegistrationService, private route: ActivatedRoute) {
+    this.route.paramMap.subscribe((params) => {
+      this.realm = params.get('realm');
+    })
+  }
 
   ngOnInit(): void {
   }
@@ -38,8 +45,8 @@ export class RegistrationComponent implements OnInit {
     aup: [false, Validators.requiredTrue]
   });
 
-  register(): void {
-    if(this.rs.createRegistration(this.RegistrationForm)) {
+  async register() {
+    if(await this.rs.createRegistration(this.RegistrationForm)) {
       console.log("success");
     } else {
       console.log("oh no");

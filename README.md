@@ -49,3 +49,6 @@ script, you get a suitable Flyway migration script:
 ```bash
 pbpaste | grep "^Hibernate:" | sed -e "s/^Hibernate: //" -e "s/engine=InnoDB//" | sed "s/$/;/" | grep -v drop | pbcopy
 ```
+
+
+[testcontainers]: https://www.testcontainers.org/

@@ -34,7 +34,9 @@ The following tenants are created:
 
 - iam
 - alice
+- atlas
 - cms
+- lhcb
 
 In each tenant, an IAM administrator user is created with the following credentials:
 

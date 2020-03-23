@@ -35,7 +35,7 @@ services:
     image: ${IAM_API_IMAGE}
     environment:
       TZ: Europe/Rome
-      IAM_JAVA_OPTS: -Dspring.profiles.active=mysql
+      JAVA_TOOL_OPTIONS: -Dspring.profiles.active=mysql
       IAM_KC_BASE_URL: http://kc:8080/auth/realms
       IAM_DB_HOST: db
 
@@ -59,7 +59,7 @@ services:
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
       IAM_DASHBOARD_BASE_URL: http://iam
-      IAM_KC_SKIP_SETUP: "true"
+      #IAM_KC_SKIP_SETUP: "true"
 
     command: -b 0.0.0.0 --debug 0.0.0.0:8787
 

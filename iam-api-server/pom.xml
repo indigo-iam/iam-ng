@@ -72,13 +72,17 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-    
-    
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -100,11 +104,6 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-oauth2-jose</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>cz.jirutka.validator</groupId>
-      <artifactId>validator-collection</artifactId>
     </dependency>
 
     <dependency>
@@ -207,10 +206,10 @@
           <to>
             <image>indigoiam/iam-api-server</image>
             <tags>
-                <tag>${project.version}-latest</tag>
-                <tag>latest</tag>
-                <tag>${git.commit.id.abbrev}</tag>
-                <tag>${git.branch}-latest</tag>
+              <tag>${project.version}-latest</tag>
+              <tag>latest</tag>
+              <tag>${git.commit.id.abbrev}</tag>
+              <tag>${git.branch}-latest</tag>
             </tags>
           </to>
           <container>

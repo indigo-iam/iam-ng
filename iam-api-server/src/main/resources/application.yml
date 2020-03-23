@@ -39,5 +39,7 @@ spring:
 
 iam:
   oauth-keys-refresh-period-minutes: 30
+  api-base-url: http://localhost:9876
+  keycloak-base-url: http://localhost:8080
 
  

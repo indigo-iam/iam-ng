@@ -24,6 +24,7 @@ public interface RegistrationSupport {
   public static final String INVALID_REQUEST_REPRESENTATION = "Invalid request representation";
   public static final String INVALID_TOKEN = "Invalid token";
   public static final String REQUEST_CREATED = "Request created";
+  public static final String REQUEST_CONFIRMED = "Request confirmed succesfully";
   
   public static final String AUTHENTICATION_ATTACHMENT_LABEL = "iam.authentication";
   

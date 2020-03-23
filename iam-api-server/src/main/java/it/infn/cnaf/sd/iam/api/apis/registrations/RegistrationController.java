@@ -81,7 +81,8 @@ public class RegistrationController implements RegistrationSupport, ErrorUtils {
 
     handleValidationError(INVALID_TOKEN, validationResult);
 
-    return null;
+    service.confirmRegistrationRequest(requestId, token);
+    return MessageResultDTO.builder().message(REQUEST_CONFIRMED).build();
   }
 
   @GetMapping("/Registrations/config")

@@ -38,7 +38,6 @@
     <java.compat.version>1.8</java.compat.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <start-class>it.infn.cnaf.sd.iam.api.IamApiApplication</start-class>
     <modulename>it.infn.cnaf.sd.iam</modulename>
   </properties>
 

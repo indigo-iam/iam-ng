@@ -26,6 +26,12 @@ To build a docker image for the IAM api, run the following command:
 $ mvn package jib:dockerBuild
 ```
 
+To run an iam-ng API server, you can use the following command:
+
+```bash
+java -Dspring.profiles.active=h2 -jar iam-api-server/target/iam-api-server-2.0.0-SNAPSHOT.jar
+```
+
 ### Changing the version number
 
 To change the version number, update the `revision` property in the

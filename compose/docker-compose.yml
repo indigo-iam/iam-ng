@@ -18,8 +18,17 @@ version: "3.5"
 
 volumes:
   data:
+  trustanchors:
+  cabundle:
 
 services:
+  trust:
+    image: indigoiam/trustanchors:latest
+    volumes:
+      - trustanchors:/etc/grid-security/certificates
+      - cabundle:/etc/pki
+    environment:
+      FORCE_TRUST_ANCHORS_UPDATE: 1
   db:
     image: ${DB_IMAGE}
     volumes:
@@ -35,16 +44,44 @@ services:
     image: ${IAM_API_IMAGE}
     environment:
       TZ: Europe/Rome
-      JAVA_TOOL_OPTIONS: -Dspring.profiles.active=mysql
+      JAVA_TOOL_OPTIONS: -Dspring.profiles.active=mysql,compose
       IAM_KC_BASE_URL: http://kc:8080/auth/realms
+      IAM_API_BASE_URL: http://iam-api:9876
       IAM_DB_HOST: db
 
     depends_on:
       - db
       - kc
 
+    volumes:
+      - ./assets/iam-api/application-compose.yml:/iam-ng/config/application-compose.yml:ro
+
     ports:
-      - "9876:9876"
+      - 9876
+
+  nginx:
+    image: ${NGINX_IMAGE}
+    environment:
+      TZ: Europe/Rome
+
+    depends_on:
+      - trust
+      - kc
+      - iam-api
+
+    volumes:
+      - cabundle:/etc/pki
+      - ./assets/nginx/certs:/certs:ro
+      - ./assets/nginx/conf.d:/etc/nginx/conf.d:ro
+
+    ports:
+      - "443:443"
+    
+    networks:
+      default:
+        aliases:
+          - api.test.example
+          - kc.test.example
 
   kc:
     image: ${KEYCLOAK_IMAGE}
@@ -52,14 +89,15 @@ services:
       TZ: Europe/Rome
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password
+      PROXY_ADDRESS_FORWARDING: 'true'
       DB_VENDOR: mysql
       DB_ADDR: db
       DB_DATABASE: kc
       DB_USER: kc
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
-      IAM_DASHBOARD_BASE_URL: http://iam
-      #IAM_KC_SKIP_SETUP: "true"
+      IAM_KC_SKIP_SETUP: "true"
+      IAM_DASHBOARD_BASE_URL: http://localhost:4200
 
     command: -b 0.0.0.0 --debug 0.0.0.0:8787
 
@@ -71,5 +109,5 @@ services:
       - db
 
     ports:
-      - "8080:8080"
+      - 8080
       - "8787:8787"

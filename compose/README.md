@@ -6,10 +6,21 @@ This compose file sets up:
 - a Keycloak instance, with three tenants configured
 - the IAM API server
 
+A safe startup procedure to have things running would be:
+
+```bash
+$ docker-compose up -d db 
+$ docker-compose up -d kc
+$ docker-compose up -d iam-api
+$ docker-compose up -d nginx
+```
+
+## Configuration
+
 Images are set in the .env file.
 
-The Keycloak configuration needs to be run only once (the state is then persisted in the database).
-Interesting envirnoment variables:
+The Keycloak configuration needs to be run only once (the state is then
+persisted in the database). Interesting envirnoment variables:
 
 | Env variable           | Meaning                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------ |
@@ -18,15 +29,25 @@ Interesting envirnoment variables:
 
 ## Service endpoints
 
-| Service        | port |
-| -------------- | ---- |
-| MySQL DB       | 3306 |
-| Keycloak       | 8080 |
-| IAM API server | 9876 |
+Services now are proxied by an NGINX instance that does TLS termination and
+virtual hosting.
 
-The ports are bound to the Docker host (in many cases, bind to localhost).
+| Service  | Endpoint                 |
+| -------- | ------------------------ |
+| Keycloak | https://kc.test.example  |
+| IAM API  | https://api.test.example |
 
-API docs for the IAM API server can be found at [here](http://localhost:9876/swagger-ui/api-docs.html).
+Add entries to your `/etc/hosts` file for the endpoints above to make
+things work seamlessly.
+
+The test X.509 certificate authority certificate used to sign the
+wildcard certificate can be found
+[here](./assets/trust/igi-test-ca.pem). Import this certificate in your browser and in curl trust roots.
+
+## IAM API docs
+
+API docs for the IAM API server can be found at
+[here](https://api.test.example/swagger-ui/api-docs.html).
 
 ## Tenants and user accounts
 

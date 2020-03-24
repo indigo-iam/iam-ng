@@ -17,6 +17,7 @@
 server:
   port: 9876
   
+  
 spring:
   application:
     name: IAM API server
@@ -41,5 +42,7 @@ iam:
   oauth-keys-refresh-period-minutes: 30
   api-base-url: http://localhost:9876
   keycloak-base-url: http://localhost:8080
+  cors:
+    allow-all-origins: true  
 
  

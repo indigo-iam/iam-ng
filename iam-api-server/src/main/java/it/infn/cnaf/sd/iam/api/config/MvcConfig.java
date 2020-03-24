@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import it.infn.cnaf.sd.iam.api.common.realm.RealmInterceptor;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmNameResolver;
+import it.infn.cnaf.sd.iam.api.properties.IamProperties;
 import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 
 @Configuration
@@ -34,14 +35,23 @@ public class MvcConfig implements WebMvcConfigurer {
   @Autowired
   RealmRepository repo;
 
+  @Autowired
+  IamProperties iamProperties;
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(new RealmInterceptor(resolver, repo));
   }
-  
+
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/Realms/**");
+
+    if (iamProperties.getCors().isAllowAllOrigins()) {
+      registry.addMapping("/Realms/**");
+    } else if (!iamProperties.getCors().getAllowedOrigins().isEmpty()) {
+      registry.addMapping("/Realms/**")
+        .allowedOrigins(iamProperties.getCors().getAllowedOrigins().toArray(new String[0]));
+    }
   }
 
 

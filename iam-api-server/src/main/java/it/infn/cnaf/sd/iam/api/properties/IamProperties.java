@@ -15,6 +15,8 @@
  */
 package it.infn.cnaf.sd.iam.api.properties;
 
+
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.constraints.Max;
@@ -30,6 +32,28 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class IamProperties {
 
+  public static class CorsProperties {
+    boolean allowAllOrigins;
+
+    List<String> allowedOrigins;
+
+    public boolean isAllowAllOrigins() {
+      return allowAllOrigins;
+    }
+    
+    public void setAllowAllOrigins(boolean allowAllOrigins) {
+      this.allowAllOrigins = allowAllOrigins;
+    }
+
+    public void setAllowedOrigins(List<String> allowedOrigins) {
+      this.allowedOrigins = allowedOrigins;
+    }
+
+    public List<String> getAllowedOrigins() {
+      return allowedOrigins;
+    }
+  }
+
   public static final int T_48_HOURS_IN_MINUTES = 48 * 60;
 
   @Min(value = 0, message = "Please provide a zero or positive OAuth keys refresh period")
@@ -39,13 +63,15 @@ public class IamProperties {
 
   @NotBlank(message = "Please provide a keycloak base URL")
   String keycloakBaseUrl = "http://localhost:8080/auth/realms";
-  
+
   @NotBlank(message = "Please provide a base URL for this API server")
   String apiBaseUrl = "http://localhost:9876";
-  
+
   @NotBlank(message = "Please provide a base URL for the IAM dashboard")
   String dashboardBaseUrl = "http://localhost:4200";
-  
+
+  CorsProperties cors;
+
   public int getOauthKeysRefreshPeriodMinutes() {
     return oauthKeysRefreshPeriodMinutes;
   }
@@ -69,13 +95,21 @@ public class IamProperties {
   public void setApiBaseUrl(String apiBaseUrl) {
     this.apiBaseUrl = apiBaseUrl;
   }
-  
+
   public String getDashboardBaseUrl() {
     return dashboardBaseUrl;
   }
-  
+
   public void setDashboardBaseUrl(String dashboardBaseUrl) {
     this.dashboardBaseUrl = dashboardBaseUrl;
+  }
+
+  public CorsProperties getCors() {
+    return cors;
+  }
+
+  public void setCors(CorsProperties cors) {
+    this.cors = cors;
   }
 
 }

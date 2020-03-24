@@ -54,6 +54,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
              .mvcMatchers(HttpMethod.POST,"/Realms/*/Registrations").permitAll()
              .mvcMatchers(HttpMethod.GET,"/Realms/*/Registrations/config").permitAll()
              .mvcMatchers(HttpMethod.GET,"/Realms").permitAll()
+             .mvcMatchers(HttpMethod.HEAD,"/Realms").permitAll()
+             .mvcMatchers(HttpMethod.OPTIONS,"/Realms").permitAll()
              .anyRequest().fullyAuthenticated()
          .and()
            .csrf().disable();

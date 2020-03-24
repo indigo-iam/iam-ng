@@ -1,0 +1,6 @@
+{
+  "iamApiBaseUrl": "http://172.16.114.90:9876",
+  "keycloakBaseUrl": "http://172.16.114.90:8080",
+  "fallbackRealm": "master",
+  "keycloakClientId": "iam-dashboard"
+}

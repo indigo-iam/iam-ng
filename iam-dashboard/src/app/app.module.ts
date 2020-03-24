@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +17,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ActivatedRoute } from '@angular/router';
+import { AppConfigService } from './app-config.service';
 
 
 let keycloakService: KeycloakService = new KeycloakService();
@@ -41,19 +42,28 @@ let keycloakService: KeycloakService = new KeycloakService();
       provide: KeycloakService,
       useValue: keycloakService
     },
-    FormBuilder
+    FormBuilder,
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [AppConfigService],
+      useFactory: (appConfigService: AppConfigService) => {
+        return () => {
+          return appConfigService.loadAppConfig();
+        };
+      }
+    }
   ],
   entryComponents: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule implements DoBootstrap {
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private appConfigService: AppConfigService) {
 
   }
 
   async ngDoBootstrap(app) {
-    const { keycloakConfig } = environment;
 
     let patharray: string[] = window.location.pathname.split("/");
 
@@ -62,15 +72,15 @@ export class AppModule implements DoBootstrap {
     if(patharray[1]) {
       userrealm = patharray[1]; // index 0 is a /
     } else {
-      userrealm = "master"; // Fall back to master realm if there isn't a realm found
+      userrealm = this.appConfigService.getFallbackRealm(); // Fall back to master realm if there isn't a realm found
     }
 
     try {
       await keycloakService.init({
         config: {
-          url: 'https://localhost:8443/auth/',
+          url: this.appConfigService.getKeycloakBaseUrl(),
           realm: userrealm,
-          clientId: 'iam-dashboard'
+          clientId: this.appConfigService.getKeycloakClientId()
         },
         initOptions: {
           checkLoginIframe: false

@@ -1,14 +1,10 @@
-import { KeycloakConfig } from 'keycloak-angular';
-
-let keycloakConfig: KeycloakConfig = {
-  url: 'https://localhost:8443/auth/',
-  realm: 'master',
-  clientId: 'iam-dashboard'
-};
-
 export const environment = {
   production: true,
-  keycloak: keycloakConfig
+  keycloakUrl: 'https://localhost:8443/auth/',
+  keycloakClientId: 'iam-dashboard',
+  fallbackRealm: 'master',
+  apiBaseUrl: 'http://172.16.114.90:9876'
 };
+
 
 

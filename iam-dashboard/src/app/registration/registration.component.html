@@ -1,8 +1,10 @@
 <mat-card>
 
-<mat-card-title>Register at {{ iamName }} for {{ realm }}</mat-card-title>
+<mat-card-title>Register at {{ iamName }} for {{ realmName }}</mat-card-title>
 
-<form [formGroup]="RegistrationForm">
+<p *ngIf="!registrationConfiguration.registrationEnabled">Sorry, registration is currently disabled for {{ realmName }}</p>
+
+<form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled">
   <mat-form-field appearance="outline">
     <mat-label>Given Name</mat-label>
     <input matInput formControlName="firstName">
@@ -48,10 +50,10 @@
   <br>
   <br>
 
-  <a href="{{ auplink }}" target="_blank">Acceptable Usage Policy</a>
+  <a href="{{ registrationConfiguration.aupUrl }}" target="_blank">Acceptable Usage Policy</a>   <a href="{{ registrationConfiguration.privacyPolicyUrl }}" target="_blank">Privacy Policy</a>
 
   <section>
-    <mat-label>I confirm I have read and accept the Acceptable Usage Policy (AUP) </mat-label>
+    <mat-label>I confirm I have read and accept the Acceptable Usage Policy (AUP) and Privacy Policy</mat-label>
     <mat-checkbox formControlName="aup"></mat-checkbox>
     <mat-error *ngIf="RegistrationForm.get('aup').hasError('required') || RegistrationForm.get('aup').hasError('requiredTrue')">You must confirm your acceptance of the AUP</mat-error>
   </section>

@@ -24,11 +24,19 @@ export class RegistrationService {
     return false;
   }
 
-  createRegistration(registrationForm: FormGroup): boolean {
-    return true;
+  createRegistration(registrationForm: FormGroup, realm: string): Observable<any> {
+    return this.http.post<any>(this.iamApiBaseUrl + "/Realms/" + realm + "/Registrations",
+      {
+        "requesterInfo": {
+          "username": registrationForm.get('username').value,
+          "givenName": registrationForm.get('firstName').value,
+          "familyName": registrationForm.get('lastName').value,
+          "email": registrationForm.get('email').value
+        }
+      });
   }
 
-  getRegistrationConfig(realm: String): Observable<RegistrationConfigurationDTO> {
+  getRegistrationConfig(realm: string): Observable<RegistrationConfigurationDTO> {
     return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + "/Realms/" + realm + "/Registrations/config");
   }
 

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RealmService } from '../services/realm.service';
 import { RealmDTO } from '../models/realm-dto';
 import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-registration',
@@ -24,9 +25,10 @@ export class RegistrationComponent implements OnInit {
     logoUrl: ""
   };
   dataLoaded: boolean = false;
+  registrationSuccess: boolean = false;
 
 
-  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router) {
+  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar) {
 
   }
 
@@ -43,6 +45,7 @@ export class RegistrationComponent implements OnInit {
       },
       (error) => {
         console.error("Error loading realms from API " + error);
+        this.snackBar.open("There was an error loading realms, are you connected to the Internet?");
         this.realms = [];
       }
     )
@@ -53,6 +56,7 @@ export class RegistrationComponent implements OnInit {
       },
       (error) => {
         console.error("Error loading registration configuration from API " + error);
+        this.snackBar.open("There was an error loading registration information, are you connected to the Internet?");
       }
     );
 
@@ -80,12 +84,19 @@ export class RegistrationComponent implements OnInit {
     aup: [false, Validators.requiredTrue]
   });
 
-  async register() {
-    if(await this.registrationService.createRegistration(this.RegistrationForm)) {
-      console.log("success");
-    } else {
-      console.log("oh no");
-    }
+  register() {
+    this.registrationService.createRegistration(this.RegistrationForm, this.realmName).subscribe(
+      (response) => {
+        if(response.message && response.message === "Request created") {
+          this.registrationSuccess = true;
+        } else if(response.error && response.error === "bad_request") {
+          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+        }
+      },
+      (error) => {
+        this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+      }
+    )
   }
 
   errorIfRealmNotDefined(): void {

@@ -18,6 +18,7 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ActivatedRoute } from '@angular/router';
 import { AppConfigService } from './app-config.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 let keycloakService: KeycloakService = new KeycloakService();
@@ -35,7 +36,8 @@ let keycloakService: KeycloakService = new KeycloakService();
     MatButtonModule,
     ReactiveFormsModule,
     MatCheckboxModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ],
   providers: [
     {

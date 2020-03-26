@@ -2,11 +2,13 @@
 
 <mat-card-title>Register at {{ iamName }} for {{ realmName }}</mat-card-title>
 
+<p *ngIf="registrationSuccess">You have successfully registered an account!</p>
+
 <div *ngIf="dataLoaded">
 
 <p *ngIf="!registrationConfiguration.registrationEnabled">Sorry, registration is currently disabled for {{ realmName }}</p>
 
-<form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled">
+<form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess">
   <mat-form-field appearance="outline">
     <mat-label>Given Name</mat-label>
     <input matInput formControlName="firstName">

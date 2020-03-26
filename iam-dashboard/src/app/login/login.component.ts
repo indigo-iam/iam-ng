@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
   }
 
   ngOnInit(): void {

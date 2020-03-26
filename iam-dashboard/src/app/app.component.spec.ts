@@ -11,7 +11,10 @@ class MockKeycloakService {
 }
 
 describe('AppComponent', () => {
+  let keycloakService;
   beforeEach(async(() => {
+    keycloakService = jasmine.createSpyObj(['isLoggedIn']);
+    keycloakService.isLoggedIn.and.returnValue(false);
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,

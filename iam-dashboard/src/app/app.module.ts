@@ -61,7 +61,7 @@ let keycloakService: KeycloakService = new KeycloakService();
 })
 export class AppModule implements DoBootstrap {
 
-  constructor(private route: ActivatedRoute, private appConfigService: AppConfigService) {
+  constructor(private appConfigService: AppConfigService) {
 
   }
 

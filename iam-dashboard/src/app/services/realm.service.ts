@@ -4,10 +4,7 @@ import { AppConfigService } from '../app-config.service';
 import { Observable } from 'rxjs';
 import { ListResponseDTO } from 'src/app/models/list-response-dto';
 import { RealmDTO } from 'src/app/models/realm-dto';
-import { AppConfig } from 'src/app/models/app-config';
 import { HttpClient } from '@angular/common/http';
-import { Utils } from 'src/app/utils/utils';
-import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

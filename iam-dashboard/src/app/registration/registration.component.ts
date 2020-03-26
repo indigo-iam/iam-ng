@@ -15,29 +15,37 @@ export class RegistrationComponent implements OnInit {
 
   iamName: string = "test";
   realmName: string = "";
-  realms: RealmDTO[];
-  registrationConfiguration: RegistrationConfigurationDTO;
+  realms: RealmDTO[] = [];
+  registrationConfiguration: RegistrationConfigurationDTO = {
+    kind: "",
+    registrationEnabled: true,
+    privacyPolicyUrl: "",
+    aupUrl: "",
+    logoUrl: ""
+  };
+  dataLoaded: boolean = false;
 
 
   constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router) {
+
+  }
+
+  ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.realmName = params.get('realm');
     });
 
     this.realmService.getRealms().subscribe(
       (response) => {
+        console.log(response);
         this.realms = response.resources;
+        this.errorIfRealmNotDefined();
       },
       (error) => {
         console.error("Error loading realms from API " + error);
         this.realms = [];
       }
     )
-
-    if(!this.realms.some((e) => e.name === this.realmName)) {
-      // There are no realms with the given name, so lets 404 here...
-      router.navigate(["/404"]);
-    }
 
     this.registrationService.getRegistrationConfig(this.realmName).subscribe(
       (response) => {
@@ -46,10 +54,9 @@ export class RegistrationComponent implements OnInit {
       (error) => {
         console.error("Error loading registration configuration from API " + error);
       }
-    )
-  }
+    );
 
-  ngOnInit(): void {
+    this.dataLoaded = true;
   }
 
   usernameInUseValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
@@ -78,6 +85,13 @@ export class RegistrationComponent implements OnInit {
       console.log("success");
     } else {
       console.log("oh no");
+    }
+  }
+
+  errorIfRealmNotDefined(): void {
+    if(!this.realms.some((e) => e.name === this.realmName)) {
+      // There are no realms with the given name, so lets 404 here...
+      this.router.navigate(["/404"]);
     }
   }
 

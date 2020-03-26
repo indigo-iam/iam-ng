@@ -1,6 +1,6 @@
 {
-  "iamApiBaseUrl": "http://172.16.114.90:9876",
-  "keycloakBaseUrl": "http://172.16.114.90:8080",
+  "iamApiBaseUrl": "/dev-api-test",
+  "keycloakBaseUrl": "https://kc.test.example/auth/",
   "fallbackRealm": "master",
   "keycloakClientId": "iam-dashboard"
 }

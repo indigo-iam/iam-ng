@@ -1,6 +1,11 @@
 {
-  "/auth": {
-    "target": "https://host-172-16-114-90.nubes.stfc.ac.uk:8443/",
-    "secure": false
+  "/dev-api-test/*": {
+    "target": "https://api.test.example/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/dev-api-test": ""
+    }
   }
 }

@@ -29,7 +29,7 @@ export class RegistrationService {
   }
 
   getRegistrationConfig(realm: String): Observable<RegistrationConfigurationDTO> {
-    return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + "Realms/" + realm + "/Registrations/config");
+    return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + "/Realms/" + realm + "/Registrations/config");
   }
 
 

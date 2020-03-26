@@ -18,7 +18,6 @@ const routes: Routes = [
   },
   {
     path: ':realm/register',
-    canActivate: [AppAuthGuard],
     component: RegistrationComponent
   },
   {

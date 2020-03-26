@@ -9,7 +9,6 @@ export class AppConfigService {
   private appConfig: AppConfig;
 
   constructor(private injector: Injector) {
-    this.loadAppConfig();
   }
 
   loadAppConfig() {

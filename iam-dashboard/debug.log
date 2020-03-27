@@ -173,3 +173,8 @@
 [0326/151634.748:ERROR:registration_protocol_win.cc(84)] TransactNamedPipe: The pipe has been ended. (0x6D)
 [0326/151634.769:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)
 [0326/151634.775:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)
+[0327/092804.211:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)
+[0327/092804.222:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)
+[0327/092804.228:ERROR:registration_protocol_win.cc(84)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0327/092804.248:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)
+[0327/092804.254:ERROR:file_io_win.cc(193)] LockFileEx: Incorrect function. (0x1)

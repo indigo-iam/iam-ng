@@ -13,8 +13,7 @@ import { RegistrationService } from './registration.service';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { AppConfigService } from '../app-config.service';
-import { MockAppConfigService } from '../app-config.service.mock';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
@@ -31,6 +30,7 @@ describe('RegistrationComponent', () => {
   let httpClient;
   let realmService;
   let route;
+  let sb: MatSnackBar;
 
   beforeEach(async(() => {
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
@@ -92,7 +92,8 @@ describe('RegistrationComponent', () => {
         BrowserAnimationsModule,
         HttpClientTestingModule,
         RouterTestingModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        RouterTestingModule.withRoutes([])
       ],
       declarations: [
         RegistrationComponent,
@@ -123,6 +124,7 @@ describe('RegistrationComponent', () => {
     fixture = TestBed.createComponent(RegistrationComponent);
     rs = fixture.debugElement.injector.get(RegistrationService);
     fb = fixture.debugElement.injector.get(FormBuilder);
+    sb = fixture.debugElement.injector.get(MatSnackBar);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -245,6 +247,7 @@ describe('RegistrationComponent', () => {
   })
 
   it('success message shown with valid registration', () => {
+    spy = spyOn(sb, 'open');
     rs.createRegistration.and.returnValue(
       of<any>(
         {
@@ -264,9 +267,36 @@ describe('RegistrationComponent', () => {
     component.realmName = "test";
     component.register();
 
-    expect(fixture.debugElement.query(By.css('regsuccess')).nativeElement.textContent).toContain('You have successfully registered an account!');
+    expect(rs.createRegistration).toHaveBeenCalled();
+
+    fixture.detectChanges();
+
+    expect(component.registrationSuccess).toEqual(true);
+
+    //expect(fixture.debugElement.query(By.css('regsuccess')).nativeElement).toContain('You have successfully registered an account!');
+
+    expect(sb.open).not.toHaveBeenCalled();
+  })
+
+  it('fail snackbar shown with invalid registration', () => {
+    spy = spyOn(sb, 'open');
+
+    rs.createRegistration.and.returnValue(
+      of<any>(
+        {
+          error: "bad_request"
+        }
+      )
+    )
+
+    expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
+
+    component.realmName = "test";
+    component.register();
+
 
     expect(rs.createRegistration).toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
   })
 
 });

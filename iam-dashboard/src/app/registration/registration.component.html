@@ -1,4 +1,6 @@
-<mat-card>
+<mat-card class="page-basic page-card">
+
+<img src="{{ iamLogo }}" alt="{{ iamName }} Logo" class="logo">
 
 <mat-card-title>Register at {{ iamName }} for {{ realmName }}</mat-card-title>
 
@@ -8,7 +10,7 @@
 
 <p *ngIf="!registrationConfiguration.registrationEnabled">Sorry, registration is currently disabled for {{ realmName }}</p>
 
-<form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess">
+<form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess" layout-align="center">
   <mat-form-field appearance="outline">
     <mat-label>Given Name</mat-label>
     <input matInput formControlName="firstName">

@@ -26,6 +26,7 @@ export class RegistrationComponent implements OnInit {
   };
   dataLoaded: boolean = false;
   registrationSuccess: boolean = false;
+  iamLogo: string = "https://fakeimg.pl/200/";
 
 
   constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar) {

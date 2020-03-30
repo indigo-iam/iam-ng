@@ -19,6 +19,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { RealmService } from '../services/realm.service';
+import { convertToParamMap} from '@angular/router';
+
+class DummyComponent {
+
+}
 
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
@@ -74,14 +79,6 @@ describe('RegistrationComponent', () => {
       )
     )
 
-    route = jasmine.createSpyObj(['paramMap']);
-    route.paramMap.and.returnValue(of(
-      {
-        realm: 'alice'
-      }
-    ))
-
-
     TestBed.configureTestingModule({
       imports: [
         MatToolbarModule,
@@ -93,7 +90,12 @@ describe('RegistrationComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule,
         MatSnackBarModule,
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([
+          {
+            path: '404',
+            component: DummyComponent,
+          }
+        ])
       ],
       declarations: [
         RegistrationComponent,
@@ -103,13 +105,14 @@ describe('RegistrationComponent', () => {
         { provide: RegistrationService, useValue: rs },
         { provide: AppConfigService, useValue: appConfigService },
         { provide: ActivatedRoute, useValue: {
-          paramMap:
-            of(
+          paramMap: of(
+            convertToParamMap(of(
               {
                 realm: 'alice'
               }
-            )
-        } },
+            ))
+          )
+        }},
         { provide: HttpClient, useValue: httpClient},
         { provide: RealmService, useValue: realmService},
 

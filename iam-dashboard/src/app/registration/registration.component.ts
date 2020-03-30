@@ -33,8 +33,8 @@ export class RegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.realmName = params.get('realm');
+    this.route.paramMap.subscribe((paramMap) => {
+      this.realmName = paramMap.get('realm');
     });
 
     this.realmService.getRealms().subscribe(
@@ -89,6 +89,9 @@ export class RegistrationComponent implements OnInit {
       (response) => {
         if(response.message && response.message === "Request created") {
           this.registrationSuccess = true;
+        }
+        if(response.error && response.error === "bad_request") {
+          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
         }
       },
       (error) => {

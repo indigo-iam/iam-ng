@@ -89,12 +89,12 @@ export class RegistrationComponent implements OnInit {
       (response) => {
         if(response.message && response.message === "Request created") {
           this.registrationSuccess = true;
-        } else if(response.error && response.error === "bad_request") {
-          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
         }
       },
       (error) => {
-        this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+        if(error.error && error.error === "bad_request") {
+          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+        }
       }
     )
   }

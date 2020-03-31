@@ -6,6 +6,7 @@ import { RealmService } from '../services/realm.service';
 import { RealmDTO } from '../models/realm-dto';
 import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-registration',
@@ -29,7 +30,7 @@ export class RegistrationComponent implements OnInit {
   iamLogo: string = "https://fakeimg.pl/200/";
 
 
-  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar) {
+  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar, private cookieService: CookieService) {
 
   }
 
@@ -90,6 +91,8 @@ export class RegistrationComponent implements OnInit {
       (response) => {
         if(response.message && response.message === "Request created") {
           this.registrationSuccess = true;
+          this.cookieService.set('requestId', response.requestId);
+          this.cookieService.set('requestChallenge', response.requestChallenge);
         }
         if(response.error && response.error === "bad_request") {
           this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");

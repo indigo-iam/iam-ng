@@ -254,7 +254,9 @@ describe('RegistrationComponent', () => {
     rs.createRegistration.and.returnValue(
       of<any>(
         {
-          message: "Request created"
+          message: "Request created",
+          requestId: "a-b-c",
+          requestChallenge: "c-b-a"
         }
       )
     )

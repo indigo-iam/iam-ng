@@ -3,8 +3,6 @@ import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '
 import { HttpClientModule } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
-
-import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationComponent } from './registration/registration.component';
@@ -16,9 +14,9 @@ import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { ActivatedRoute } from '@angular/router';
 import { AppConfigService } from './app-config.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CookieService } from 'ngx-cookie-service';
 
 
 let keycloakService: KeycloakService = new KeycloakService();
@@ -54,7 +52,8 @@ let keycloakService: KeycloakService = new KeycloakService();
           return appConfigService.loadAppConfig();
         };
       }
-    }
+    },
+    CookieService
   ],
   entryComponents: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -12,7 +12,7 @@ describe('RealmService', () => {
   beforeEach(() => {
     httpClient = jasmine.createSpyObj(['get', 'post']);
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
-    appConfigService.getIamApiBaseUrl.and.returnValue("");
+    appConfigService.getIamApiBaseUrl.and.returnValue('');
     TestBed.configureTestingModule({
       providers: [
         { provide: HttpClient, useValue: httpClient},

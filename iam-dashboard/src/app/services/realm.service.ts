@@ -18,7 +18,7 @@ export class RealmService {
   }
 
   public getRealms(): Observable<ListResponseDTO<RealmDTO>> {
-    return this.http.get<ListResponseDTO<RealmDTO>>(this.iamApiBaseUrl + "/Realms");
+    return this.http.get<ListResponseDTO<RealmDTO>>(this.iamApiBaseUrl + '/Realms');
   }
 
 

@@ -16,28 +16,28 @@ export class RegistrationService {
     this.iamApiBaseUrl = this.appConfigService.getIamApiBaseUrl();
   }
 
-  usernameExists(username: String): boolean {
+  usernameExists(username: string): boolean {
     return false;
   }
 
-  emailExists(email: String): boolean {
+  emailExists(email: string): boolean {
     return false;
   }
 
   createRegistration(registrationForm: FormGroup, realm: string): Observable<any> {
-    return this.http.post<any>(this.iamApiBaseUrl + "/Realms/" + realm + "/Registrations",
+    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Registrations',
       {
-        "requesterInfo": {
-          "username": registrationForm.get('username').value,
-          "givenName": registrationForm.get('firstName').value,
-          "familyName": registrationForm.get('lastName').value,
-          "email": registrationForm.get('email').value
+        requesterInfo: {
+          username: registrationForm.get('username').value,
+          givenName: registrationForm.get('firstName').value,
+          familyName: registrationForm.get('lastName').value,
+          email: registrationForm.get('email').value
         }
       });
   }
 
   getRegistrationConfig(realm: string): Observable<RegistrationConfigurationDTO> {
-    return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + "/Realms/" + realm + "/Registrations/config");
+    return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + '/Realms/' + realm + '/Registrations/config');
   }
 
 

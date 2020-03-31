@@ -34,34 +34,33 @@ describe('RegistrationComponent', () => {
   let appConfigService;
   let httpClient;
   let realmService;
-  let route;
   let sb: MatSnackBar;
 
   beforeEach(async(() => {
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
-    appConfigService.getIamApiBaseUrl.and.returnValue("");
+    appConfigService.getIamApiBaseUrl.and.returnValue('');
     httpClient = jasmine.createSpyObj(['get', 'post']);
     realmService = jasmine.createSpyObj(['getRealms']);
     realmService.getRealms.and.returnValue(of(
       {
-        "totalResults": 5,
-        "itemsPerPage": 50,
-        "startIndex": 0,
-        "resources": [
+        totalResults: 5,
+        itemsPerPage: 50,
+        startIndex: 0,
+        resources: [
           {
-            "name": "alice"
+            name: 'alice'
           },
           {
-            "name": "atlas"
+            name: 'atlas'
           },
           {
-            "name": "cms"
+            name: 'cms'
           },
           {
-            "name": "iam"
+            name: 'iam'
           },
           {
-            "name": "lhcb"
+            name: 'lhcb'
           }
         ]
       }
@@ -71,13 +70,13 @@ describe('RegistrationComponent', () => {
     rs.getRegistrationConfig.and.returnValue(
       of(
         {
-          "kind": "RegistrationConfiguration",
-          "registrationEnabled": true,
-          "privacyPolicyUrl": "https://alice.example.com/privacy",
-          "aupUrl": "https://alice.example.com/aup"
+          kind: 'RegistrationConfiguration',
+          registrationEnabled: true,
+          privacyPolicyUrl: 'https://alice.example.com/privacy',
+          aupUrl: 'https://alice.example.com/aup'
         }
       )
-    )
+    );
 
     TestBed.configureTestingModule({
       imports: [
@@ -138,138 +137,138 @@ describe('RegistrationComponent', () => {
 
   it('form invalid when empty', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is valid when all inputs are made', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeTruthy();
-  })
+  });
 
   it('form is invalid with bad email', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is invalid with no AUP signed', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(false);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(false);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is invalid with no firstName', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is invalid with no lastName', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is invalid with no username', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('form is invalid with no notes', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['aup'].setValue(true);
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.aup.setValue(true);
     expect(component.RegistrationForm.valid).toBeFalsy();
-  })
+  });
 
   it('validator null with username not in use', () => {
     rs.usernameExists.and.returnValue(false);
-    let fg = fb.group({
+    const fg = fb.group({
       username: [''],
-    })
+    });
     expect(component.usernameInUseValidator(fg)).toBeNull();
     expect(rs.usernameExists).toHaveBeenCalled();
-  })
+  });
 
   it('validator true with username in use', () => {
     rs.usernameExists.and.returnValue(true);
-    let fg = fb.group({
+    const fg = fb.group({
       username: [''],
-    })
+    });
     expect(component.usernameInUseValidator(fg)).toBeTruthy();
     expect(rs.usernameExists).toHaveBeenCalled();
-  })
+  });
 
   it('validator null with email not in use', () => {
     rs.emailExists.and.returnValue(false);
-    let fg = fb.group({
+    const fg = fb.group({
       email: [''],
-    })
+    });
     expect(component.emailInUseValidator(fg)).toBeNull();
     expect(rs.emailExists).toHaveBeenCalled();
-  })
+  });
 
   it('validator true with email in use', () => {
     rs.emailExists.and.returnValue(true);
-    let fg = fb.group({
+    const fg = fb.group({
       email: [''],
-    })
+    });
     expect(component.emailInUseValidator(fg)).toBeTruthy();
     expect(rs.emailExists).toHaveBeenCalled();
-  })
+  });
 
   it('success message shown with valid registration', () => {
     spy = spyOn(sb, 'open');
     rs.createRegistration.and.returnValue(
       of<any>(
         {
-          message: "Request created",
-          requestId: "a-b-c",
-          requestChallenge: "c-b-a"
+          message: 'Request created',
+          requestId: 'a-b-c',
+          requestChallenge: 'c-b-a'
         }
       )
-    )
+    );
 
     expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
 
-    component.RegistrationForm.controls['firstName'].setValue("John");
-    component.RegistrationForm.controls['lastName'].setValue("Smith");
-    component.RegistrationForm.controls['email'].setValue("example@example.com");
-    component.RegistrationForm.controls['username'].setValue("JSmith");
-    component.RegistrationForm.controls['notes'].setValue("Requesting account");
-    component.RegistrationForm.controls['aup'].setValue(true);
-    component.realmName = "test";
+    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.email.setValue('example@example.com');
+    component.RegistrationForm.controls.username.setValue('JSmith');
+    component.RegistrationForm.controls.notes.setValue('Requesting account');
+    component.RegistrationForm.controls.aup.setValue(true);
+    component.realmName = 'test';
     component.register();
 
     expect(rs.createRegistration).toHaveBeenCalled();
@@ -278,10 +277,10 @@ describe('RegistrationComponent', () => {
 
     expect(component.registrationSuccess).toEqual(true);
 
-    //expect(fixture.debugElement.query(By.css('regsuccess')).nativeElement).toContain('You have successfully registered an account!');
+    // expect(fixture.debugElement.query(By.css('regsuccess')).nativeElement).toContain('You have successfully registered an account!');
 
     expect(sb.open).not.toHaveBeenCalled();
-  })
+  });
 
   it('fail snackbar shown with invalid registration', () => {
     spy = spyOn(sb, 'open');
@@ -289,19 +288,19 @@ describe('RegistrationComponent', () => {
     rs.createRegistration.and.returnValue(
       of<any>(
         {
-          error: "bad_request"
+          error: 'bad_request'
         }
       )
-    )
+    );
 
     expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
 
-    component.realmName = "test";
+    component.realmName = 'test';
     component.register();
 
 
     expect(rs.createRegistration).toHaveBeenCalled();
     expect(sb.open).toHaveBeenCalled();
-  })
+  });
 
 });

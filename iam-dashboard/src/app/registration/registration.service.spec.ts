@@ -12,7 +12,7 @@ describe('RegistrationService', () => {
     let appConfigService;
     httpClient = jasmine.createSpyObj(['get', 'post']);
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
-    appConfigService.getIamApiBaseUrl.and.returnValue("");
+    appConfigService.getIamApiBaseUrl.and.returnValue('');
     TestBed.configureTestingModule(
       {
         providers: [

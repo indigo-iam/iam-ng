@@ -8,7 +8,7 @@ import { KeycloakService } from 'keycloak-angular';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = "IAM Dashboard"
+  title = 'IAM Dashboard';
   userDetails: KeycloakProfile;
 
   constructor(private keycloakService: KeycloakService) {}

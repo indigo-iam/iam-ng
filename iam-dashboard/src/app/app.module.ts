@@ -19,7 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
 
 
-let keycloakService: KeycloakService = new KeycloakService();
+const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
   declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent],
@@ -66,11 +66,11 @@ export class AppModule implements DoBootstrap {
 
   async ngDoBootstrap(app) {
 
-    let patharray: string[] = window.location.pathname.split("/");
+    const patharray: string[] = window.location.pathname.split('/');
 
-    let userrealm: string = "";
+    let userrealm = '';
 
-    if(patharray[1]) {
+    if (patharray[1]) {
       userrealm = patharray[1]; // index 0 is a /
     } else {
       userrealm = this.appConfigService.getFallbackRealm(); // Fall back to master realm if there isn't a realm found
@@ -85,7 +85,7 @@ export class AppModule implements DoBootstrap {
         },
         initOptions: {
           checkLoginIframe: false
-          //promiseType: "native" Will's Note: keycloak-angular library does not currently support this.
+          // promiseType: 'native' Will's Note: keycloak-angular library does not currently support this.
         },
         enableBearerInterceptor: true,
         bearerExcludedUrls: [],

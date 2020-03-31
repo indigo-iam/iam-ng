@@ -15,19 +15,19 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class RegistrationComponent implements OnInit {
 
-  iamName: string = "test";
-  realmName: string = "";
+  iamName = 'test';
+  realmName = '';
   realms: RealmDTO[] = [];
   registrationConfiguration: RegistrationConfigurationDTO = {
-    kind: "",
+    kind: '',
     registrationEnabled: true,
-    privacyPolicyUrl: "",
-    aupUrl: "",
-    logoUrl: ""
+    privacyPolicyUrl: '',
+    aupUrl: '',
+    logoUrl: ''
   };
-  dataLoaded: boolean = false;
-  registrationSuccess: boolean = false;
-  iamLogo: string = "https://fakeimg.pl/200/";
+  dataLoaded = false;
+  registrationSuccess = false;
+  iamLogo = 'https://fakeimg.pl/200/';
 
 
   constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar, private cookieService: CookieService) {
@@ -46,19 +46,19 @@ export class RegistrationComponent implements OnInit {
         this.errorIfRealmNotDefined();
       },
       (error) => {
-        console.error("Error loading realms from API " + error);
-        this.snackBar.open("There was an error loading realms, are you connected to the Internet?");
+        console.error('Error loading realms from API ' + error);
+        this.snackBar.open('There was an error loading realms, are you connected to the Internet?');
         this.realms = [];
       }
-    )
+    );
 
     this.registrationService.getRegistrationConfig(this.realmName).subscribe(
       (response) => {
         this.registrationConfiguration = response;
       },
       (error) => {
-        console.error("Error loading registration configuration from API " + error);
-        this.snackBar.open("There was an error loading registration information, are you connected to the Internet?");
+        console.error('Error loading registration configuration from API ' + error);
+        this.snackBar.open('There was an error loading registration information, are you connected to the Internet?');
       }
     );
 
@@ -68,14 +68,14 @@ export class RegistrationComponent implements OnInit {
   usernameInUseValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const username = control.get('username');
 
-    return username && this.registrationService.usernameExists(username.value) ? { 'usernameInUse': true } : null;
-  };
+    return username && this.registrationService.usernameExists(username.value) ? { usernameInUse: true } : null;
+  }
 
   emailInUseValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const email = control.get('email');
 
-    return email && this.registrationService.emailExists(email.value) ? { 'emailInUse': true } : null;
-  };
+    return email && this.registrationService.emailExists(email.value) ? { emailInUse: true } : null;
+  }
 
   RegistrationForm = this.fb.group({
     firstName: ['', [Validators.required]],
@@ -89,27 +89,27 @@ export class RegistrationComponent implements OnInit {
   register() {
     this.registrationService.createRegistration(this.RegistrationForm, this.realmName).subscribe(
       (response) => {
-        if(response.message && response.message === "Request created") {
+        if (response.message && response.message === 'Request created') {
           this.registrationSuccess = true;
           this.cookieService.set('requestId', response.requestId);
           this.cookieService.set('requestChallenge', response.requestChallenge);
         }
-        if(response.error && response.error === "bad_request") {
-          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+        if (response.error && response.error === 'bad_request') {
+          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
         }
       },
       (error) => {
-        if(error.error && error.error === "bad_request") {
-          this.snackBar.open("There was an error during form submission. Please check you have entered all data in the form correctly and try again!");
+        if (error.error && error.error === 'bad_request') {
+          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
         }
       }
-    )
+    );
   }
 
   errorIfRealmNotDefined(): void {
-    if(!this.realms.some((e) => e.name === this.realmName)) {
+    if (!this.realms.some((e) => e.name === this.realmName)) {
       // There are no realms with the given name, so lets 404 here...
-      this.router.navigate(["/404"]);
+      this.router.navigate(['/404']);
     }
   }
 

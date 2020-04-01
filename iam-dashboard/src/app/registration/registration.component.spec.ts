@@ -37,8 +37,9 @@ describe('RegistrationComponent', () => {
   let sb: MatSnackBar;
 
   beforeEach(async(() => {
-    appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
+    appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl', 'attributeExists', 'getCustomAttribute']);
     appConfigService.getIamApiBaseUrl.and.returnValue('');
+    appConfigService.attributeExists.and.returnValue(true);
     httpClient = jasmine.createSpyObj(['get', 'post']);
     realmService = jasmine.createSpyObj(['getRealms']);
     realmService.getRealms.and.returnValue(of(

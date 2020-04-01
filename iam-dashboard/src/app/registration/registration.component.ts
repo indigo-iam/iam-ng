@@ -7,6 +7,7 @@ import { RealmDTO } from '../models/realm-dto';
 import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
+import { AppConfigService } from '../app-config.service';
 
 @Component({
   selector: 'app-registration',
@@ -29,8 +30,7 @@ export class RegistrationComponent implements OnInit {
   registrationSuccess = false;
   iamLogo = 'https://fakeimg.pl/200/';
 
-
-  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar, private cookieService: CookieService) {
+  constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar, private cookieService: CookieService, private appConfigService: AppConfigService) {
 
   }
 
@@ -111,6 +111,14 @@ export class RegistrationComponent implements OnInit {
       // There are no realms with the given name, so lets 404 here...
       this.router.navigate(['/404']);
     }
+  }
+
+  getCustomAttribute(key: string): string {
+    return this.appConfigService.getCustomAttribute(this.realmName, 'registration', key);
+  }
+
+  atttributeExists(key: string): boolean {
+    return this.appConfigService.attributeExists(this.realmName, 'registration', key);
   }
 
 }

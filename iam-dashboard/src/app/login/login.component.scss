@@ -1,0 +1,24 @@
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-1 {
+ order: 1;
+}
+
+.order-2 {
+ order: 2;
+}
+
+.order-3 {
+ order: 3;
+}
+
+.order-0 {
+  display: none;
+}
+
+.login-button {
+  padding: 5px;
+}

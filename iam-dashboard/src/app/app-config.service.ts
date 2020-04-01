@@ -39,4 +39,36 @@ export class AppConfigService {
   getKeycloakClientId(): string {
     return this.appConfig.keycloakClientId;
   }
+
+  getCustomAttribute(realm: string, type: string, key: string): string {
+    const customAttributes = this.appConfig.customAttributes;
+
+    if (customAttributes.hasOwnProperty(realm)) {
+      if (customAttributes[realm].hasOwnProperty(type)) {
+        if (customAttributes[realm][type].hasOwnProperty(key)) {
+          return customAttributes[realm][type][key];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  attributeExists(realm: string, type: string, key: string): boolean {
+    if(this.getCustomAttribute(realm, type, key) !== null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getLoginOrder(realm: string) {
+    const loginOrder = this.appConfig.loginOrder;
+    if(loginOrder.hasOwnProperty(realm)) {
+      return loginOrder[realm];
+    }
+
+    return null;
+  }
+
 }

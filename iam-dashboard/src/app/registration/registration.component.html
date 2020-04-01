@@ -2,7 +2,11 @@
 
 <img src="{{ iamLogo }}" alt="{{ iamName }} Logo" class="logo">
 
-<mat-card-title>Register at {{ iamName }} for {{ realmName }}</mat-card-title>
+
+<mat-card-title *ngIf="!atttributeExists('welcomeTitle')">Register at {{ iamName }} for {{ realmName }}</mat-card-title>
+<mat-card-title *ngIf="atttributeExists('welcomeTitle')" [innerHtml]="getCustomAttribute('welcomeTitle')"></mat-card-title>
+
+<p *ngIf="atttributeExists('welcomeText')" [innerHtml]="getCustomAttribute('welcomeText')"></p>
 
 <p id="regsuccess" *ngIf="registrationSuccess">You have successfully registered an account!</p>
 

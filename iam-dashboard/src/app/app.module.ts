@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,12 +17,16 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AppConfigService } from './app-config.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
+import { LoadingComponent } from './loading/loading.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { LoadingService } from './loading/loading.service';
+import { LoadingInterceptor } from './loading/loading.interceptor';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -35,7 +39,8 @@ const keycloakService: KeycloakService = new KeycloakService();
     ReactiveFormsModule,
     MatCheckboxModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressBarModule
   ],
   providers: [
     {
@@ -53,7 +58,13 @@ const keycloakService: KeycloakService = new KeycloakService();
         };
       }
     },
-    CookieService
+    CookieService,
+    LoadingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true
+    }
   ],
   entryComponents: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

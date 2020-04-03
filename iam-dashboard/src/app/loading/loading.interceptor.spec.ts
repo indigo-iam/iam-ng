@@ -1,11 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { LoadingInterceptor } from './loading.interceptor';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('LoadingInterceptor', () => {
+  let sb;
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      LoadingInterceptor
+      LoadingInterceptor,
+      MatSnackBar
       ]
   }));
 

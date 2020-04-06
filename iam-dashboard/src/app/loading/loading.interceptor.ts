@@ -22,7 +22,6 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.loadingService.show();
 
     return next.handle(request).pipe(
-      retry(2),
       catchError((error: HttpErrorResponse) => {
         if (error.status !== 401) {
           this.snackBar.open("There was an error when making your request! " + error.message, 'Okay, I will refresh the page', {duration: 10000});

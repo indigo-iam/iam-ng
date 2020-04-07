@@ -59,3 +59,10 @@ jobs:
       with:
         name: dist
         path: dist
+
+    - name: Publish to Docker Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: magicalwill/iam-dashboard
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}

@@ -24,14 +24,29 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
     - name: Clean install dependencies
       run: npm ci
+
+    - name: Lint
+      run: npm run lint
+
     - name: Run unit tests
       run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       env:
         CI: true
+
     - name: Build prod artifact
-      run: ng build --prod
+      run: npm run build -- --prod
+
     - name: Upload prod artifact
       uses: actions/upload-artifact@v1
       with:

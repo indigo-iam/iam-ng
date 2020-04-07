@@ -52,6 +52,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
          .and()
            .authorizeRequests()
              .mvcMatchers(HttpMethod.POST,"/Realms/*/Registrations").permitAll()
+             .mvcMatchers(HttpMethod.POST,"/Realms/*/Registrations/confirm/*").permitAll()
              .mvcMatchers(HttpMethod.GET,"/Realms/*/Registrations/config").permitAll()
              .mvcMatchers(HttpMethod.GET,"/Realms").permitAll()
              .mvcMatchers(HttpMethod.HEAD,"/Realms").permitAll()

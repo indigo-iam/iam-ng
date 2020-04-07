@@ -16,6 +16,8 @@
 package it.infn.cnaf.sd.iam.api.properties;
 
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,7 @@ public class IamProperties {
   public static class CorsProperties {
     boolean allowAllOrigins;
 
-    List<String> allowedOrigins;
+    List<String> allowedOrigins = newArrayList();
 
     public boolean isAllowAllOrigins() {
       return allowAllOrigins;

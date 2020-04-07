@@ -20,7 +20,7 @@ $ docker-compose up -d nginx
 Images are set in the .env file.
 
 The Keycloak configuration needs to be run only once (the state is then
-persisted in the database). Interesting envirnoment variables:
+persisted in the database). Interesting environment variables:
 
 | Env variable           | Meaning                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------ |

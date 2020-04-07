@@ -18,8 +18,6 @@ package it.infn.cnaf.sd.iam.api.apis.registrations;
 import static it.infn.cnaf.sd.iam.api.common.utils.ValidationHelper.handleValidationError;
 import static org.springframework.http.HttpStatus.CREATED;
 
-import javax.validation.constraints.Size;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,14 +71,11 @@ public class RegistrationController implements RegistrationSupport, ErrorUtils {
       .build();
   }
 
-  @GetMapping("/Registrations/{requestId}/confirm")
-  public MessageResultDTO confirmEmailAddress(@PathVariable String requestId,
-      @RequestParam @Validated @Size(min = 36, max = 36) String token,
-      final BindingResult validationResult) {
+  @PostMapping("/Registrations/confirm/{token}")
+  public MessageResultDTO confirmEmailAddress(
+      @PathVariable String token) {
 
-    handleValidationError(INVALID_TOKEN, validationResult);
-
-    service.confirmRegistrationRequest(requestId, token);
+    service.confirmRegistrationRequest(token);
     return MessageResultDTO.builder().message(REQUEST_CONFIRMED).build();
   }
 

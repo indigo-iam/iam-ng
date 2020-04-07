@@ -17,6 +17,7 @@ package it.infn.cnaf.sd.iam.api.registration;
 
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.created;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Clock;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,7 +89,6 @@ public class RegistrationCrudTests extends IntegrationTestSupport
       .andExpect(status().isCreated());
   }
 
-
   @Test
   public void testSimpleRequestCreationSuccessAuthenticated() throws Exception {
     RealmEntity realm =
@@ -112,12 +113,53 @@ public class RegistrationCrudTests extends IntegrationTestSupport
     RegistrationRequestEntity e =
         requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
           .orElseThrow(assertionError("Expected request not found"));
-    
+
     assertThat(e.getAttachments(), hasSize(1));
     assertThat(e.getStatus(), is(created));
 
   }
-  
+
+  @Test
+  public void testRequestConfirmationWorks() throws Exception {
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    String response = mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated())
+      .andReturn()
+      .getResponse()
+      .getContentAsString();
+
+    RegistrationRequestCreationResultDTO responseDto =
+        mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
+
+    RegistrationRequestEntity e =
+        requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
+          .orElseThrow(assertionError("Expected request not found"));
+
+    String invalidEmailChallenge = UUID.randomUUID().toString();
+    String validEmailChallenge = e.getEmailChallenge();
+
+    mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", invalidEmailChallenge))
+      .andExpect(status().isNotFound())
+      .andExpect(
+          jsonPath("$.errorDescription", startsWith("No request found linked to email challenge")));
+
+    mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", validEmailChallenge))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.message").value("Request confirmed succesfully"));
+    
+    
+    mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", validEmailChallenge))
+    .andExpect(status().isNotFound());
+    
+  }
+
   @Test
   public void testGetConfiguration() throws Exception {
     mvc.perform(get("/Realms/alice/Registrations/config"))
@@ -125,12 +167,12 @@ public class RegistrationCrudTests extends IntegrationTestSupport
       .andExpect(jsonPath("$.registrationEnabled").value(true))
       .andExpect(jsonPath("$.privacyPolicyUrl").value("https://alice.example.com/privacy"))
       .andExpect(jsonPath("$.aupUrl").value("https://alice.example.com/aup"));
-    
+
     mvc.perform(get("/Realms/iam/Registrations/config"))
-    .andExpect(status().isOk())
-    .andExpect(jsonPath("$.registrationEnabled").value(false))
-    .andExpect(jsonPath("$.privacyPolicyUrl").value("https://iam.example.com/privacy"))
-    .andExpect(jsonPath("$.aupUrl").doesNotExist());
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.registrationEnabled").value(false))
+      .andExpect(jsonPath("$.privacyPolicyUrl").value("https://iam.example.com/privacy"))
+      .andExpect(jsonPath("$.aupUrl").doesNotExist());
   }
 
 }

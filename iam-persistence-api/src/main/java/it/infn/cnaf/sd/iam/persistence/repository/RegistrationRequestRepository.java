@@ -40,4 +40,7 @@ public interface RegistrationRequestRepository
 
   Optional<RegistrationRequestEntity> findByRealmNameAndUuid(String realmName, String uuid);
 
+  Optional<RegistrationRequestEntity> findByRealmNameAndEmailChallenge(String realmName,
+      String emailChallenge);
+
 }

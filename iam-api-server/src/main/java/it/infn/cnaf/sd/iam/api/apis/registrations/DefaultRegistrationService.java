@@ -18,7 +18,9 @@ package it.infn.cnaf.sd.iam.api.apis.registrations;
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.created;
 import static java.util.Objects.isNull;
 
+import java.sql.Date;
 import java.time.Clock;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
@@ -52,18 +54,21 @@ public class DefaultRegistrationService
   public RegistrationRequestEntity createRegistrationRequest(RegistrationRequestEntity request,
       Authentication authentication) {
 
+    Instant creationTime = clock.instant();
 
-    request.setMetadata(MetadataEntity.fromCurrentInstant(clock));
+    request.setMetadata(MetadataEntity.fromInstant(creationTime));
     request.setUuid(UUID.randomUUID().toString());
     request.setEmailChallenge(UUID.randomUUID().toString());
     request.setRequestChallenge(UUID.randomUUID().toString());
     request.setRealm(RealmContext.getCurrentRealmEntity());
     request.setStatus(created);
 
+    request.getMessages().stream().forEach(m -> m.setCreationTime(Date.from(creationTime)));
+
     if (!isNull(authentication) && authentication instanceof JwtAuthenticationToken) {
       JwtAuthenticationToken authToken = (JwtAuthenticationToken) authentication;
       RegistrationRequestAttachmentEntity attachment = new RegistrationRequestAttachmentEntity();
-      attachment.setMetadata(MetadataEntity.fromCurrentInstant(clock));
+      attachment.setMetadata(MetadataEntity.fromInstant(creationTime));
       attachment.setLabel(AUTHENTICATION_ATTACHMENT_LABEL);
       attachment.setContent(authToken.getToken().getTokenValue());
 
@@ -77,12 +82,11 @@ public class DefaultRegistrationService
 
 
   @Override
-  public RegistrationRequestEntity confirmRegistrationRequest(String requestId,
-      String emailChallenge) {
+  public RegistrationRequestEntity confirmRegistrationRequest(String emailChallenge) {
 
-    RegistrationRequestEntity request =
-        requestRepo.findByRealmNameAndUuid(RealmContext.getCurrentRealmName(), requestId)
-          .orElseThrow(requestNotFoundForId(requestId));
+    RegistrationRequestEntity request = requestRepo
+      .findByRealmNameAndEmailChallenge(RealmContext.getCurrentRealmName(), emailChallenge)
+      .orElseThrow(requestNotFoundForEmailChallenge(emailChallenge));
 
     if (!request.getStatus().equals(created)) {
       throw new InvalidRequestError("Request already confirmed");
@@ -94,8 +98,9 @@ public class DefaultRegistrationService
 
     request.setEmailChallenge(UUID.randomUUID().toString());
     request.setStatus(RegistrationRequestStatus.confirmed);
-
-    return request;
+    request.getMetadata().setLastUpdateTime(Date.from(clock.instant()));
+    
+    return requestRepo.save(request);
   }
 
 

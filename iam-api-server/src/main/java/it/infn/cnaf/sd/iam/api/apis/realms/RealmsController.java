@@ -15,7 +15,7 @@
  */
 package it.infn.cnaf.sd.iam.api.apis.realms;
 
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,7 +54,7 @@ public class RealmsController {
     ListResponseDTO.Builder<RealmDTO> result = ListResponseDTO.builder();
     result.fromPage(pagedResults);
 
-    result.resources(pagedResults.get().map(mapper::entityToDto).collect(Collectors.toList()));
+    result.resources(pagedResults.get().map(mapper::entityToDto).collect(toList()));
 
     return result.build();
   }

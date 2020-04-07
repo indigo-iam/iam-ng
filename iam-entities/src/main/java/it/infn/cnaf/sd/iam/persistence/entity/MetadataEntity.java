@@ -16,6 +16,7 @@
 package it.infn.cnaf.sd.iam.persistence.entity;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -52,6 +53,15 @@ public class MetadataEntity {
     this.lastUpdateTime = lastUpdateTime;
   }
 
+  
+  public static MetadataEntity fromInstant(Instant instant) {
+    final Date now = Date.from(instant);
+    MetadataEntity e = new MetadataEntity();
+    e.setCreationTime(now);
+    e.setLastUpdateTime(now);
+    return e;
+  }
+  
   public static MetadataEntity fromCurrentInstant(Clock clock) {
     final Date now = Date.from(clock.instant());
     MetadataEntity e = new MetadataEntity();

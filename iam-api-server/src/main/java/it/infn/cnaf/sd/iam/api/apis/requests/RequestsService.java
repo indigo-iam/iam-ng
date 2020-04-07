@@ -13,17 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it.infn.cnaf.sd.iam.api.apis.registrations;
+package it.infn.cnaf.sd.iam.api.apis.requests;
 
-import org.springframework.security.core.Authentication;
-
-import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
-
-public interface RegistrationService {
-
-  RegistrationRequestEntity createRegistrationRequest(RegistrationRequestEntity request,
-      Authentication authentication);
-  
-  RegistrationRequestEntity confirmRegistrationRequest(String emailChallenge);
+public interface RequestsService {
 
 }

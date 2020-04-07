@@ -23,7 +23,7 @@ describe('RealmService', () => {
       ],
     });
     service = TestBed.inject(RealmService);
-    http = TestBed.get(HttpTestingController);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -37,13 +37,13 @@ describe('RealmService', () => {
       itemsPerPage: 50,
       startIndex: 0,
       resources: [
-        {name:"alice"},
-        {name:"atlas"},
-        {name:"cms"},
-        {name:"iam"},
-        {name:"lhcb"}
+        {name: 'alice'},
+        {name: 'atlas'},
+        {name: 'cms'},
+        {name: 'iam'},
+        {name: 'lhcb'}
       ]
-    }
+    };
 
     service.getRealms().subscribe(res => {
       expect(res).toEqual(mockRealms);

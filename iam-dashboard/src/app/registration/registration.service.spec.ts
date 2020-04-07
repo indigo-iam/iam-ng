@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { RegistrationService } from './registration.service';
-import { HttpClient } from '@angular/common/http';
 import { AppConfigService } from '../app-config.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 describe('RegistrationService', () => {
   let service: RegistrationService;
@@ -18,11 +17,11 @@ describe('RegistrationService', () => {
     privacyPolicyUrl: '',
     aupUrl: '',
     logoUrl: ''
-  }
+  };
 
   const mockRegResponse = {
     message: 'Success'
-  }
+  };
 
   beforeEach(() => {
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
@@ -38,7 +37,7 @@ describe('RegistrationService', () => {
       }
     );
     service = TestBed.inject(RegistrationService);
-    http = TestBed.get(HttpTestingController);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -58,8 +57,8 @@ describe('RegistrationService', () => {
 
   it('should make registration request', () => {
 
-    let fb = new FormBuilder();
-    let fg = fb.group({
+    const fb = new FormBuilder();
+    const fg = fb.group({
       firstName: [''],
       lastName: [''],
       email: [''],

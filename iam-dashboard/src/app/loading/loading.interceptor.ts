@@ -24,13 +24,13 @@ export class LoadingInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status !== 401) {
-          this.snackBar.open("There was an error when making your request! " + error.message, 'Okay, I will refresh the page', {duration: 10000});
+          this.snackBar.open('There was an error when making your request! ' + error.message, 'Okay, I will refresh the page', {duration: 10000});
         }
         return throwError(error);
       }),
       finalize(
           () => {
-            this.loadingService.hide()
+            this.loadingService.hide();
           }
         )
       );

@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  realmName = "";
+  realmName = '';
   loginOrder = {};
 
   constructor(private appConfigService: AppConfigService, private route: ActivatedRoute) {
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
         edugain: 1,
         local: 2,
         register: 3
-      }
+      };
     }
   }
 

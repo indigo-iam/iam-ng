@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
           this.loadingService.hide();
         }
       }
-    )
+    );
   }
 
   async ngOnInit() {

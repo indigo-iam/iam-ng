@@ -55,7 +55,7 @@ export class AppConfigService {
   }
 
   attributeExists(realm: string, type: string, key: string): boolean {
-    if(this.getCustomAttribute(realm, type, key) !== null) {
+    if (this.getCustomAttribute(realm, type, key) !== null) {
       return true;
     } else {
       return false;
@@ -64,7 +64,7 @@ export class AppConfigService {
 
   getLoginOrder(realm: string) {
     const loginOrder = this.appConfig.loginOrder;
-    if(loginOrder.hasOwnProperty(realm)) {
+    if (loginOrder.hasOwnProperty(realm)) {
       return loginOrder[realm];
     }
 

@@ -1,15 +1,13 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { LoadingInterceptor } from './loading.interceptor';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoadingService } from './loading.service';
-import { Subject, of } from 'rxjs';
-import { HTTP_INTERCEPTORS, HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 describe('LoadingInterceptor', () => {
-  let sb;
-  let ls;
+  let ls: any;
   let interceptor: LoadingInterceptor;
   let httpMock: HttpTestingController;
   beforeEach(() => {
@@ -40,8 +38,8 @@ describe('LoadingInterceptor', () => {
 
   beforeEach(() => {
     interceptor = TestBed.inject(LoadingInterceptor);
-    httpMock = TestBed.get(HttpTestingController);
-  })
+    httpMock = TestBed.inject(HttpTestingController);
+  });
 
   it('should be created', () => {
     expect(interceptor).toBeTruthy();

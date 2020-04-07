@@ -16,10 +16,10 @@ describe('LoginComponent', () => {
     appConfigService.getIamApiBaseUrl.and.returnValue('');
     appConfigService.attributeExists.and.returnValue(true);
     appConfigService.getLoginOrder.and.returnValue({
-      "alice": {
-        "edugain": 1,
-        "local": 2,
-        "register": 3
+      alice: {
+        edugain: 1,
+        local: 2,
+        register: 3
       }}
     );
 

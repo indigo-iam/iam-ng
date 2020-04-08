@@ -58,7 +58,7 @@ jobs:
 
   docker_publish:
     # Only publish from a push to the master branch, on success of the last job
-    if: ${{ github.ref == 'master' }} && ${{ github.event == push }}
+    if: ${{ github.ref == 'master' }} && ${{ github.event == 'push' }}
     needs: build_test
 
     runs-on: ubuntu-latest

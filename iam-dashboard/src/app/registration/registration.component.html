@@ -14,6 +14,7 @@
 
 <p *ngIf="!registrationConfiguration.registrationEnabled">Sorry, registration is currently disabled for {{ realmName }}</p>
 
+<div *blockUI="'regform'">
 <form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess" layout-align="center">
   <mat-form-field appearance="outline">
     <mat-label>Given Name</mat-label>
@@ -74,5 +75,6 @@
 
   <button mat-raised-button color="primary" [disabled]="!RegistrationForm.valid" (click)="register()">Register</button>
 </form>
+</div>
 </div>
 </mat-card>

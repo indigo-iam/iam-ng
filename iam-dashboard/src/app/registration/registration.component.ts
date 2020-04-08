@@ -8,6 +8,7 @@ import { RegistrationConfigurationDTO } from '../models/registration-configurati
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
 import { AppConfigService } from '../app-config.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
   selector: 'app-registration',
@@ -29,6 +30,8 @@ export class RegistrationComponent implements OnInit {
   dataLoaded = false;
   registrationSuccess = false;
   iamLogo = 'https://fakeimg.pl/200/';
+
+  @BlockUI('regform') blockUIRegForm: NgBlockUI;
 
   constructor(private fb: FormBuilder, public registrationService: RegistrationService, private route: ActivatedRoute, private realmService: RealmService, private router: Router, private snackBar: MatSnackBar, private cookieService: CookieService, private appConfigService: AppConfigService) {
 
@@ -87,8 +90,10 @@ export class RegistrationComponent implements OnInit {
   });
 
   register() {
+    this.blockUIRegForm.start();
     this.registrationService.createRegistration(this.RegistrationForm, this.realmName).subscribe(
       (response) => {
+        this.blockUIRegForm.stop();
         if (response.message && response.message === 'Request created') {
           this.registrationSuccess = true;
           this.cookieService.set('requestId', response.requestId);
@@ -99,6 +104,7 @@ export class RegistrationComponent implements OnInit {
         }
       },
       (error) => {
+        this.blockUIRegForm.stop();
         if (error.error && error.error === 'bad_request') {
           this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
         }

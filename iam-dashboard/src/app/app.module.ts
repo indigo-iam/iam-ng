@@ -21,6 +21,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingService } from './loading/loading.service';
 import { LoadingInterceptor } from './loading/loading.interceptor';
+import { BlockUIModule } from 'ng-block-ui';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
@@ -40,7 +41,8 @@ const keycloakService: KeycloakService = new KeycloakService();
     MatCheckboxModule,
     MatCardModule,
     MatSnackBarModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    BlockUIModule.forRoot()
   ],
   providers: [
     {

@@ -22,12 +22,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingService } from './loading/loading.service';
 import { LoadingInterceptor } from './loading/loading.interceptor';
 import { BlockUIModule } from 'ng-block-ui';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

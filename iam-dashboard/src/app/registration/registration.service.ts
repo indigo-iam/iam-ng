@@ -40,5 +40,9 @@ export class RegistrationService {
     return this.http.get<RegistrationConfigurationDTO>(this.iamApiBaseUrl + '/Realms/' + realm + '/Registrations/config');
   }
 
+  confirmEmail(token: string, realm: string): Observable<any> {
+    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Registrations/confirm/' + token, {});
+  }
+
 
 }

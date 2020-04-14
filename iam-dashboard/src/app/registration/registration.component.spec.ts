@@ -278,7 +278,7 @@ describe('RegistrationComponent', () => {
 
     expect(component.registrationSuccess).toEqual(true);
 
-    // expect(fixture.debugElement.query(By.css('regsuccess')).nativeElement).toContain('You have successfully registered an account!');
+    expect(fixture.debugElement.query(By.css('#regsuccess')).nativeElement.textContent).toContain('You have successfully registered an account!');
 
     expect(sb.open).not.toHaveBeenCalled();
   });

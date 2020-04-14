@@ -1,4 +1,4 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { Routes } from '@angular/router';
@@ -20,6 +20,9 @@ const routes: Routes = [
     path: ':realm/register',
     component: RegistrationComponent
   },
+  {
+    path: ':realm/register/confirm/:token'
+  }
   {
     path: '**',
     component: PageNotFoundComponent

@@ -7,18 +7,18 @@ export class MockAppConfigService {
   }
 
   getFallbackRealm(): string {
-    return "";
+    return '';
   }
 
   getIamApiBaseUrl(): string {
-    return "";
+    return '';
   }
 
   getKeycloakBaseUrl(): string {
-    return "";
+    return '';
   }
 
   getKeycloakClientId(): string {
-    return "";
+    return '';
   }
 }

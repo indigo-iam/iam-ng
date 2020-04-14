@@ -307,7 +307,7 @@ describe('RegistrationComponent', () => {
   it('fail snackbar shown with error in http request', () => {
     spy = spyOn(sb, 'open');
 
-    let response = new HttpErrorResponse({error: 'bad_request', status: 500});
+    const response = new HttpErrorResponse({error: 'bad_request', status: 500});
 
     rs.createRegistration.and.returnValue(throwError(response));
 

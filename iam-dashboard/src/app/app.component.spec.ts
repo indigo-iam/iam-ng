@@ -8,12 +8,12 @@ import { of, Observable } from 'rxjs';
 import { LoadingService } from './loading/loading.service';
 
 interface RouterEventTemplate {
-  events: Observable<RouterEvent>
+  events: Observable<RouterEvent>;
 }
 
 describe('AppComponent', () => {
   let ls;
-  let mockRouter: RouterEventTemplate = {
+  const mockRouter: RouterEventTemplate = {
     events: of(new NavigationEnd(0, '', ''))
   };
 
@@ -77,6 +77,5 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     expect(ls.hide).toHaveBeenCalled();
   });
-
 
 });

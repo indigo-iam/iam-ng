@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: ':realm/register/confirm/:token'
-  }
+  },
   {
     path: '**',
     component: PageNotFoundComponent

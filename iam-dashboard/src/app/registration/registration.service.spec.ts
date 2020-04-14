@@ -75,4 +75,9 @@ describe('RegistrationService', () => {
     http.verify();
   });
 
+  it('should return false for all emails and usernames existing', () => {
+    expect(service.emailExists('')).toBeFalse();
+    expect(service.usernameExists('')).toBeFalse();
+  });
+
 });

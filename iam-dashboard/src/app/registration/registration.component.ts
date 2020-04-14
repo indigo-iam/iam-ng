@@ -105,9 +105,7 @@ export class RegistrationComponent implements OnInit {
       },
       (error) => {
         this.blockUIRegForm.stop();
-        if (error.error && error.error === 'bad_request') {
-          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
-        }
+        this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
       }
     );
   }

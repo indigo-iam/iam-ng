@@ -14,4 +14,18 @@ describe('LoadingService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should be true when show is called', () => {
+    service.isLoading.subscribe(v => {
+      expect(v).toBeTruthy();
+    });
+    service.show();
+  });
+
+  it('should be false when hide is called', () => {
+    service.isLoading.subscribe(v => {
+      expect(v).toBeFalsy();
+    });
+    service.hide();
+  });
+
 });

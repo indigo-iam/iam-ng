@@ -12,16 +12,9 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
 
-    appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl', 'attributeExists', 'getLoginOrder', 'getCustomAttribute']);
+    appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl', 'attributeExists', 'getCustomAttribute']);
     appConfigService.getIamApiBaseUrl.and.returnValue('');
     appConfigService.attributeExists.and.returnValue(true);
-    appConfigService.getLoginOrder.and.returnValue({
-      alice: {
-        edugain: 1,
-        local: 2,
-        register: 3
-      }}
-    );
 
     TestBed.configureTestingModule({
       declarations: [ LoginComponent ],
@@ -50,4 +43,21 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('attributeExists should return true', () => {
+    appConfigService.attributeExists.and.returnValue(true);
+    expect(component.attributeExists('anything')).toBeTrue();
+  });
+
+
+  it('attributeExists should return false', () => {
+    appConfigService.attributeExists.and.returnValue(false);
+    expect(component.attributeExists('anything')).toBeFalse();
+  });
+
+  it('getCustomAttribute should return blank', () => {
+    appConfigService.getCustomAttribute.and.returnValue('');
+    expect(component.getCustomAttribute('anything')).toEqual('');
+  });
+
 });

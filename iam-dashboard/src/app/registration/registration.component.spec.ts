@@ -10,13 +10,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationService } from './registration.service';
-import { of } from 'rxjs';
+import { of, Observable, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { AppConfigService } from '../app-config.service';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { RealmService } from '../services/realm.service';
 import { convertToParamMap} from '@angular/router';
@@ -301,6 +301,39 @@ describe('RegistrationComponent', () => {
 
 
     expect(rs.createRegistration).toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
+  it('fail snackbar shown with error in http request', () => {
+    spy = spyOn(sb, 'open');
+
+    let response = new HttpErrorResponse({error: 'bad_request', status: 500});
+
+    rs.createRegistration.and.returnValue(throwError(response));
+
+    expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
+
+    component.realmName = 'test';
+    component.register();
+
+
+    expect(rs.createRegistration).toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
+  it('snackbar open on fail to load realm data', () => {
+    spy = spyOn(sb, 'open');
+    realmService.getRealms.and.returnValue(throwError({}));
+    fixture = TestBed.createComponent(RegistrationComponent);
+    fixture.detectChanges();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
+  it('snackbar open on fail to load reg data', () => {
+    spy = spyOn(sb, 'open');
+    rs.getRegistrationConfig.and.returnValue(throwError({}));
+    fixture = TestBed.createComponent(RegistrationComponent);
+    fixture.detectChanges();
     expect(sb.open).toHaveBeenCalled();
   });
 

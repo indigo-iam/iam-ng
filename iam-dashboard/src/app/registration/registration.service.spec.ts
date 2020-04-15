@@ -23,6 +23,11 @@ describe('RegistrationService', () => {
     message: 'Success'
   };
 
+  const mockEmailResponse = {
+    message: 'Success',
+    detail: 'Success'
+  }
+
   beforeEach(() => {
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);
     appConfigService.getIamApiBaseUrl.and.returnValue('https://api.test.example/');
@@ -78,6 +83,17 @@ describe('RegistrationService', () => {
   it('should return false for all emails and usernames existing', () => {
     expect(service.emailExists('')).toBeFalse();
     expect(service.usernameExists('')).toBeFalse();
+  });
+
+  it('should make confirm email request', () => {
+    service.confirmEmail('abc', 'alice').subscribe(res => {
+      expect(res).toEqual(mockEmailResponse);
+    });
+
+    const req = http.expectOne({url: 'https://api.test.example//Realms/alice/Registrations/confirm/abc', method: 'POST'});
+
+    req.flush(mockEmailResponse);
+    http.verify();
   });
 
 });

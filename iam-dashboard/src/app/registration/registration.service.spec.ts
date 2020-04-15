@@ -26,7 +26,7 @@ describe('RegistrationService', () => {
   const mockEmailResponse = {
     message: 'Success',
     detail: 'Success'
-  }
+  };
 
   beforeEach(() => {
     appConfigService = jasmine.createSpyObj(['getIamApiBaseUrl']);

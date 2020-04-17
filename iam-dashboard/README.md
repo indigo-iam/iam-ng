@@ -1,4 +1,12 @@
-# IamDashboard
+# IAM Dashboard
+
+[![codecov](https://codecov.io/gh/stfc/iam-dashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/stfc/iam-dashboard)
+![](https://github.com/stfc/iam-dashboard/workflows/Build,%20test,%20publish%20(master)/badge.svg)
+
+
+A dashboard for the IAM NG project, interfacing with the API and Keycloak (https://github.com/indigo-iam/iam-ng).
+
+---
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.6.
 

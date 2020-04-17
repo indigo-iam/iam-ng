@@ -44,7 +44,11 @@ export class EmailConfirmationComponent implements OnInit {
 
       (error) => {
         this.message = 'Error';
-        this.detail = error;
+        if (error.status === 404) {
+          this.detail = error.error.errorDescription;
+        } else {
+          this.detail = 'There was an error when making your registration request, please try and reload the page.';
+        }
       }
     );
 

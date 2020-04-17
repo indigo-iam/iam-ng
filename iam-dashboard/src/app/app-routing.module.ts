@@ -6,6 +6,8 @@ import { AppAuthGuard } from './app.authguard';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { RegistrationRequestsComponent } from './registration-requests/registration-requests.component';
 
 const routes: Routes = [
   {
@@ -21,7 +23,12 @@ const routes: Routes = [
     component: RegistrationComponent
   },
   {
-    path: ':realm/register/confirm/:token'
+    path: ':realm/register/confirm/:token',
+    component: EmailConfirmationComponent
+  },
+  {
+    path: ':realm/dashboard/requests/registration',
+    component: RegistrationRequestsComponent
   },
   {
     path: '**',

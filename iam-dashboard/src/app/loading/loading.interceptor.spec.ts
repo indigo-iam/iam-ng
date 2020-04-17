@@ -79,7 +79,7 @@ describe('LoadingInterceptor', () => {
     expect(sb.open).toHaveBeenCalled();
   });
 
-  it('snackbar should not be called on intercept auth error req', () => {
+  it('snackbar should not be called on intercept auth/404 error req', () => {
 
     httpClient.get('/test').subscribe(
       (response) => response,
@@ -87,6 +87,17 @@ describe('LoadingInterceptor', () => {
     );
 
     httpMock.expectOne('/test').error(new ErrorEvent('Auth error'), {status: 401});
+
+    httpMock.verify();
+
+    expect(sb.open).not.toHaveBeenCalled();
+
+    httpClient.get('/test2').subscribe(
+      (response) => response,
+      (error) => error
+    );
+
+    httpMock.expectOne('/test2').error(new ErrorEvent('404 error'), {status: 404});
 
     httpMock.verify();
 

@@ -23,12 +23,16 @@ import { LoadingService } from './loading/loading.service';
 import { LoadingInterceptor } from './loading/loading.interceptor';
 import { BlockUIModule } from 'ng-block-ui';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { RegistrationRequestsComponent } from './registration-requests/registration-requests.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -43,6 +47,9 @@ const keycloakService: KeycloakService = new KeycloakService();
     MatCardModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
     BlockUIModule.forRoot()
   ],
   providers: [

@@ -33,7 +33,11 @@ const routes: Routes = [
   },
   {
     path: ':realm/dashboard/requests/registration',
-    component: RegistrationRequestsComponent
+    component: RegistrationRequestsComponent,
+    data: {
+      roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
+    },
+    canActivate: [AppAuthGuard] // Run the auth guard against the page
   },
   {
     path: '**',

@@ -45,6 +45,7 @@ export class EmailConfirmationComponent implements OnInit {
       (error) => {
         this.message = 'Error';
         if (error.status === 404) {
+          // We get a 404 error when the token isn't found
           this.detail = error.error.errorDescription;
         } else {
           this.detail = 'There was an error when making your registration request, please try and reload the page.';

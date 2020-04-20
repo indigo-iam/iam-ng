@@ -20,7 +20,7 @@ export class AppAuthGuard extends KeycloakAuthGuard {
         return resolve(true);
       } else {
         if (!this.roles || this.roles.length === 0) {
-          this.router.navigate(['403']);
+          this.router.navigate(['403']); // If the user doesn't have _any_ roles, then they shouldn't have access to anything
           resolve(false);
         }
         let granted = false;
@@ -29,6 +29,9 @@ export class AppAuthGuard extends KeycloakAuthGuard {
             granted = true;
             break;
           }
+        }
+        if (!granted) {
+          this.router.navigate(['403']); // Show user a permission denied page if they aren't allowed access
         }
         resolve(granted);
       }

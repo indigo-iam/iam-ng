@@ -20,6 +20,7 @@ export class AppAuthGuard extends KeycloakAuthGuard {
         return resolve(true);
       } else {
         if (!this.roles || this.roles.length === 0) {
+          this.router.navigate(['403']);
           resolve(false);
         }
         let granted = false;

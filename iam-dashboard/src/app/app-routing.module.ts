@@ -8,11 +8,16 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 import { RegistrationRequestsComponent } from './registration-requests/registration-requests.component';
+import { PermissionDeniedComponent } from './permission-denied/permission-denied.component';
 
 const routes: Routes = [
   {
     path: '404',
     component: PageNotFoundComponent
+  },
+  {
+    path: '403',
+    component: PermissionDeniedComponent
   },
   {
     path: ':realm',

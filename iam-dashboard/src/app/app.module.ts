@@ -27,12 +27,15 @@ import { RegistrationRequestsComponent } from './registration-requests/registrat
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
+import { PermissionDeniedComponent } from './permission-denied/permission-denied.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CustomBlockUIComponent } from './utils/custom-block-ui/custom-block-ui.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -50,7 +53,10 @@ const keycloakService: KeycloakService = new KeycloakService();
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    BlockUIModule.forRoot()
+    MatProgressSpinnerModule,
+    BlockUIModule.forRoot({
+      template: CustomBlockUIComponent
+    })
   ],
   providers: [
     {
@@ -76,7 +82,7 @@ const keycloakService: KeycloakService = new KeycloakService();
       multi: true
     }
   ],
-  entryComponents: [AppComponent],
+  entryComponents: [AppComponent, CustomBlockUIComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule implements DoBootstrap {

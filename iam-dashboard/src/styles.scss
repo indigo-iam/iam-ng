@@ -13,3 +13,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .logo {
   padding: 10px;
 }
+
+.big-icon {
+  font-size: 100px;
+}
+
+/* Override background colour for block UI to be white to fit into the rest of the site */
+div.block-ui-wrapper {
+  background-color: rgba(255, 255, 255, 0.75);
+}

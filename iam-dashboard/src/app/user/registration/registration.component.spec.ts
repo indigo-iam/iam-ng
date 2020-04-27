@@ -12,13 +12,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationService } from './registration.service';
 import { of, Observable, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../../app-config.service';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { RealmService } from '../services/realm.service';
+import { RealmService } from '../../services/realm.service';
 import { convertToParamMap} from '@angular/router';
 
 class DummyComponent {

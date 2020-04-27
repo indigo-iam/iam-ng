@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationService } from '../registration/registration.service';
-import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
+import { RegistrationConfigurationDTO } from '../../models/registration-configuration-dto';
 
 @Component({
   selector: 'app-email-confirmation',

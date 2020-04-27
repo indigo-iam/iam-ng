@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { RegistrationService } from './registration.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RealmService } from '../services/realm.service';
-import { RealmDTO } from '../models/realm-dto';
-import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
+import { RealmService } from '../../services/realm.service';
+import { RealmDTO } from '../../models/realm-dto';
+import { RegistrationConfigurationDTO } from '../../models/registration-configuration-dto';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../../app-config.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({

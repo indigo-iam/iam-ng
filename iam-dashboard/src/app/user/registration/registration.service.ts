@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
+import { RegistrationConfigurationDTO } from '../../models/registration-configuration-dto';
 import { Observable } from 'rxjs';
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../../app-config.service';
 
 @Injectable({
   providedIn: 'root'

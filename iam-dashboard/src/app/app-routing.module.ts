@@ -3,12 +3,12 @@ import { RouterModule } from '@angular/router';
 
 import { Routes } from '@angular/router';
 import { AppAuthGuard } from './app.authguard';
-import { RegistrationComponent } from './registration/registration.component';
+import { RegistrationComponent } from './user/registration/registration.component';
 import { LoginComponent } from './login/login.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
-import { RegistrationRequestsComponent } from './registration-requests/registration-requests.component';
-import { PermissionDeniedComponent } from './permission-denied/permission-denied.component';
+import { PageNotFoundComponent } from './utils/page-not-found/page-not-found.component';
+import { EmailConfirmationComponent } from './user/email-confirmation/email-confirmation.component';
+import { RegistrationRequestsComponent } from './user/registration-requests/registration-requests.component';
+import { PermissionDeniedComponent } from './utils/permission-denied/permission-denied.component';
 
 const routes: Routes = [
   {

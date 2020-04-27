@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import { RegistrationService } from './registration.service';
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../../app-config.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
-import { RegistrationConfigurationDTO } from '../models/registration-configuration-dto';
+import { RegistrationConfigurationDTO } from '../../models/registration-configuration-dto';
 import { FormBuilder } from '@angular/forms';
 
 describe('RegistrationService', () => {

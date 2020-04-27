@@ -5,7 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { Router, NavigationEnd, NavigationStart, RouterEvent, NavigationCancel, NavigationError } from '@angular/router';
 import { of, Observable } from 'rxjs';
-import { LoadingService } from './loading/loading.service';
+import { LoadingService } from './utils/loading/loading.service';
 
 interface RouterEventTemplate {
   events: Observable<RouterEvent>;

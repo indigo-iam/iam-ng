@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
-import { LoadingService } from './loading/loading.service';
+import { LoadingService } from './utils/loading/loading.service';
 
 @Component({
   selector: 'app-root',

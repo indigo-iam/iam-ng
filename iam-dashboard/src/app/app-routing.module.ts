@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './utils/page-not-found/page-not-found.com
 import { EmailConfirmationComponent } from './user/email-confirmation/email-confirmation.component';
 import { RegistrationRequestsComponent } from './user/registration-requests/registration-requests.component';
 import { PermissionDeniedComponent } from './utils/permission-denied/permission-denied.component';
+import { ClientManagementComponent } from './client/client-management/client-management.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,14 @@ const routes: Routes = [
       roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
     },
     canActivate: [AppAuthGuard] // Run the auth guard against the page
+  },
+  {
+    path: ':realm/client-management',
+    component: ClientManagementComponent,
+    data: {
+      roles: ['iam-admin']
+    },
+    canActivate: [AppAuthGuard]
   },
   {
     path: '**',

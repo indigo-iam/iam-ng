@@ -30,12 +30,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { PermissionDeniedComponent } from './utils/permission-denied/permission-denied.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CustomBlockUIComponent } from './utils/custom-block-ui/custom-block-ui.component';
+import { ClientManagementComponent } from './client/client-management/client-management.component';
+import { NewOrEditClientComponent } from './client/new-or-edit-client/new-or-edit-client.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -54,6 +57,7 @@ const keycloakService: KeycloakService = new KeycloakService();
     MatPaginatorModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     BlockUIModule.forRoot({
       template: CustomBlockUIComponent
     })
@@ -82,7 +86,7 @@ const keycloakService: KeycloakService = new KeycloakService();
       multi: true
     }
   ],
-  entryComponents: [AppComponent, CustomBlockUIComponent],
+  entryComponents: [AppComponent, CustomBlockUIComponent, NewOrEditClientComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule implements DoBootstrap {

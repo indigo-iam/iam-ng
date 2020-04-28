@@ -1,0 +1,46 @@
+<div *blockUI="'clientForm'">
+  <form [formGroup]="ClientForm" layout-align="center">
+    <mat-form-field appearance="outline">
+      <mat-label>Client ID</mat-label>
+      <input matInput formControlName="id">
+      <mat-error *ngIf="ClientForm.get('id').hasError('required')">Client ID is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Client Name</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="ClientForm.get('name').hasError('required')">Client Name is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Homepage</mat-label>
+      <input matInput formControlName="homePage">
+      <mat-error *ngIf="ClientForm.get('homePage').hasError('required')">Homepage is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description">
+      <mat-error *ngIf="ClientForm.get('description').hasError('required')">Description is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <section>
+      <mat-label>Is this a public client? (e.g. a single page app where you cannot securely store a secret)</mat-label>
+      <mat-checkbox formControlName="public"></mat-checkbox>
+      <mat-error *ngIf="ClientForm.get('public').hasError('required')">You must choose public or secret client</mat-error>
+    </section>
+
+    <br>
+
+    <button mat-raised-button color="primary" [disabled]="!ClientForm.valid" (click)="save()">Save</button>
+    <button mat-raised-button color="warn" (click)="close()">Cancel</button>
+  </form>
+</div>

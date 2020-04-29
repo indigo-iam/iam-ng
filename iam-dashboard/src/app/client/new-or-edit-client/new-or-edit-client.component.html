@@ -32,6 +32,32 @@
 
     <br>
 
+    <p>Redirect URIs</p>
+    <div formArrayName="redirectUris" *ngFor="let redirectUris of ClientForm.get('redirectUris')['controls']; let i = index;">
+    <div [formGroupName]="i">
+      <mat-form-field appearance="outline">
+        <mat-label>Redirect URI</mat-label>
+        <input matInput formControlName="userInput">
+      </mat-form-field><button mat-raised-button (click)="removeRedirectUri(i)">X</button>
+    </div>
+    </div>
+    <button mat-raised-button (click)="addRedirectUri()">Add new redirect URI</button>
+
+    <br>
+
+    <p>Web Origins</p>
+    <div formArrayName="webOrigins" *ngFor="let webOrigin of ClientForm.get('webOrigins')['controls']; let i = index;">
+    <div [formGroupName]="i">
+      <mat-form-field appearance="outline">
+        <mat-label>Web Origin</mat-label>
+        <input matInput formControlName="userInput">
+      </mat-form-field><button mat-raised-button (click)="removeWebOrigin(i)">X</button>
+    </div>
+    </div>
+    <button mat-raised-button (click)="addWebOrigin()">Add new web origin</button>
+
+    <br>
+
     <section>
       <mat-label>Is this a public client? (e.g. a single page app where you cannot securely store a secret)</mat-label>
       <mat-checkbox formControlName="public"></mat-checkbox>

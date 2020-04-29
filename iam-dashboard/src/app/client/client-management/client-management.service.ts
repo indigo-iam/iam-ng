@@ -29,4 +29,8 @@ export class ClientManagementService {
     return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients/' + id);
   }
 
+  getClientSecret(realm: string, id: string) {
+    return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients/' + id + '/client-secret');
+  }
+
 }

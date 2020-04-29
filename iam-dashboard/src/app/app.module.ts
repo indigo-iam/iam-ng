@@ -33,12 +33,15 @@ import { CustomBlockUIComponent } from './utils/custom-block-ui/custom-block-ui.
 import { ClientManagementComponent } from './client/client-management/client-management.component';
 import { NewOrEditClientComponent } from './client/new-or-edit-client/new-or-edit-client.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ClientDetailsComponent } from './client/client-details/client-details.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -58,6 +61,8 @@ const keycloakService: KeycloakService = new KeycloakService();
     MatIconModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    ClipboardModule,
+    TextFieldModule,
     BlockUIModule.forRoot({
       template: CustomBlockUIComponent
     })

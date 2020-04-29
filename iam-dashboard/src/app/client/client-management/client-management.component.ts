@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { NewOrEditClientComponent } from '../new-or-edit-client/new-or-edit-client.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ClientDetailsComponent } from '../client-details/client-details.component';
 
 @Component({
   selector: 'app-client-management',
@@ -73,6 +74,36 @@ export class ClientManagementComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       this.updateTable();
     });
+  }
+
+  getClientSamlDetails(id: string): void {
+    const client = this.clients.find(c => c.clientId === id);
+
+    this.dialog.open(ClientDetailsComponent, {
+      data: {
+        samlCert: client.attributes['saml.signing.certificate'],
+        samlKey: client.attributes['saml.signing.private.key'],
+        samlAlgorithm: client.attributes['saml.signature.algorithm'],
+        protocol: 'saml'
+      },
+      width: '100%'
+    });
+  }
+
+  getClientSecret(id: string) {
+    this.clientManagementService.getClientSecret(this.realmName, id).subscribe(
+      (response: any) => {
+        this.dialog.open(ClientDetailsComponent, {
+          data: {
+            secret: response.value,
+            protocol: 'openid-connect'
+          }
+        });
+      },
+      (error) => {
+        this.sb.open('An error occoured: ' + error.message);
+      }
+    );
   }
 
 }

@@ -2,76 +2,30 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClientManagementComponent } from './client-management.component';
 import { ClientManagementService } from './client-management.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
-import { MatDialogModule } from '@angular/material/dialog';
+import { of, throwError } from 'rxjs';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { SINGLE_CLIENT_LIST, SAML_CLIENT } from 'src/app/utils/client-test-data';
 
 describe('ClientManagementComponent', () => {
   let component: ClientManagementComponent;
   let fixture: ComponentFixture<ClientManagementComponent>;
   let clientManagementService;
+  let sb;
+  let dialog;
 
   beforeEach(async(() => {
     clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret']);
     clientManagementService.getClients.and.returnValue(of(
-      [{
-        id: 'c476342d-3588-4877-b560-cd4c37b0fe65',
-        clientId: 'account',
-        name: '${client_account}',
-        rootUrl: '${authBaseUrl}',
-        baseUrl: '/realms/alice/account/',
-        surrogateAuthRequired: false,
-        enabled: true,
-        alwaysDisplayInConsole: false,
-        clientAuthenticatorType: 'client-secret',
-        defaultRoles: [
-          'view-profile',
-          'manage-account'
-        ],
-        redirectUris: [
-          '/realms/alice/account/*'
-        ],
-        webOrigins: [],
-        notBefore: 0,
-        bearerOnly: false,
-        consentRequired: false,
-        standardFlowEnabled: true,
-        implicitFlowEnabled: false,
-        directAccessGrantsEnabled: false,
-        serviceAccountsEnabled: false,
-        publicClient: false,
-        frontchannelLogout: false,
-        protocol: 'openid-connect',
-        attributes: {},
-        authenticationFlowBindingOverrides: {},
-        fullScopeAllowed: false,
-        nodeReRegistrationTimeout: 0,
-        defaultClientScopes: [
-          'web-origins',
-          'role_list',
-          'profile',
-          'roles',
-          'email'
-        ],
-        optionalClientScopes: [
-          'address',
-          'phone',
-          'offline_access',
-          'microprofile-jwt'
-        ],
-        access: {
-          view: true,
-          configure: true,
-          manage: true
-        }
-      }]
-    ))
+      SAML_CLIENT
+    ));
+
+    sb = jasmine.createSpyObj('snackbar', ['open']);
+    dialog = jasmine.createSpyObj('dialog', ['open']);
 
     TestBed.configureTestingModule({
       imports: [
-        MatSnackBarModule,
-        MatDialogModule
       ],
       declarations: [
         ClientManagementComponent
@@ -87,6 +41,8 @@ describe('ClientManagementComponent', () => {
             ))
           )
         }},
+        { provide: MatSnackBar, useValue: sb },
+        { provide: MatDialog, useValue: dialog }
       ]
     })
     .compileComponents();
@@ -101,4 +57,90 @@ describe('ClientManagementComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should update table', () => {
+    component.updateTable();
+    expect(component.clients).toEqual(SAML_CLIENT);
+  });
+
+  it('should not update table on error', () => {
+    clientManagementService.getClients.and.returnValue(throwError({status: 500, message: 'Internal server error'}));
+    component.updateTable();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
+  it('should open dialog when editing client', () => {
+    const dialogRef = jasmine.createSpyObj(['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of(true));
+    dialog.open.and.returnValue(dialogRef);
+    component.editClient('test');
+    expect(dialog.open).toHaveBeenCalled();
+    expect(dialogRef.afterClosed).toHaveBeenCalled();
+  });
+
+  it('should open dialog when creating client', () => {
+    const dialogRef = jasmine.createSpyObj(['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of(true));
+    dialog.open.and.returnValue(dialogRef);
+    component.newClient();
+    expect(dialog.open).toHaveBeenCalled();
+    expect(dialogRef.afterClosed).toHaveBeenCalled();
+  });
+
+  it('should delete client', () => {
+    const dialogRef = jasmine.createSpyObj(['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of(true));
+    dialog.open.and.returnValue(dialogRef);
+
+    clientManagementService.deleteClient.and.returnValue(of({}));
+
+    component.deleteClient('id');
+    expect(dialog.open).toHaveBeenCalled();
+    expect(dialogRef.afterClosed).toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
+
+    clientManagementService.deleteClient.and.returnValue(throwError({status: 500}));
+
+    component.deleteClient('id');
+    expect(dialog.open).toHaveBeenCalled();
+    expect(dialogRef.afterClosed).toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
+  it('should open dialog when getting SAML details', () => {
+    // SAML client ID is 7d48ec06-2ebe-41ed-8f33-8f8e2ae3096c
+
+    component.getClientSamlDetails('7d48ec06-2ebe-41ed-8f33-8f8e2ae3096c');
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
+  it('should open dialog when getting client secret', () => {
+    clientManagementService.getClientSecret.and.returnValue(of({value: 'secret123'}));
+    /*clientManagementService.getClientSecret('a', 'b').subscribe(
+      (response: any) => {
+        console.log(response.value);
+      },
+      (error) => {
+        console.log(error.message);
+      }
+    );*/
+    component.getClientSecret('7d48ec06-2ebe-41ed-8f33-8f8e2ae3096c');
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
+  it('should not open dialog with error secret', () => {
+    clientManagementService.getClientSecret.and.returnValue(throwError({status: 500, message: 'Internal server error'}));
+    /*clientManagementService.getClientSecret('a', 'b').subscribe(
+      (response: any) => {
+        console.log(response.value);
+      },
+      (error) => {
+        console.log(error.message);
+      }
+    );*/
+    component.getClientSecret('7d48ec06-2ebe-41ed-8f33-8f8e2ae3096c');
+    expect(dialog.open).not.toHaveBeenCalled();
+    expect(sb.open).toHaveBeenCalled();
+  });
+
 });

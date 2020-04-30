@@ -103,7 +103,7 @@ export class ClientManagementComponent implements OnInit {
   }
 
   getClientSamlDetails(id: string): void {
-    const client = this.clients.find(c => c.clientId === id);
+    const client = this.clients.find(c => c.id === id);
 
     this.dialog.open(ClientDetailsComponent, {
       data: {
@@ -126,7 +126,7 @@ export class ClientManagementComponent implements OnInit {
           }
         });
       },
-      (error) => {
+      (error: Error) => {
         this.sb.open('An error occoured: ' + error.message, 'Close');
       }
     );

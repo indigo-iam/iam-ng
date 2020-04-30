@@ -12,7 +12,7 @@
     <td mat-cell *matCellDef="let client">
       <div *ngIf="client.publicClient">Public client (no secret needed)</div>
       <div *ngIf="!client.publicClient && client.protocol == 'openid-connect'"><button mat-raised-button (click)="getClientSecret(client.id)">Get client secret</button></div>
-      <div *ngIf="!client.publicClient && client.protocol == 'saml'"><button mat-raised-button (click)="getClientSamlDetails(client.clientId)">Get SAML details</button></div>
+      <div *ngIf="!client.publicClient && client.protocol == 'saml'"><button mat-raised-button (click)="getClientSamlDetails(client.id)">Get SAML details</button></div>
     </td>
   </ng-container>
 

@@ -36,12 +36,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ClientDetailsComponent } from './client/client-details/client-details.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

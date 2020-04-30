@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConfigService } from 'src/app/app-config.service';
 
 @Injectable({
@@ -31,6 +31,20 @@ export class ClientManagementService {
 
   getClientSecret(realm: string, id: string) {
     return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients/' + id + '/client-secret');
+  }
+
+  createSamlClient(realm: string, clientInfo) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/xml' // We send XML formatted data
+      })
+    };
+
+    return this.http.post(this.keycloakBaseUrl + 'admin/realms/' + realm + '/client-description-converter', clientInfo, httpOptions);
+  }
+
+  deleteClient(realm: string, id: string) {
+    return this.http.delete(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients/' + id);
   }
 
 }

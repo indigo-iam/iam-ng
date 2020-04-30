@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ClientManagementService } from './client-management.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppConfigService } from 'src/app/app-config.service';
+import { HttpClient } from '@angular/common/http';
 
 describe('ClientManagementService', () => {
   let service: ClientManagementService;
@@ -11,14 +12,15 @@ describe('ClientManagementService', () => {
 
   beforeEach(() => {
     appConfigService = jasmine.createSpyObj(['getKeycloakBaseUrl']);
-    appConfigService.getIamApiBaseUrl.and.returnValue('https://kc.test.example/');
+    appConfigService.getKeycloakBaseUrl.and.returnValue('https://kc.test.example/');
     TestBed.configureTestingModule(
       {
         imports: [
           HttpClientTestingModule
         ],
         providers: [
-          { provide: AppConfigService, useValue: appConfigService }
+          { provide: AppConfigService, useValue: appConfigService },
+          { provide: HttpClient, useValue: http }
         ],
       }
     );

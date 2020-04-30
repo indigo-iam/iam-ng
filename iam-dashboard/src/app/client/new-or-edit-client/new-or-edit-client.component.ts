@@ -21,7 +21,10 @@ export class NewOrEditClientComponent implements OnInit {
   realmName: string;
   webOrigins: FormArray;
   redirectUris: FormArray;
-  ClientForm: FormGroup;
+  openIdForm: FormGroup;
+  clientProtocol: string;
+  protocolChosen = false;
+  samlForm: FormGroup;
 
   @BlockUI('clientForm') blockUIclientForm: NgBlockUI;
 
@@ -30,7 +33,11 @@ export class NewOrEditClientComponent implements OnInit {
   ngOnInit(): void {
     this.realmName = this.data.realm;
 
-    this.ClientForm = this.fb.group({
+    this.samlForm = this.fb.group({
+      xml: ['', [Validators.required]]
+    })
+
+    this.openIdForm = this.fb.group({
       id: ['', [Validators.required]],
       name: ['', []],
       homePage: ['', []],
@@ -41,7 +48,7 @@ export class NewOrEditClientComponent implements OnInit {
     });
 
     if (this.data.client) {
-      this.ClientForm.patchValue({
+      this.openIdForm.patchValue({
         id: this.data.client.clientId ? this.data.client.clientId : '',
         name: this.data.client.name ? this.data.client.name : '',
         homePage: this.data.client.adminUrl ? this.data.client.adminUrl : '',
@@ -71,6 +78,16 @@ export class NewOrEditClientComponent implements OnInit {
     }
   }
 
+  setClientProtocol(protocol: string) {
+    this.clientProtocol = protocol;
+    this.protocolChosen = true;
+  }
+
+  resetClientProtocol() {
+    this.clientProtocol = null;
+    this.protocolChosen = false;
+  }
+
   createFormGroup(input: string = ''): FormGroup {
     return this.fb.group({
       userInput: input
@@ -78,27 +95,27 @@ export class NewOrEditClientComponent implements OnInit {
   }
 
   addWebOrigin(origin: string = ''): void {
-    this.webOrigins = this.ClientForm.get('webOrigins') as FormArray;
+    this.webOrigins = this.openIdForm.get('webOrigins') as FormArray;
     this.webOrigins.push(this.createFormGroup(origin));
   }
 
   addRedirectUri(uri: string = ''): void {
-    this.redirectUris = this.ClientForm.get('redirectUris') as FormArray;
+    this.redirectUris = this.openIdForm.get('redirectUris') as FormArray;
     this.redirectUris.push(this.createFormGroup(uri));
   }
 
   removeRedirectUri(index: number): void {
-    this.redirectUris = this.ClientForm.get('redirectUris') as FormArray;
+    this.redirectUris = this.openIdForm.get('redirectUris') as FormArray;
     this.redirectUris.removeAt(index);
   }
 
   removeWebOrigin(index: number): void {
-    this.webOrigins = this.ClientForm.get('webOrigins') as FormArray;
+    this.webOrigins = this.openIdForm.get('webOrigins') as FormArray;
     this.webOrigins.removeAt(index);
   }
 
   formArrayToArray(arrayName: string): Array<string> {
-    const arr = this.ClientForm.get(arrayName) as FormArray;
+    const arr = this.openIdForm.get(arrayName) as FormArray;
     const finalArray = [];
     for (const control of arr.controls) {
       finalArray.push(control.value.userInput);
@@ -109,14 +126,14 @@ export class NewOrEditClientComponent implements OnInit {
   save() {
     this.blockUIclientForm.start();
     const clientRepresentation = {
-      adminUrl: this.ClientForm.get('homePage').value,
-      clientId: this.ClientForm.get('id').value,
-      description: this.ClientForm.get('description').value,
+      adminUrl: this.openIdForm.get('homePage').value,
+      clientId: this.openIdForm.get('id').value,
+      description: this.openIdForm.get('description').value,
       enabled: true,
-      name: this.ClientForm.get('name').value,
+      name: this.openIdForm.get('name').value,
       redirectUris: this.formArrayToArray('redirectUris'),
       webOrigins: this.formArrayToArray('webOrigins'),
-      publicClient: this.ClientForm.get('public').value
+      publicClient: this.openIdForm.get('public').value
     };
 
     if (this.newClient) {
@@ -136,6 +153,25 @@ export class NewOrEditClientComponent implements OnInit {
         }
       );
     }
+  }
+
+  createSamlClient() {
+    this.blockUIclientForm.start();
+    this.clientManagementService.createSamlClient(this.realmName, this.samlForm.get('xml').value).subscribe(
+      (response) => {
+        this.clientManagementService.createClient(this.realmName, response).subscribe(
+          (r) => {
+            this.blockUIclientForm.stop();
+            this.sb.open('Client successfully added', 'Close');
+            this.dialogRef.close();
+          }
+        )
+      },
+      (error) => {
+        this.blockUIclientForm.stop();
+        this.sb.open('There was an error with your SP metadata!');
+      }
+    )
   }
 
   close() {

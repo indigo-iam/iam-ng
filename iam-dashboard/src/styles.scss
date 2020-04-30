@@ -22,3 +22,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 div.block-ui-wrapper {
   background-color: rgba(255, 255, 255, 0.75);
 }
+
+.large-input {
+  width: calc(100%);
+}

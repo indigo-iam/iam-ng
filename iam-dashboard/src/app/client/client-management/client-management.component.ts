@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { NewOrEditClientComponent } from '../new-or-edit-client/new-or-edit-client.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ClientDetailsComponent } from '../client-details/client-details.component';
+import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-client-management',
@@ -46,7 +47,7 @@ export class ClientManagementComponent implements OnInit {
         this.blockUIclientTable.stop();
       },
       (error) => {
-        this.sb.open('An error occoured when getting clients: ' + error.message);
+        this.sb.open('An error occoured when getting clients: ' + error.message, 'Close');
         this.blockUIclientTable.stop();
       }
     );
@@ -57,7 +58,8 @@ export class ClientManagementComponent implements OnInit {
       data: {
         client: this.clients.find(client => client.clientId === clientId),
         realm: this.realmName
-      }
+      },
+      width: '100%'
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -69,11 +71,35 @@ export class ClientManagementComponent implements OnInit {
     const dialogRef = this.dialog.open(NewOrEditClientComponent, {
       data: {
         realm: this.realmName
-    }});
+      },
+      width: '100%'
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       this.updateTable();
     });
+  }
+
+  deleteClient(clientId: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'Are you sure you wish to delete this client?'
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result) => {
+        if(result) {
+          this.clientManagementService.deleteClient(this.realmName, clientId).subscribe(
+            (r) => {
+              this.sb.open('Client successfully deleted', 'Close');
+              this.updateTable();
+            },
+            (error) => {
+              this.sb.open('Client could not be deleted!', 'Close');
+            }
+          );
+        }
+      }
+    );
   }
 
   getClientSamlDetails(id: string): void {
@@ -101,7 +127,7 @@ export class ClientManagementComponent implements OnInit {
         });
       },
       (error) => {
-        this.sb.open('An error occoured: ' + error.message);
+        this.sb.open('An error occoured: ' + error.message, 'Close');
       }
     );
   }

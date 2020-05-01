@@ -92,4 +92,18 @@ describe('EmailConfirmationComponent', () => {
     expect(fixture.debugElement.query(By.css('#message')).nativeElement.textContent).toContain('Error');
   });
 
+  it('should error with http error', () => {
+    rs.confirmEmail.and.returnValue(throwError(
+      {
+        error: 'Error',
+        errorDescription: 'Some details',
+        status: 404
+      }
+    ));
+    fixture = TestBed.createComponent(EmailConfirmationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('#message')).nativeElement.textContent).toContain('Error');
+  });
+
 });

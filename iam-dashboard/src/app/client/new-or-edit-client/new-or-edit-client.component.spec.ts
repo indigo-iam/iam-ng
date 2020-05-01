@@ -5,9 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { FormBuilder } from '@angular/forms';
 import { ClientManagementService } from '../client-management/client-management.service';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { of, Observable, throwError } from 'rxjs';
-import { SINGLE_CLIENT_LIST, SINGLE_CLIENT } from 'src/app/utils/client-test-data';
-import { HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
+import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT, CLIENT_NO_ORIGIN_OR_REDIRECT } from 'src/app/utils/client-test-data';
 
 describe('NewOrEditClientComponent', () => {
   let component: NewOrEditClientComponent;
@@ -16,6 +15,8 @@ describe('NewOrEditClientComponent', () => {
   let matDialogRef;
   let fb: FormBuilder;
   let sb;
+
+  let TB_BASE;
 
   beforeEach(async(() => {
     clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret', 'createSamlClient', 'createClient', 'updateClient']);
@@ -31,7 +32,7 @@ describe('NewOrEditClientComponent', () => {
 
     sb = jasmine.createSpyObj(['open']);
 
-    TestBed.configureTestingModule({
+    TB_BASE = {
       imports: [
         MatSnackBarModule,
         MatDialogModule
@@ -39,14 +40,17 @@ describe('NewOrEditClientComponent', () => {
       declarations: [ NewOrEditClientComponent ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {
-          client: SINGLE_CLIENT
+          client: SAML_CLIENT,
+          realm: 'alice'
         } },
         { provide: MatDialogRef, useValue: matDialogRef },
         { provide: ClientManagementService, useValue: clientManagementService},
         { provide: MatSnackBar, useValue: sb },
         FormBuilder
       ]
-    })
+    }
+
+    TestBed.configureTestingModule(TB_BASE)
     .compileComponents();
   }));
 
@@ -55,6 +59,36 @@ describe('NewOrEditClientComponent', () => {
     component = fixture.componentInstance;
     fb = fixture.debugElement.injector.get(FormBuilder);
     fixture.detectChanges();
+  });
+
+  it('should work with a blank client', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule(TB_BASE);
+    TestBed.overrideProvider(MAT_DIALOG_DATA, {useValue: {realm: 'alice'}});
+    fixture = TestBed.createComponent(NewOrEditClientComponent);
+    component = fixture.componentInstance;
+    fb = fixture.debugElement.injector.get(FormBuilder);
+    fixture.detectChanges();
+    expect(component.data.client).toEqual(undefined);
+    expect(component.newClient).toBeTrue();
+  });
+
+  it('should work eith a client with no web origins or redirect URIs', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule(TB_BASE);
+    TestBed.overrideProvider(MAT_DIALOG_DATA, {
+      useValue: {
+        realm: 'alice',
+        client: CLIENT_NO_ORIGIN_OR_REDIRECT
+      }
+    });
+    fixture = TestBed.createComponent(NewOrEditClientComponent);
+    component = fixture.componentInstance;
+    fb = fixture.debugElement.injector.get(FormBuilder);
+    fixture.detectChanges();
+    expect(component.webOrigins.length).toEqual(1);
+    expect(component.data.client.adminUrl).toEqual('adminurl');
+    expect(component.data.client.description).toEqual('description');
   });
 
   it('should create', () => {
@@ -88,7 +122,12 @@ describe('NewOrEditClientComponent', () => {
   it('should add and remove web origin', () => {
     component.addWebOrigin('Testwo');
     expect(component.webOrigins.at(component.webOrigins.length - 1).get('userInput').value).toEqual('Testwo');
-    const length = component.webOrigins.length;
+    let length = component.webOrigins.length;
+    component.removeWebOrigin(length - 1);
+    expect(component.webOrigins.length).toEqual(length - 1);
+    component.addWebOrigin();
+    expect(component.webOrigins.at(component.webOrigins.length - 1).get('userInput').value).toEqual('');
+    length = component.webOrigins.length;
     component.removeWebOrigin(length - 1);
     expect(component.webOrigins.length).toEqual(length - 1);
   });
@@ -96,7 +135,12 @@ describe('NewOrEditClientComponent', () => {
   it('should add and remove redirect uri', () => {
     component.addRedirectUri('Testri');
     expect(component.redirectUris.at(component.redirectUris.length - 1).get('userInput').value).toEqual('Testri');
-    const length = component.redirectUris.length;
+    let length = component.redirectUris.length;
+    component.removeRedirectUri(length - 1);
+    expect(component.redirectUris.length).toEqual(length - 1);
+    component.addRedirectUri();
+    expect(component.redirectUris.at(component.redirectUris.length - 1).get('userInput').value).toEqual('');
+    length = component.redirectUris.length;
     component.removeRedirectUri(length - 1);
     expect(component.redirectUris.length).toEqual(length - 1);
   });
@@ -104,7 +148,7 @@ describe('NewOrEditClientComponent', () => {
   it('should create array from formarray', () => {
     component.addRedirectUri('test');
     const retarray = component.formArrayToArray('redirectUris');
-    expect(retarray).toEqual(['/realms/alice/account/*', 'test']);
+    expect(retarray).toEqual(['https://service.example.com/SAML2/SSO/POST', 'test']);
   });
 
   it('should save existing client', () => {

@@ -50,6 +50,56 @@ export const SINGLE_CLIENT = {
     }
   }
 
+  export const CLIENT_NO_ORIGIN_OR_REDIRECT = {
+    id: 'c476342d-3588-4877-b560-cd4c37b0fe65',
+    clientId: 'account',
+    name: '${client_account}',
+    rootUrl: '${authBaseUrl}',
+    baseUrl: '/realms/alice/account/',
+    surrogateAuthRequired: false,
+    enabled: true,
+    alwaysDisplayInConsole: false,
+    clientAuthenticatorType: 'client-secret',
+    defaultRoles: [
+      'view-profile',
+      'manage-account'
+    ],
+    notBefore: 0,
+    bearerOnly: false,
+    consentRequired: false,
+    standardFlowEnabled: true,
+    implicitFlowEnabled: false,
+    directAccessGrantsEnabled: false,
+    serviceAccountsEnabled: false,
+    publicClient: false,
+    frontchannelLogout: false,
+    protocol: 'openid-connect',
+    attributes: {},
+    authenticationFlowBindingOverrides: {},
+    fullScopeAllowed: false,
+    nodeReRegistrationTimeout: 0,
+    defaultClientScopes: [
+      'web-origins',
+      'role_list',
+      'profile',
+      'roles',
+      'email'
+    ],
+    optionalClientScopes: [
+      'address',
+      'phone',
+      'offline_access',
+      'microprofile-jwt'
+    ],
+    access: {
+      view: true,
+      configure: true,
+      manage: true
+    },
+    adminUrl: 'adminurl',
+    description: 'description'
+  }
+
 export const SINGLE_CLIENT_LIST = [
   SINGLE_CLIENT
 ]

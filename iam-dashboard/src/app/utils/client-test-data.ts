@@ -51,10 +51,10 @@ export const SINGLE_CLIENT = {
   }
 
 export const SINGLE_CLIENT_LIST = [
-    SINGLE_CLIENT
+  SINGLE_CLIENT
 ]
 
-export const SAML_CLIENT = [
+export const SAML_CLIENT =
     {
         id: '7d48ec06-2ebe-41ed-8f33-8f8e2ae3096c',
         clientId: 'https://sso.example.com/portal',
@@ -116,4 +116,7 @@ export const SAML_CLIENT = [
           manage: true
         }
       }
+
+export const SAML_CLIENT_LIST = [
+  SAML_CLIENT
 ]

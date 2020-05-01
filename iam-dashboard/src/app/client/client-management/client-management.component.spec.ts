@@ -2,11 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClientManagementComponent } from './client-management.component';
 import { ClientManagementService } from './client-management.service';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { SINGLE_CLIENT_LIST, SAML_CLIENT } from 'src/app/utils/client-test-data';
+import { MatDialog } from '@angular/material/dialog';
+import { SAML_CLIENT_LIST } from 'src/app/utils/client-test-data';
 
 describe('ClientManagementComponent', () => {
   let component: ClientManagementComponent;
@@ -18,7 +18,7 @@ describe('ClientManagementComponent', () => {
   beforeEach(async(() => {
     clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret']);
     clientManagementService.getClients.and.returnValue(of(
-      SAML_CLIENT
+      SAML_CLIENT_LIST
     ));
 
     sb = jasmine.createSpyObj('snackbar', ['open']);
@@ -60,7 +60,7 @@ describe('ClientManagementComponent', () => {
 
   it('should update table', () => {
     component.updateTable();
-    expect(component.clients).toEqual(SAML_CLIENT);
+    expect(component.clients).toEqual(SAML_CLIENT_LIST);
   });
 
   it('should not update table on error', () => {

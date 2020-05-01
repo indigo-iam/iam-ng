@@ -68,7 +68,7 @@
 
     <br>
 
-    <section *ngIf="!newClient && data.client.protocol == 'openid-connect'">
+    <section *ngIf="data.client.protocol == 'openid-connect'">
       <mat-label>Is this a public client? (e.g. a single page app where you cannot securely store a secret)</mat-label>
       <mat-checkbox formControlName="public"></mat-checkbox>
     </section>

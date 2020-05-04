@@ -37,12 +37,16 @@ import { ClientDetailsComponent } from './client/client-details/client-details.c
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { NavigationComponent } from './navigation/navigation.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -66,7 +70,10 @@ const keycloakService: KeycloakService = new KeycloakService();
     TextFieldModule,
     BlockUIModule.forRoot({
       template: CustomBlockUIComponent
-    })
+    }),
+    LayoutModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [
     {

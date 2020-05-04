@@ -1,4 +1,7 @@
+<mat-card>
+<div class="client-management-header">
 <h2>Client Management</h2> <button mat-raised-button color="primary" (click)="newClient()">New Client</button>
+</div>
 
 <table mat-table [dataSource]="dataSource" *blockUI="'clientTable'">
 
@@ -31,3 +34,4 @@
 </table>
 
 <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+</mat-card>

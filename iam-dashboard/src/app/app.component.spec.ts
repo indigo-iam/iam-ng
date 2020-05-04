@@ -42,18 +42,6 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'iam-dashboard'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('IAM Dashboard');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('mat-toolbar')).nativeElement.textContent).toContain('IAM Dashboard');
-  });
-
   it('should show loading bar when navigating', () => {
     mockRouter.events = of(new NavigationStart(0, ''));
     const fixture = TestBed.createComponent(AppComponent);

@@ -10,6 +10,7 @@ import { EmailConfirmationComponent } from './user/email-confirmation/email-conf
 import { RegistrationRequestsComponent } from './user/registration-requests/registration-requests.component';
 import { PermissionDeniedComponent } from './utils/permission-denied/permission-denied.component';
 import { ClientManagementComponent } from './client/client-management/client-management.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 const routes: Routes = [
   {
@@ -33,20 +34,26 @@ const routes: Routes = [
     component: EmailConfirmationComponent
   },
   {
-    path: ':realm/dashboard/requests/registration',
-    component: RegistrationRequestsComponent,
-    data: {
-      roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
-    },
-    canActivate: [AppAuthGuard] // Run the auth guard against the page
-  },
-  {
-    path: ':realm/client-management',
-    component: ClientManagementComponent,
-    data: {
-      roles: ['iam-admin']
-    },
-    canActivate: [AppAuthGuard]
+    path: '',
+    component: NavigationComponent,
+    children: [
+      {
+        path: ':realm/dashboard/requests/registration',
+        component: RegistrationRequestsComponent,
+        data: {
+          roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
+        },
+        canActivate: [AppAuthGuard] // Run the auth guard against the page
+      },
+      {
+        path: ':realm/client-management',
+        component: ClientManagementComponent,
+        data: {
+          roles: ['iam-admin']
+        },
+        canActivate: [AppAuthGuard]
+      }
+    ]
   },
   {
     path: '**',

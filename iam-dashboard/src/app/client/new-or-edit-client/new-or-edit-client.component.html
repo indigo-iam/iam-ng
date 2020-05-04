@@ -7,7 +7,7 @@
     <button mat-raised-button (click)="setClientProtocol('saml')">SAML</button>
   </div>
 
-  <form [formGroup]="openIdForm" layout-align="center" *ngIf="clientProtocol == 'openid-connect' || !newClient">
+  <form [formGroup]="openIdForm" layout-align="center" *ngIf="!newClient || clientProtocol == 'openid-connect'">
     <mat-form-field appearance="outline" class="large-input">
       <mat-label>Client ID</mat-label>
       <input matInput formControlName="id">
@@ -68,7 +68,7 @@
 
     <br>
 
-    <section *ngIf="data.client.protocol == 'openid-connect'">
+    <section *ngIf="clientProtocol == 'openid-connect' || data.client.protocol == 'openid-connect'">
       <mat-label>Is this a public client? (e.g. a single page app where you cannot securely store a secret)</mat-label>
       <mat-checkbox formControlName="public"></mat-checkbox>
     </section>

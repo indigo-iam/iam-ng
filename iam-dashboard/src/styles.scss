@@ -8,6 +8,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   max-width: 50em;
   margin-right: auto;
   margin-left: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .logo {

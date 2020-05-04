@@ -1,11 +1,10 @@
 <mat-card class="page-basic page-card">
 
   <mat-card-title *ngIf="attributeExists('loginTitle')" [innerHtml]="getCustomAttribute('loginTitle')"></mat-card-title>
-  <mat-card-title *ngIf="!attributeExists('loginTitle')">Login for {{ realmName }}</mat-card-title>
+  <mat-card-title *ngIf="!attributeExists('loginTitle')">Login for {{ realmName | uppercase }}</mat-card-title>
 
   <div class="login-buttons">
+    <button mat-raised-button routerLink="dashboard" routerLinkActive="active">Access the dashboard</button>
     <button mat-raised-button routerLink="register" routerLinkActive="active">Register</button>
-    <button mat-raised-button routerLink="register" routerLinkActive="active">Local Login</button>
-    <button mat-raised-button routerLink="register" routerLinkActive="active">Login with eduGAIN</button>
   </div>
 </mat-card>

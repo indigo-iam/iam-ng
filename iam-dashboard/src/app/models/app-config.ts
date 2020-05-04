@@ -4,5 +4,4 @@ export interface AppConfig {
   keycloakClientId: string;
   fallbackRealm: string;
   customAttributes: any;
-  loginOrder: any;
 }

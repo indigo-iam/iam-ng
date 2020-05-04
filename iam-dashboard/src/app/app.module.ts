@@ -41,12 +41,13 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { NavigationComponent } from './navigation/navigation.component';
+import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent, RealmChooserComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

@@ -61,13 +61,4 @@ export class AppConfigService {
     }
   }
 
-  getLoginOrder(realm: string) {
-    const loginOrder = this.appConfig.loginOrder;
-    if (loginOrder.hasOwnProperty(realm)) {
-      return loginOrder[realm];
-    }
-
-    return null;
-  }
-
 }

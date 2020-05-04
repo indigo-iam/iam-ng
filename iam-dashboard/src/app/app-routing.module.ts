@@ -11,6 +11,7 @@ import { RegistrationRequestsComponent } from './user/registration-requests/regi
 import { PermissionDeniedComponent } from './utils/permission-denied/permission-denied.component';
 import { ClientManagementComponent } from './client/client-management/client-management.component';
 import { NavigationComponent } from './navigation/navigation.component';
+import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: '403',
     component: PermissionDeniedComponent
+  },
+  {
+    path: '',
+    component: RealmChooserComponent
   },
   {
     path: ':realm',

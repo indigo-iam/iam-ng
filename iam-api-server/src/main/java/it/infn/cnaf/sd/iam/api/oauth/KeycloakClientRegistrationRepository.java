@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
 
 import it.infn.cnaf.sd.iam.api.apis.configuration.RealmConfigurationService;
 import it.infn.cnaf.sd.iam.api.apis.configuration.dto.RealmConfigurationDTO;
-import it.infn.cnaf.sd.iam.api.properties.IamProperties;
+import it.infn.cnaf.sd.iam.api.common.utils.RealmUtils;
 
 @Service
 public class KeycloakClientRegistrationRepository implements ClientRegistrationRepository {
@@ -20,33 +20,30 @@ public class KeycloakClientRegistrationRepository implements ClientRegistrationR
 
   private final Map<String, ClientRegistration> registeredClients = Maps.newConcurrentMap();
 
-  private final IamProperties properties;
+  private final RealmUtils realmUtils;
   private final OidcConfigurationFetcher fetcher;
   private final RealmConfigurationService realmConfigService;
 
-  public KeycloakClientRegistrationRepository(IamProperties properties,
+
+  public KeycloakClientRegistrationRepository(RealmUtils realmUtils,
       OidcConfigurationFetcher configFetcher, RealmConfigurationService realmConfigService) {
-    this.properties = properties;
+    this.realmUtils = realmUtils;
     this.fetcher = configFetcher;
     this.realmConfigService = realmConfigService;
-  }
-
-  protected String buildTokenEndpoint(String realmName) {
-    Map<String, Object> openidConfig = fetcher.loadConfigurationForIssuer(
-        String.format("%s/%s", properties.getKeycloakBaseUrl(), realmName));
-
-    return (String) openidConfig.get(TOKEN_ENDPOINT_CFG_KEY);
   }
 
   protected ClientRegistration resolveClient(String realmName) {
     RealmConfigurationDTO realmConfig = realmConfigService.getRealmConfiguration(realmName);
 
+    Map<String, Object> openidConfig =
+        fetcher.loadConfigurationForIssuer(realmUtils.realmTrustedTokenIssuerAsString(realmName));
+
     ClientRegistration.Builder clientBuilder = ClientRegistration.withRegistrationId(realmName)
       .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
       .clientId(realmConfig.getKc().getClientId())
-      .clientSecret(realmConfig.getKc().getClientId())
-      .providerConfigurationMetadata(fetcher.loadConfigurationForIssuer(
-          String.format("%s/%s", properties.getKeycloakBaseUrl(), realmName)));
+      .clientSecret(realmConfig.getKc().getClientSecret())
+      .providerConfigurationMetadata(openidConfig)
+      .tokenUri((String) openidConfig.get(TOKEN_ENDPOINT_CFG_KEY));
 
     return clientBuilder.build();
   }

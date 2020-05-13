@@ -15,12 +15,24 @@
  */
 package it.infn.cnaf.sd.iam.api.common.error;
 
+import org.springframework.validation.BindingResult;
+
 public class ValidationError extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
+  private final BindingResult validationResult;
+
   public ValidationError(String message) {
-    super(message);
+    this(message, null);
   }
 
+  public ValidationError(String message, BindingResult validationResult) {
+    super(message);
+    this.validationResult = validationResult;
+  }
+
+  public BindingResult getValidationResult() {
+    return validationResult;
+  }
 }

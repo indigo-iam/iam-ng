@@ -1,108 +1,116 @@
 package it.infn.cnaf.sd.iam.api.apis.requests;
 
-import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.confirmed;
-import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.approved;
-import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.rejected;
+import static com.google.common.collect.Lists.newArrayList;
+import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision.approve;
+import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestOutcomeDTO.newOutcomeDto;
+import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.done;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 import java.time.Clock;
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
 
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 
-import it.infn.cnaf.sd.iam.api.apis.users.UserService;
+import it.infn.cnaf.sd.iam.api.apis.registrations.RegistrationRequestMapper;
+import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestOutcomeDTO;
+import it.infn.cnaf.sd.iam.api.common.dto.ListResponseDTO;
+import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
-import it.infn.cnaf.sd.iam.persistence.entity.EmailEntity;
-import it.infn.cnaf.sd.iam.persistence.entity.MetadataEntity;
+import it.infn.cnaf.sd.iam.api.kc.KeycloakClient;
+import it.infn.cnaf.sd.iam.api.kc.KeycloakClientRepository;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
-import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus;
-import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
 import it.infn.cnaf.sd.iam.persistence.repository.RegistrationRequestRepository;
 
 @Service
-public class DefaultRequestsService implements RequestsService {
+@Transactional
+public class DefaultRequestsService implements RequestsService, KeycloakAttributes {
+
+  public static final String APPROVED_TEMPLATE = "Request %s approved (User %s has been created)";
+  public static final String REJECTED_TEMPLATE = "Request %s rejected";
 
   final Clock clock;
   final RegistrationRequestRepository repo;
-  final UserService userService;
+  final RegistrationRequestMapper mapper;
+  final KeycloakClientRepository kcRepo;
+
 
   @Autowired
   public DefaultRequestsService(Clock clock, RegistrationRequestRepository repo,
-      UserService userService) {
+      RegistrationRequestMapper mapper, KeycloakClientRepository kcRepo) {
     this.clock = clock;
     this.repo = repo;
-    this.userService = userService;
+    this.mapper = mapper;
+    this.kcRepo = kcRepo;
   }
 
   @Override
-  public Page<RegistrationRequestEntity> getPendingRequests(Pageable pageable) {
-    return repo.findByRealmNameAndStatus(RealmContext.getCurrentRealmName(),
-        RegistrationRequestStatus.confirmed, pageable);
+  public ListResponseDTO<RegistrationRequestDTO> getPendingRequests(Pageable pageable) {
+
+    ListResponseDTO.Builder<RegistrationRequestDTO> result = ListResponseDTO.builder();
+
+    Page<RegistrationRequestEntity> pendingRequests =
+        repo.findByRealmNamePending(RealmContext.getCurrentRealmName(), pageable);
+
+    result.fromPage(pendingRequests);
+
+    result.resources(pendingRequests.get().map(mapper::entityToDto).collect(toList()));
+    return result.build();
   }
 
   protected void requestStatusSanityChecks(RegistrationRequestEntity request) {
-    if (!request.getStatus().equals(confirmed)) {
-      throw new IllegalArgumentException("Invalid request status: " + request.getStatus());
+    if (done.equals(request.getStatus())) {
+      throw new InvalidRequestError("Request already handled");
     }
   }
 
 
-  protected UserEntity userFromRequest(RegistrationRequestEntity request) {
+  protected UserRepresentation userFromRequest(RegistrationRequestEntity request) {
 
-    UserEntity user = new UserEntity();
+    UserRepresentation user = new UserRepresentation();
 
-    user.setUuid(UUID.randomUUID().toString());
-    user.setMetadata(MetadataEntity.fromCurrentInstant(clock));
-
-    user.setGivenName(request.getRequesterInfo().getGivenName());
-    user.setFamilyName(request.getRequesterInfo().getFamilyName());
     user.setUsername(request.getRequesterInfo().getUsername());
-    user.setEmails(Sets.newHashSet());
-
-    EmailEntity e = new EmailEntity();
-    e.setVerified(true);
-    e.setPrimary(true);
-    e.setEmail(request.getRequesterInfo().getEmail());
-    user.getEmails().add(e);
-    user.setActive(true);
+    user.setEmail(request.getRequesterInfo().getEmail());
+    user.setEmailVerified(true);
+    user.setFirstName(request.getRequesterInfo().getGivenName());
+    user.setLastName(request.getRequesterInfo().getFamilyName());
+    user.setAttributes(Maps.newHashMap());
+    user.getAttributes().put(REGISTRATION_REQUEST_ID, newArrayList(request.getUuid()));
+    user.setEnabled(true);
 
     return user;
   }
 
-  @Override
-  public RegistrationRequestEntity approveRequest(RegistrationRequestEntity request) {
-
-    requestStatusSanityChecks(request);
-
-    final Instant now = clock.instant();
-    request.getMetadata().setLastUpdateTime(Date.from(now));
-    request.setOutcome(approved);
-
-    UserEntity user = userFromRequest(request);
-    userService.createUser(user);
-    repo.save(request);
-
-    return request;
+  private RegistrationRequestEntity findRequest(String requestId) {
+    return repo.findByRealmNameAndUuid(RealmContext.getCurrentRealmName(), requestId)
+      .orElseThrow(requestNotFound(requestId));
   }
 
-
   @Override
-  public RegistrationRequestEntity rejectRequest(RegistrationRequestEntity request) {
-    
+  public RequestOutcomeDTO setRequestDecision(String requestId, RequestDecision decision) {
+
+    RegistrationRequestEntity request = findRequest(requestId);
     requestStatusSanityChecks(request);
-    
-    final Instant now = clock.instant();
-    request.getMetadata().setLastUpdateTime(Date.from(now));
-    request.setOutcome(rejected);
-    
-    repo.save(request);
-    return request;
+
+    if (approve.equals(decision)) {
+      request.approve(clock);
+      KeycloakClient kcClient = kcRepo.getKeycloakClient();
+      UserRepresentation user = kcClient.createUser(userFromRequest(request));
+      return newOutcomeDto(format(APPROVED_TEMPLATE, request.getUuid(), user.getUsername()),
+          mapper.entityToDto(request));
+    } else {
+      request.reject(clock);;
+      return newOutcomeDto(format(REJECTED_TEMPLATE, request.getUuid()),
+          mapper.entityToDto(request));
+    }
   }
 
 }

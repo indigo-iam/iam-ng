@@ -16,10 +16,12 @@
 package it.infn.cnaf.sd.iam.api.registration;
 
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.created;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,9 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Clock;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +47,8 @@ import it.infn.cnaf.sd.iam.api.apis.error.ErrorUtils;
 import it.infn.cnaf.sd.iam.api.apis.registrations.RegistrationRequestMapper;
 import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestCreationResultDTO;
 import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
+import it.infn.cnaf.sd.iam.api.kc.KeycloakClient;
+import it.infn.cnaf.sd.iam.api.kc.KeycloakClientRepository;
 import it.infn.cnaf.sd.iam.api.utils.ClockUtils;
 import it.infn.cnaf.sd.iam.api.utils.IamTest;
 import it.infn.cnaf.sd.iam.api.utils.IntegrationTestSupport;
@@ -66,7 +74,20 @@ public class RegistrationCrudTests extends IntegrationTestSupport
   @Autowired
   ObjectMapper mapper;
 
+  @MockBean
+  KeycloakClientRepository repo;
+
+  @Mock
+  KeycloakClient client;
+
   Clock clock = ClockUtils.TEST_CLOCK;
+
+  @Before
+  public void setup() {
+    when(repo.getKeycloakClient()).thenReturn(client);
+    when(client.emailAvailable(Mockito.anyString())).thenReturn(true);
+    when(client.usernameAvailable(Mockito.anyString())).thenReturn(true);
+  }
 
   @Test
   public void testInvalidRequestAccess() throws Exception {
@@ -87,6 +108,56 @@ public class RegistrationCrudTests extends IntegrationTestSupport
       .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
         .contentType(APPLICATION_JSON))
       .andExpect(status().isCreated());
+  }
+
+  @Test
+  public void testRequestValidation() throws Exception {
+
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated());
+
+    mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errorDescription").value("Invalid registration request"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
+        .value(hasItem("Username is not available")))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
+          .value(hasItem("Email is not available")));
+  }
+
+  @Test
+  public void testKeycloakRequestValidation() throws Exception {
+
+    when(client.emailAvailable(Mockito.anyString())).thenReturn(false);
+    when(client.usernameAvailable(Mockito.anyString())).thenReturn(false);
+
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errorDescription").value("Invalid registration request"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
+        .value(hasItem("Username is not available")))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
+          .value(hasItem("Email is not available")));
+
+
   }
 
   @Test
@@ -153,11 +224,11 @@ public class RegistrationCrudTests extends IntegrationTestSupport
     mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", validEmailChallenge))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.message").value("Request confirmed succesfully"));
-    
-    
+
+
     mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", validEmailChallenge))
-    .andExpect(status().isNotFound());
-    
+      .andExpect(status().isNotFound());
+
   }
 
   @Test

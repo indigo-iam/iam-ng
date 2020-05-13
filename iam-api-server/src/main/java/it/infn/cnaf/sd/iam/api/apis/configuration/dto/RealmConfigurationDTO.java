@@ -9,7 +9,6 @@ public class RealmConfigurationDTO {
   private KcClient kc;
 
   public RealmConfigurationDTO() {
-    // TODO Auto-generated constructor stub
   }
 
   public KcClient getKc() {

@@ -15,17 +15,26 @@
  */
 package it.infn.cnaf.sd.iam.api.apis.requests;
 
-import org.springframework.data.domain.Page;
+import java.util.function.Supplier;
+
 import org.springframework.data.domain.Pageable;
 
-import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
+import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestOutcomeDTO;
+import it.infn.cnaf.sd.iam.api.common.dto.ListResponseDTO;
+import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 
 public interface RequestsService {
 
-  Page<RegistrationRequestEntity> getPendingRequests(Pageable pageable);
-  
-  RegistrationRequestEntity approveRequest(RegistrationRequestEntity request);
-  
-  RegistrationRequestEntity rejectRequest(RegistrationRequestEntity request);
+  String NOT_FOUND_TEMPLATE = "Request not found for id: %s";
+  default Supplier<NotFoundError> requestNotFound(String requestId) {
+    return () -> new NotFoundError(String.format(NOT_FOUND_TEMPLATE, requestId));
+  }
 
+  ListResponseDTO<RegistrationRequestDTO> getPendingRequests(Pageable pageable);
+  
+  RequestOutcomeDTO setRequestDecision(String requestId, RequestDecision decision);
+
+  
 }

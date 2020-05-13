@@ -15,8 +15,6 @@
  */
 package it.infn.cnaf.sd.iam.api.common.utils;
 
-import static it.infn.cnaf.sd.iam.api.common.utils.ValidationErrorMessageHelper.buildValidationErrorMessage;
-
 import org.springframework.validation.BindingResult;
 
 import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
@@ -27,8 +25,7 @@ public class ValidationHelper {
       final BindingResult validationResult) {
 
     if (validationResult.hasErrors()) {
-      throw new ValidationError(
-          buildValidationErrorMessage(message, validationResult));
+      throw new ValidationError(message, validationResult);
     }
   }
 

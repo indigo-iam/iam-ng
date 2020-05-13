@@ -15,6 +15,7 @@
  */
 package it.infn.cnaf.sd.iam.api.groups;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -125,7 +126,10 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("group name cannot be blank")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.name')].fieldError")
+        .value("the group name cannot be blank"));
+
 
     // Invalid Group name
     group = new GroupDTO();
@@ -135,7 +139,10 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("does not match with regexp")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.name')].fieldError")
+        .value("invalid group name"));
+
 
     // Group name too long
     group = new GroupDTO();
@@ -145,12 +152,15 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("group name cannot be longer")));
-    
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.name')].fieldError",
+          hasItem("the group name cannot be longer than 512 chars")));
+
+
     // Group name plus parent too long
     group = new GroupDTO();
     group.setName(RandomStringUtils.randomAlphabetic(508));
-    
+
     GroupRefDTO parentRef = new GroupRefDTO();
     parentRef.setName("alice");
     group.setParentGroup(parentRef);
@@ -159,7 +169,9 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("composite group name exceeds")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.globalErrors",
+          hasItem(containsString("composite group name exceeds"))));
 
     // Invalid group description
     group = new GroupDTO();
@@ -170,7 +182,9 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("does not match with regexp")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.description')].fieldError",
+          hasItem(containsString("invalid group description"))));
 
     // Group description too long
     group = new GroupDTO();
@@ -181,8 +195,9 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(
-          jsonPath("$.errorDescription", containsString("group description cannot be longer")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.description')].fieldError",
+          hasItem(containsString("group description cannot be longer"))));
 
     // null parent ref
     group = new GroupDTO();
@@ -194,7 +209,9 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("group ref name cannot be blank")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.parentGroup.name')].fieldError",
+          hasItem(containsString("group ref name cannot be blank"))));
 
     // invalid parent ref
     group = new GroupDTO();
@@ -207,7 +224,9 @@ public class GroupsCrudTests extends IntegrationTestSupport {
       .perform(post("/Realms/alice/Groups").content(mapper.writeValueAsString(group))
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errorDescription", containsString("Invalid group name")));
+      .andExpect(jsonPath("$.errorDescription").value("Invalid group representation"))
+      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'groupDTO.parentGroup.name')].fieldError",
+          hasItem(containsString("Invalid group name"))));
 
   }
 
@@ -266,7 +285,8 @@ public class GroupsCrudTests extends IntegrationTestSupport {
   @WithMockUser
   @Test
   public void testGroupDeletionRequiresOwnerPrivileges() throws Exception {
-    mvc.perform(get("/Realms/alice/Groups/{id}", ALICE_GROUP_UUID)).andExpect(status().isForbidden());
+    mvc.perform(get("/Realms/alice/Groups/{id}", ALICE_GROUP_UUID))
+      .andExpect(status().isForbidden());
   }
 
   @WithMockUser

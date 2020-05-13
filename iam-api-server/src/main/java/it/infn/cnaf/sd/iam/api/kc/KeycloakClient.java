@@ -1,9 +1,12 @@
 package it.infn.cnaf.sd.iam.api.kc;
 
-import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
+import org.keycloak.representations.idm.UserRepresentation;
 
 public interface KeycloakClient {
 
-  void createUser(RegistrationRequestEntity request);
+  UserRepresentation createUser(UserRepresentation user);
   
+  boolean emailAvailable(String email);
+  
+  boolean usernameAvailable(String username);
 }

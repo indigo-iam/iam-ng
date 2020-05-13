@@ -37,12 +37,12 @@ public class GroupDTO {
   @NotBlank(message = "the group name cannot be blank")
   @Size(max = 512, message = "the group name cannot be longer than 512 chars")
   @Pattern(regexp = GROUP_NAME_REGEXP,
-      message = "invalid group name (does not match with regexp: '" + GROUP_NAME_REGEXP + "')")
+      message = "invalid group name")
   private String name;
 
   @Size(max = 512, message = "the group description cannot be longer than 512 chars")
   @Pattern(regexp = GROUP_DESCRIPTION_REGEXP,
-    message = "invalid group description (does not match with regexp: '" + GROUP_DESCRIPTION_REGEXP + "')")
+    message = "invalid group description")
   private String description;
 
   private MetadataDTO metadata;

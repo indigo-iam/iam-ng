@@ -23,13 +23,13 @@ public class ErrorDTO {
   final String errorDescription;
   final String errorDetail;
 
-  private ErrorDTO(String error, String errorDescription, String detail) {
+  protected ErrorDTO(String error, String errorDescription, String detail) {
     this.error = error;
     this.errorDescription = errorDescription;
     this.errorDetail = detail;
   }
   
-  private ErrorDTO(String error) {
+  protected ErrorDTO(String error) {
     this(error,null, null);
   }
 

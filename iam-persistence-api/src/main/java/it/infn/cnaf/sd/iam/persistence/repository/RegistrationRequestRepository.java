@@ -28,13 +28,17 @@ import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.Registra
 public interface RegistrationRequestRepository
     extends PagingAndSortingRepository<RegistrationRequestEntity, Long> {
 
-  Page<RegistrationRequestEntity> findByRealmName(String realmName, Pageable page); 
+  Page<RegistrationRequestEntity> findByRealmName(String realmName, Pageable page);
 
   @Query("select r from RegistrationRequestEntity r join r.labels l where r.realm.name = :realmName and "
       + "l.prefix is null and l.name = :labelKey and l.value = :labelValue")
   Page<RegistrationRequestEntity> findByRealmNameAndLabelValue(String realmName, String labelKey,
       String labelValue, Pageable page);
 
+  @Query("select r from RegistrationRequestEntity r where r.realm.name = :realmName and "
+      + "r.status in ('created', 'confirmed')")
+  Page<RegistrationRequestEntity> findByRealmNamePending(String realmName, Pageable page);
+  
   Page<RegistrationRequestEntity> findByRealmNameAndStatus(String realmName,
       RegistrationRequestStatus status, Pageable page);
 
@@ -42,5 +46,15 @@ public interface RegistrationRequestRepository
 
   Optional<RegistrationRequestEntity> findByRealmNameAndEmailChallenge(String realmName,
       String emailChallenge);
+
+  @Query("select r from RegistrationRequestEntity r where r.realm.name = :realmName and "
+      + "r.requesterInfo.email = :email")
+  Optional<RegistrationRequestEntity> findByRealmNameAndEmail(String realmName,
+      String email);
+
+  @Query("select r from RegistrationRequestEntity r where r.realm.name = :realmName and "
+      + "r.requesterInfo.username = :username")
+  Optional<RegistrationRequestEntity> findByRealmNameAndUsername(String realmName,
+      String username);
 
 }

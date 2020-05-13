@@ -49,10 +49,17 @@
     <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
     <flyway-test-extensions.version>6.1.0</flyway-test-extensions.version>
     <test-containers.version>1.12.5</test-containers.version>
+    <kc.version>9.0.3</kc.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-admin-client</artifactId>
+        <version>${kc.version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
@@ -91,13 +98,13 @@
         <artifactId>springdoc-openapi-ui</artifactId>
         <version>${springdoc-openapi.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-security</artifactId>
         <version>${springdoc-openapi.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-data-rest</artifactId>

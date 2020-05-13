@@ -17,16 +17,19 @@ package it.infn.cnaf.sd.iam.api.apis.registrations.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import it.infn.cnaf.sd.iam.api.apis.registrations.validator.EmailAvailable;
+import it.infn.cnaf.sd.iam.api.apis.registrations.validator.UsernameAvailable;
 import it.infn.cnaf.sd.iam.api.apis.users.dto.UserDTO;
 
 public class RequesterInfoDTO {
 
   @Pattern(regexp = UserDTO.USERNAME_REGEXP,
       message = "invalid username (does not match with regexp: '" + UserDTO.USERNAME_REGEXP + "')")
+  @UsernameAvailable
   private String username;
   
   @Pattern(regexp = UserDTO.NO_SPECIAL_CHARACTERS_REGEXP,
@@ -39,6 +42,7 @@ public class RequesterInfoDTO {
   
   @Email(message = "value provided is not a valid email address")
   @NotBlank(message = "email cannot be blank")
+  @NotNull(message = "email cannot be null")
   @Size(max = 128, message = "email too long")
   @EmailAvailable
   private String email;

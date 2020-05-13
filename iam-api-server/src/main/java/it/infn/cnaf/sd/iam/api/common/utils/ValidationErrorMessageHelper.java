@@ -15,13 +15,38 @@
  */
 package it.infn.cnaf.sd.iam.api.common.utils;
 
+import static it.infn.cnaf.sd.iam.api.common.dto.FieldErrorDTO.newFieldError;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import it.infn.cnaf.sd.iam.api.common.dto.ValidationErrorDTO;
+import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
+
 public class ValidationErrorMessageHelper {
 
   private ValidationErrorMessageHelper() {}
+
+  public static ValidationErrorDTO buildValidationErrorDto(ValidationError error) {
+    ValidationErrorDTO errorDto = new ValidationErrorDTO(error.getMessage());
+
+    errorDto.setGlobalErrors(error.getValidationResult()
+      .getGlobalErrors()
+      .stream()
+      .map(ObjectError::getDefaultMessage)
+      .collect(toList()));
+
+    errorDto.setFieldErrors(error.getValidationResult()
+      .getFieldErrors()
+      .stream()
+      .map(e -> newFieldError(format("%s.%s", e.getObjectName(), e.getField()), e.getDefaultMessage()))
+      .collect(toList()));
+
+    return errorDto;
+  }
 
   public static String buildValidationErrorMessage(String errorMessage,
       BindingResult validationResult) {
@@ -46,7 +71,7 @@ public class ValidationErrorMessageHelper {
       } else {
 
         validationError
-            .append(String.format("[%s : %s]", error.getObjectName(), error.getDefaultMessage()));
+          .append(String.format("[%s : %s]", error.getObjectName(), error.getDefaultMessage()));
       }
 
       first = false;

@@ -59,8 +59,7 @@ public class SecurityBeans {
       .build(loader);
 
     repo.findAll().forEach(realm -> {
-      final String realmIssuer =
-          String.format("%s/%s", properties.getKeycloakBaseUrl(), realm.getName());
+      final String realmIssuer = utils.realmTrustedTokenIssuerAsString(realm.getName());
       LOG.info("Initializing OAuth trusted issuer: {} for realm: {}", realmIssuer, realm.getName());
 
       try {

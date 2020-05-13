@@ -33,7 +33,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <keycloak.version>9.0.0</keycloak.version>
     <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
     <jboss-ejb-api_3.2_spec.version>1.0.0.Final</jboss-ejb-api_3.2_spec.version>
   </properties>
@@ -43,7 +42,7 @@
       <dependency>
         <groupId>org.keycloak.bom</groupId>
         <artifactId>keycloak-spi-bom</artifactId>
-        <version>${keycloak.version}</version>
+        <version>${kc.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

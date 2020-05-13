@@ -55,6 +55,7 @@ public class IamProperties {
     }
   }
 
+  // This needs to be constant, that's why TimeUnit is not used for the conversion
   public static final int T_48_HOURS_IN_MINUTES = 48 * 60;
 
   @Min(value = 0, message = "Please provide a zero or positive OAuth keys refresh period")
@@ -63,7 +64,10 @@ public class IamProperties {
   int oauthKeysRefreshPeriodMinutes = (int) TimeUnit.HOURS.toMinutes(1);
 
   @NotBlank(message = "Please provide a keycloak base URL")
-  String keycloakBaseUrl = "http://localhost:8080/auth/realms";
+  String keycloakBaseUrl = "http://localhost:8080/auth";
+  
+  @NotBlank(message = "Please provide a keycloak admin base URL")
+  String keycloakAdminBaseUrl = "http://localhost:8080/auth";
 
   @NotBlank(message = "Please provide a base URL for this API server")
   String apiBaseUrl = "http://localhost:9876";
@@ -89,6 +93,14 @@ public class IamProperties {
     this.keycloakBaseUrl = keycloakBaseUrl;
   }
 
+  public String getKeycloakAdminBaseUrl() {
+    return keycloakAdminBaseUrl;
+  }
+  
+  public void setKeycloakAdminBaseUrl(String keycloakAdminBaseUrl) {
+    this.keycloakAdminBaseUrl = keycloakAdminBaseUrl;
+  }
+  
   public String getApiBaseUrl() {
     return apiBaseUrl;
   }
@@ -96,7 +108,7 @@ public class IamProperties {
   public void setApiBaseUrl(String apiBaseUrl) {
     this.apiBaseUrl = apiBaseUrl;
   }
-
+  
   public String getDashboardBaseUrl() {
     return dashboardBaseUrl;
   }

@@ -30,7 +30,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = EmailAvailableValidator.class)
 public @interface EmailAvailable {
 
-  String message() default "Email already bound to an existing user";
+  String message() default "Email is not available";
 
   Class<?>[] groups() default {};
 

@@ -1,6 +1,8 @@
 #/bin/bash
 set -ex
 
+UUID_GREP_EXP='[a-fA-F0-9]\{8\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{12\}'
+
 JBOSS_HOME=/opt/jboss/keycloak
 KC_CLI=${JBOSS_HOME}/bin/kcadm.sh
 
@@ -43,13 +45,25 @@ for realm in ${IAM_REALM_NAMES}; do
     -s enabled=true \
     -s clientAuthenticatorType=client-secret \
     -s secret=${IAM_API_CLIENT_SECRET} \
-    -s bearerOnly=true
+    -s serviceAccountsEnabled=true \
+    -s standardFlowEnabled=false \
+    -s description="The IAM API server client registration"
+
+  # api_client_id=$(${KC_CLI} get clients -r ${realm} -q clientId=${IAM_API_CLIENT_NAME} --fields id | grep -o -e ${UUID_GREP_EXP} )
+
+  ## Add management roles for the realm
+  ${KC_CLI} add-roles -r ${realm} \
+    --uusername service-account-${IAM_API_CLIENT_NAME} \
+    --cclientid realm-management \
+    --rolename manage-users \
+    --rolename manage-clients 
 
   ${KC_CLI} create clients -r ${realm} \
     -s clientId=${IAM_DASHBOARD_CLIENT_NAME} \
     -s enabled=true \
     -s publicClient=true \
-    -s 'redirectUris=["'${IAM_DASHBOARD_BASE_URL}'/*"]' 
+    -s 'redirectUris=["'${IAM_DASHBOARD_BASE_URL}'/*"]'  \
+    -s description="The IAM API server dashboard"
 
   admin_id=$(${KC_CLI} create users -r ${realm} -s username=${IAM_ADMIN_USER} -i)
 

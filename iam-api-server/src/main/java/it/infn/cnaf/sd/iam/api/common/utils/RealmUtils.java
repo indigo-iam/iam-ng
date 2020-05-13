@@ -33,6 +33,10 @@ public class RealmUtils {
   public RealmUtils(IamProperties properties) {
     this.properties = properties;
   }
+  
+  public String realmTrustedTokenIssuerAsString(String realmName) {
+    return String.format("%s/realms/%s", properties.getKeycloakBaseUrl(), realmName);
+  }
 
   public URL realmTrustedTokenIssuer() {
     String currentRealm = RealmContext.getCurrentRealmName();
@@ -41,7 +45,7 @@ public class RealmUtils {
     }
 
     try {
-      return new URL(String.format("%s/%s", properties.getKeycloakBaseUrl(), currentRealm));
+      return new URL(realmTrustedTokenIssuerAsString(currentRealm));
     } catch (MalformedURLException e) {
       throw new IllegalArgumentException(e);
     }

@@ -1,49 +1,50 @@
 package it.infn.cnaf.sd.iam.api.kc;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import javax.ws.rs.core.Response;
 
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpStatus;
 
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
-import it.infn.cnaf.sd.iam.api.properties.IamProperties;
-import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
 
-@Component
 public class DefaultKeycloakClient implements KeycloakClient {
 
   public static final Logger LOG = LoggerFactory.getLogger(DefaultKeycloakClient.class);
 
-  final WebClient client;
-  final IamProperties properties;
-  final KeycloakUserMapper mapper;
+  final Keycloak kc;
 
   @Autowired
-  public DefaultKeycloakClient(WebClient client, IamProperties properties,
-      KeycloakUserMapper mapper) {
-    this.client = client;
-    this.properties = properties;
-    this.mapper = mapper;
-  }
-
-  private String createUserUri(String realm) {
-    return String.format("%s/%s/users", properties.getKeycloakBaseUrl(), realm);
+  public DefaultKeycloakClient(Keycloak kc) {
+    this.kc = kc;
   }
 
   @Override
-  public void createUser(RegistrationRequestEntity request) {
+  public UserRepresentation createUser(UserRepresentation user) {
     final String realm = RealmContext.getCurrentRealmName();
 
-    client.post()
-      .uri(createUserUri(realm))
-      .attributes(ServletOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId(realm))
-      .contentType(APPLICATION_JSON)
-      .bodyValue(mapper.toUserDto(request))
-      .retrieve();
+    Response response = kc.realm(realm).users().create(user);
+    
+    if (response.getStatus() != HttpStatus.OK.value()) {
+      throw new KeycloakError(response.getStatusInfo().getReasonPhrase());
+    }
+
+    return kc.realm(realm).users().search(user.getUsername()).get(0);
+  }
+
+  @Override
+  public boolean emailAvailable(String email) {
+    final String realm = RealmContext.getCurrentRealmName();
+    return kc.realm(realm).users().count(null, null, email, null) == 0;
+  }
+
+  @Override
+  public boolean usernameAvailable(String username) {
+    final String realm = RealmContext.getCurrentRealmName();
+    return kc.realm(realm).users().count(null, null, null, username) == 0;
   }
 
 }

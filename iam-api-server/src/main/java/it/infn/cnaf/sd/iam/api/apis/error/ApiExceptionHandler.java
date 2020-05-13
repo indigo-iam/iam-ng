@@ -31,6 +31,8 @@ import it.infn.cnaf.sd.iam.api.common.dto.ErrorDTO;
 import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 import it.infn.cnaf.sd.iam.api.common.error.ValidationError;
+import it.infn.cnaf.sd.iam.api.common.utils.ValidationErrorMessageHelper;
+import it.infn.cnaf.sd.iam.api.kc.KeycloakError;
 
 @RestControllerAdvice
 public class ApiExceptionHandler implements ErrorUtils {
@@ -38,7 +40,7 @@ public class ApiExceptionHandler implements ErrorUtils {
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(ValidationError.class)
   public ErrorDTO handleValidationError(ValidationError e) {
-    return newError(HttpStatus.BAD_REQUEST, e.getMessage());
+    return ValidationErrorMessageHelper.buildValidationErrorDto(e);
   }
 
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
@@ -68,6 +70,12 @@ public class ApiExceptionHandler implements ErrorUtils {
   @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler(RealmConfigurationError.class)
   public ErrorDTO handleInvalidConfiguration(RealmConfigurationError e) {
+    return newError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+  }
+  
+  @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(KeycloakError.class)
+  public ErrorDTO handleKeycloakError(KeycloakError e) {
     return newError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
   }
 

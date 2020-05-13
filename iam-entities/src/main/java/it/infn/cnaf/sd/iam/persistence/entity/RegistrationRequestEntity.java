@@ -15,7 +15,13 @@
  */
 package it.infn.cnaf.sd.iam.persistence.entity;
 
+import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.done;
+import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.approved;
+import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.rejected;
+
 import java.io.Serializable;
+import java.time.Clock;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -220,6 +226,18 @@ public class RegistrationRequestEntity implements Serializable {
   
   public void setOutcome(RequestOutcome outcome) {
     this.outcome = outcome;
+  }
+  
+  public void approve(Clock clock) {
+    getMetadata().setLastUpdateTime(Date.from(clock.instant()));
+    setStatus(done);
+    setOutcome(approved);
+  }
+  
+  public void reject(Clock clock) {
+    getMetadata().setLastUpdateTime(Date.from(clock.instant()));
+    setStatus(done);
+    setOutcome(rejected);
   }
   
   @Override

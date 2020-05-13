@@ -11,8 +11,8 @@ A safe startup procedure to have things running would be:
 ```bash
 $ docker-compose up -d db 
 $ docker-compose up -d kc
-$ docker-compose up -d iam-api
 $ docker-compose up -d nginx
+$ docker-compose up -d iam-api
 ```
 
 ## Configuration

@@ -47,13 +47,20 @@ import javax.persistence.UniqueConstraint;
     @NamedQuery(name = UserEntity.QUERY_GET_USER_BY_EMAIL,
         query = "select u from UserEntity u join u.emails e where u.realm.name = :realm and e.email = :email"),
     @NamedQuery(name = UserEntity.QUERY_GET_USER_BY_UUID,
-        query = "select u from UserEntity u where u.realm.name = :realm and u.uuid = :uuid")}
+        query = "select u from UserEntity u where u.realm.name = :realm and u.uuid = :uuid"),
+    @NamedQuery(name = UserEntity.QUERY_COUNT_REALM_USERS,
+    query = "select count(u) from UserEntity u where u.realm.name = :realm"),
+    @NamedQuery(name = UserEntity.QUERY_GET_REALM_USERS,
+    query = "select distinct u from UserEntity u where u.realm.name = :realm"),
+}
 )
 public class UserEntity {
 
   public static final String QUERY_GET_USER_BY_USERNAME = "getUserByUsername";
   public static final String QUERY_GET_USER_BY_EMAIL = "getUserByEmail";
   public static final String QUERY_GET_USER_BY_UUID = "getUserByUuid";
+  public static final String QUERY_COUNT_REALM_USERS = "countRealmUsers";
+  public static final String QUERY_GET_REALM_USERS = "getRealmUsers";
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -27,4 +27,6 @@ public interface ErrorUtils {
   public default Supplier<NotFoundError> notFoundError(String message) {
     return () -> new NotFoundError(message);
   }
+  
+  
 }

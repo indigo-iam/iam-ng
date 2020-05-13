@@ -20,6 +20,7 @@ volumes:
   data:
   trustanchors:
   cabundle:
+  setup:
 
 services:
   trust:
@@ -29,13 +30,14 @@ services:
       - cabundle:/etc/pki
     environment:
       FORCE_TRUST_ANCHORS_UPDATE: 1
+
   db:
     image: ${DB_IMAGE}
     volumes:
     - data:/var/lib/mysql
 
     environment:
-      TZ: Europe/Rome
+      TZ: UTC
 
     ports:
       - "3306:3306"
@@ -43,26 +45,30 @@ services:
   iam-api:
     image: ${IAM_API_IMAGE}
     environment:
-      TZ: Europe/Rome
-      JAVA_TOOL_OPTIONS: -Dspring.profiles.active=mysql,compose
-      IAM_KC_BASE_URL: http://kc:8080/auth/realms
-      IAM_API_BASE_URL: http://iam-api:9876
+      TZ: UTC
+      JAVA_TOOL_OPTIONS: -Dspring.profiles.active=mysql,compose -Djavax.net.ssl.trustStore=/etc/pki/java/cacerts -Djavax.net.ssl.trustStorePassword=changeit
+      IAM_KC_BASE_URL: https://kc.test.example/auth/realms
+      IAM_API_BASE_URL: https://api.test.example
       IAM_DB_HOST: db
 
     depends_on:
+      - trust
       - db
       - kc
 
     volumes:
       - ./assets/iam-api/application-compose.yml:/iam-ng/config/application-compose.yml:ro
+      - cabundle:/etc/pki
 
     ports:
       - 9876
 
+    command: -debug
+
   nginx:
     image: ${NGINX_IMAGE}
     environment:
-      TZ: Europe/Rome
+      TZ: UTC
 
     depends_on:
       - trust
@@ -83,10 +89,17 @@ services:
           - api.test.example
           - kc.test.example
 
+  kc-setup:
+    image: ${NGINX_IMAGE}
+    volumes:
+      - setup:/iam:rw
+
+    command: chown -R 1000:1000 /iam
+
   kc:
     image: ${KEYCLOAK_IMAGE}
     environment:
-      TZ: Europe/Rome
+      TZ: UTC
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password
       PROXY_ADDRESS_FORWARDING: 'true'
@@ -96,18 +109,26 @@ services:
       DB_USER: kc
       DB_PASSWORD: pwd
       JDBC_PARAMS: useSSL=false
-      IAM_KC_SKIP_SETUP: "true"
+      # IAM_KC_SKIP_SETUP: "false"
       IAM_DASHBOARD_BASE_URL: http://localhost:4200
 
     command: -b 0.0.0.0 --debug 0.0.0.0:8787
 
     volumes:
+      - setup:/iam:rw
       - ./assets/keycloak/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml:rw
       - ./../iam-kc-user-storage-provider-ear/target/iam-kc-user-storage-provider-ear-2.0.0-SNAPSHOT.ear:/opt/jboss/keycloak/standalone/deployments/iam-provider.ear
 
     depends_on:
       - db
+      - kc-setup
 
     ports:
       - 8080
       - "8787:8787"
+
+  cli:
+    image: centos:7
+    command: sleep infinity
+    volumes:
+      - cabundle:/etc/pki

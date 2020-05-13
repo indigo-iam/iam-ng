@@ -105,11 +105,21 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-oauth2-jose</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-oauth2-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.security.oauth.boot</groupId>
       <artifactId>spring-security-oauth2-autoconfigure</artifactId>
       <version>${spring-boot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
     <dependency>
@@ -130,6 +140,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -203,6 +219,11 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
         <configuration>
+          <!-- Uncomment the following to bootstrap from the debug image (provides a shell in /busybox/sh)
+          <from>
+            <image>gcr.io/distroless/java:debug</image>
+          </from>
+          <!-->
           <to>
             <image>indigoiam/iam-api-server</image>
             <tags>

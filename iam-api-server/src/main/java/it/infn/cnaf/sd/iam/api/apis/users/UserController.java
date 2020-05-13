@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,6 +52,7 @@ import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
 @RestController
 @RequestMapping(value = "/Realms/{realm}")
 @PreAuthorize("hasRole('IAM_OWNER')")
+@Transactional
 public class UserController implements UserSupport, ErrorUtils {
 
   private final UserService service;

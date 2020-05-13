@@ -40,8 +40,8 @@ spring:
 
 iam:
   oauth-keys-refresh-period-minutes: 30
-  api-base-url: http://localhost:9876
-  keycloak-base-url: http://localhost:8080
+  api-base-url: ${IAM_API_BASE_URL:http://localhost:9876}
+  keycloak-base-url: ${IAM_KC_BASE_URL:http://localhost:8080}
   cors:
     allow-all-origins: true  
 

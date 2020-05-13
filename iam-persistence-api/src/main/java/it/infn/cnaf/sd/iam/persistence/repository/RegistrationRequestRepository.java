@@ -28,7 +28,7 @@ import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.Registra
 public interface RegistrationRequestRepository
     extends PagingAndSortingRepository<RegistrationRequestEntity, Long> {
 
-  Page<RegistrationRequestEntity> findByRealmName(String realmName, Pageable page);
+  Page<RegistrationRequestEntity> findByRealmName(String realmName, Pageable page); 
 
   @Query("select r from RegistrationRequestEntity r join r.labels l where r.realm.name = :realmName and "
       + "l.prefix is null and l.name = :labelKey and l.value = :labelValue")

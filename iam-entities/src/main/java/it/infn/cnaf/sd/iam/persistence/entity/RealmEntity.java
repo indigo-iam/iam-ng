@@ -15,6 +15,9 @@
  */
 package it.infn.cnaf.sd.iam.persistence.entity;
 
+import java.time.Clock;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -128,6 +131,10 @@ public class RealmEntity {
   
   public void setLogoUrl(String logoUrl) {
     this.logoUrl = logoUrl;
+  }
+  
+  public void touch(Clock clock) {
+    getMetadata().setLastUpdateTime(Date.from(clock.instant()));
   }
 
   @Override

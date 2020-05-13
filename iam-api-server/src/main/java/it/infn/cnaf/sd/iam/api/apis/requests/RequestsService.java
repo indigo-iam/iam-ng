@@ -15,6 +15,17 @@
  */
 package it.infn.cnaf.sd.iam.api.apis.requests;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
+
 public interface RequestsService {
+
+  Page<RegistrationRequestEntity> getPendingRequests(Pageable pageable);
+  
+  RegistrationRequestEntity approveRequest(RegistrationRequestEntity request);
+  
+  RegistrationRequestEntity rejectRequest(RegistrationRequestEntity request);
 
 }

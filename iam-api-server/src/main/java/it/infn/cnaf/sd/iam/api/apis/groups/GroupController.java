@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -54,6 +55,7 @@ public class GroupController implements GroupSupport, ErrorUtils {
   private final GroupService service;
   private final GroupMapper mapper;
 
+  @Autowired
   public GroupController(GroupService service, GroupMapper mapper) {
     this.service = service;
     this.mapper = mapper;

@@ -19,13 +19,14 @@ spring:
     include: no-flyway
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     show-sql: true
     generate-ddl: true
     hibernate:
       ddl-auto: create-drop
 
   datasource:
-    url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/iam
+    url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/iam?serverTimezone=UTC
     driverClassName: com.mysql.cj.jdbc.Driver
     username: iam
     password: pwd

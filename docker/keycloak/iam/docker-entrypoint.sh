@@ -2,7 +2,10 @@
 
 # Setup IAM realms
 
-if [ -z "${IAM_KC_SKIP_SETUP}" ]; then
+IAM_KC_SETUP_MARKER=${IAM_KC_SETUP_MARKER:-/iam/iam-setup-done}
+
+if [[ -z "${IAM_KC_SKIP_SETUP}" ]] && [[ ! -f ${IAM_KC_SETUP_MARKER} ]]; then 
+
     /bin/bash /opt/jboss/tools/docker-entrypoint.sh $@ >/tmp/setup-log.out 2>&1 &
     /bin/bash /opt/jboss/keycloak/iam/wait-for-it.sh -h localhost -p 8080 -t 120
     /bin/bash /opt/jboss/keycloak/iam/setup-iam-realms.sh

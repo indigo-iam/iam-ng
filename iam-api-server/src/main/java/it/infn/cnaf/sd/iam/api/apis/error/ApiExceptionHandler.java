@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import it.infn.cnaf.sd.iam.api.apis.configuration.RealmConfigurationError;
 import it.infn.cnaf.sd.iam.api.common.dto.ErrorDTO;
 import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
@@ -62,6 +63,12 @@ public class ApiExceptionHandler implements ErrorUtils {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ErrorDTO handleMessageNotReadableError(HttpMessageNotReadableException e) {
     return newError(HttpStatus.BAD_REQUEST, INVALID_HTTP_MESSAGE, e.getMessage());
+  }
+  
+  @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(RealmConfigurationError.class)
+  public ErrorDTO handleInvalidConfiguration(RealmConfigurationError e) {
+    return newError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
   }
 
 }

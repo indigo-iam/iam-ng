@@ -15,8 +15,12 @@
  */
 package it.infn.cnaf.sd.iam.kc;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 
+import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.storage.UserStorageProviderFactory;
@@ -24,17 +28,26 @@ import org.keycloak.storage.UserStorageProviderFactory;
 public class IamUserStorageProviderFactory
     implements UserStorageProviderFactory<IamUserStorageProvider> {
 
+  private static final Logger LOG = Logger.getLogger(IamUserStorageProviderFactory.class);
+
   public static final String IAM_USER_STORAGE_PROVIDER_ID = "iam-user-storage-provider";
-  public static final String MODULE_LOOKUP_ID =
-      "java:global/iam-provider/iam-kc-user-storage-provider-2.0.0-SNAPSHOT/IamUserStorageProvider";
+  public static final String MODULE_LOOKUP_ID = String
+    .format("java:global/iam-provider/it.infn.cnaf.sd.iam-iam-kc-user-storage-provider-2.0.0-SNAPSHOT/IamUserStorageProvider");
 
   @Override
   public IamUserStorageProvider create(KeycloakSession session, ComponentModel model) {
     try {
 
       InitialContext ctx = new InitialContext();
-      IamUserStorageProvider provider =
-          (IamUserStorageProvider) ctx.lookup(MODULE_LOOKUP_ID);
+      Context root = (Context) ctx.lookup("java:global");
+
+      NamingEnumeration<NameClassPair> names = root.list("");
+      while (names.hasMore()) {
+        NameClassPair nameClass = names.next();
+        LOG.info(nameClass.getClassName() + " " + nameClass.getName());
+      }
+
+      IamUserStorageProvider provider = (IamUserStorageProvider) ctx.lookup(MODULE_LOOKUP_ID);
 
       provider.setModel(model);
       provider.setSession(session);

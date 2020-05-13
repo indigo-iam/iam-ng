@@ -103,8 +103,11 @@ public class RegistrationRequestEntity implements Serializable {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
   private Set<RegistrationRequestAttachmentEntity> attachments = new HashSet<>();
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "OUTCOME", nullable = true, length = 16)
+  private RequestOutcome outcome;
+  
   public RegistrationRequestEntity() {}
-
 
   public Long getId() {
     return id;
@@ -211,6 +214,14 @@ public class RegistrationRequestEntity implements Serializable {
     this.attachments = attachments;
   }
 
+  public RequestOutcome getOutcome() {
+    return outcome;
+  }
+  
+  public void setOutcome(RequestOutcome outcome) {
+    this.outcome = outcome;
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;

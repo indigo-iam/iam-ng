@@ -15,7 +15,6 @@
  */
 package it.infn.cnaf.sd.iam.api.properties;
 
-
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;

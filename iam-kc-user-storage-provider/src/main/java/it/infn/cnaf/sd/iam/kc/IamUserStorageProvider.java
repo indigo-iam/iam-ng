@@ -17,9 +17,14 @@ package it.infn.cnaf.sd.iam.kc;
 
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.ejb.Local;
 import javax.ejb.Remove;
@@ -31,22 +36,32 @@ import javax.persistence.TypedQuery;
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
+import org.keycloak.credential.CredentialInputUpdater;
 import org.keycloak.credential.CredentialInputValidator;
+import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.cache.CachedUserModel;
 import org.keycloak.models.cache.OnUserCache;
 import org.keycloak.models.credential.PasswordCredentialModel;
 import org.keycloak.storage.UserStorageProvider;
+import org.keycloak.storage.UserStorageProviderModel;
+import org.keycloak.storage.user.ImportSynchronization;
+import org.keycloak.storage.user.SynchronizationResult;
 import org.keycloak.storage.user.UserLookupProvider;
+import org.keycloak.storage.user.UserQueryProvider;
 
 import it.infn.cnaf.sd.iam.persistence.entity.UserEntity;
 
 @Stateful
 @Local(IamUserStorageProvider.class)
-public class IamUserStorageProvider
-    implements UserStorageProvider, UserLookupProvider, CredentialInputValidator, OnUserCache {
+public class IamUserStorageProvider implements UserStorageProvider, UserLookupProvider,
+    UserQueryProvider, CredentialInputValidator, OnUserCache, CredentialInputUpdater, ImportSynchronization {
+
+  public static final Set<String> DISABLEABLE_CREDENTIAL_TYPES =
+      Collections.singleton(PasswordCredentialModel.TYPE);
 
   public static final String PASSWORD_CACHE_KEY = IamUserAdapter.class.getName() + ".password";
 
@@ -58,7 +73,9 @@ public class IamUserStorageProvider
   protected ComponentModel model;
   protected KeycloakSession session;
 
-  public IamUserStorageProvider() {}
+  public IamUserStorageProvider() {
+    LOG.info("Inside constructor!");
+  }
 
   @Remove
   @Override
@@ -72,7 +89,7 @@ public class IamUserStorageProvider
 
   @Override
   public UserModel getUserById(String id, RealmModel realm) {
-    
+
     return null;
   }
 
@@ -93,7 +110,8 @@ public class IamUserStorageProvider
 
   Optional<UserEntity> findUserByEmail(String email, RealmModel realm) {
 
-    TypedQuery<UserEntity> query = em.createNamedQuery(UserEntity.QUERY_GET_USER_BY_EMAIL, UserEntity.class);
+    TypedQuery<UserEntity> query =
+        em.createNamedQuery(UserEntity.QUERY_GET_USER_BY_EMAIL, UserEntity.class);
 
     query.setParameter("email", email);
     query.setParameter("realm", realm.getName());
@@ -109,24 +127,24 @@ public class IamUserStorageProvider
   }
 
   Optional<UserEntity> findUserByUserId(String userId, RealmModel realm) {
-    
-      TypedQuery<UserEntity> query =
-          em.createNamedQuery(UserEntity.QUERY_GET_USER_BY_UUID, UserEntity.class);
-      query.setParameter("uuid", userId);
-      query.setParameter("realm", realm.getName());
-      
-      List<UserEntity> result = query.getResultList();
-      if (result.isEmpty()) {
-        LOG.info("Could not find uuid: " + userId);
-        return Optional.empty();
-      }
 
-      if (result.size() > 1) {
-        LOG.warn("Found more than one result for a findUserByUuid query: " + userId);
-      }
-      return Optional.of(result.get(0));
+    TypedQuery<UserEntity> query =
+        em.createNamedQuery(UserEntity.QUERY_GET_USER_BY_UUID, UserEntity.class);
+    query.setParameter("uuid", userId);
+    query.setParameter("realm", realm.getName());
+
+    List<UserEntity> result = query.getResultList();
+    if (result.isEmpty()) {
+      LOG.info("Could not find uuid: " + userId);
+      return Optional.empty();
+    }
+
+    if (result.size() > 1) {
+      LOG.warn("Found more than one result for a findUserByUuid query: " + userId);
+    }
+    return Optional.of(result.get(0));
   }
-  
+
   Optional<UserEntity> findUserByUsername(String username, RealmModel realm) {
     TypedQuery<UserEntity> query =
         em.createNamedQuery(UserEntity.QUERY_GET_USER_BY_USERNAME, UserEntity.class);
@@ -143,6 +161,7 @@ public class IamUserStorageProvider
     }
     return Optional.of(result.get(0));
   }
+
 
   @Override
   public boolean isConfiguredFor(RealmModel realm, UserModel user, String credentialType) {
@@ -195,14 +214,122 @@ public class IamUserStorageProvider
     this.session = session;
   }
 
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public void onCache(RealmModel realm, CachedUserModel user, UserModel delegate) {
-    String password = ((IamUserAdapter)delegate).getPassword();
-    if (!isNull(password)) { 
-      user.getCachedWith().put(PASSWORD_CACHE_KEY,password);
+    String password = ((IamUserAdapter) delegate).getPassword();
+    if (!isNull(password)) {
+      user.getCachedWith().put(PASSWORD_CACHE_KEY, password);
     }
-    
+
   }
+
+  @Override
+  public boolean updateCredential(RealmModel realm, UserModel user, CredentialInput input) {
+    if (!input.getType().equals(PasswordCredentialModel.TYPE)) {
+      return false;
+    }
+
+    Optional<UserEntity> userEntity = findUserByUsername(user.getUsername(), realm);
+    if (!userEntity.isPresent()) {
+      return false;
+    }
+
+    userEntity.get().setPassword(input.getChallengeResponse());
+    em.persist(userEntity);
+    return true;
+  }
+
+  @Override
+  public void disableCredentialType(RealmModel realm, UserModel user, String credentialType) {
+    // do nothing
+  }
+
+  @Override
+  public Set<String> getDisableableCredentialTypes(RealmModel realm, UserModel user) {
+    return DISABLEABLE_CREDENTIAL_TYPES;
+  }
+
+  @Override
+  public int getUsersCount(RealmModel realm) {
+    TypedQuery<Long> query = em.createNamedQuery(UserEntity.QUERY_COUNT_REALM_USERS, Long.class);
+
+    query.setParameter("realm", realm.getName());
+
+    return query.getSingleResult() == null ? 0 : query.getSingleResult().intValue();
+  }
+
+  @Override
+  public List<UserModel> getUsers(RealmModel realm) {
+    return getUsers(realm, 0, Integer.MAX_VALUE - 1);
+  }
+
+  @Override
+  public List<UserModel> getUsers(RealmModel realm, int firstResult, int maxResults) {
+    TypedQuery<UserEntity> query =
+        em.createNamedQuery(UserEntity.QUERY_GET_REALM_USERS, UserEntity.class);
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+
+    query.setParameter("realm", realm.getName());
+    return query.getResultList()
+      .stream()
+      .map(e -> userFromEntity(e, realm))
+      .collect(toList());
+  }
+
+  @Override
+  public List<UserModel> searchForUser(String search, RealmModel realm) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> searchForUser(String search, RealmModel realm, int firstResult,
+      int maxResults) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm,
+      int firstResult, int maxResults) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> getGroupMembers(RealmModel realm, GroupModel group, int firstResult,
+      int maxResults) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> getGroupMembers(RealmModel realm, GroupModel group) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public List<UserModel> searchForUserByUserAttribute(String attrName, String attrValue,
+      RealmModel realm) {
+    return Collections.EMPTY_LIST;
+  }
+
+  @Override
+  public SynchronizationResult sync(KeycloakSessionFactory sessionFactory, String realmId,
+      UserStorageProviderModel model) {
+    
+    return null;
+  }
+
+  @Override
+  public SynchronizationResult syncSince(Date lastSync, KeycloakSessionFactory sessionFactory,
+      String realmId, UserStorageProviderModel model) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

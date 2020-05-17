@@ -133,6 +133,26 @@ public class RegistrationCrudTests extends IntegrationTestSupport
         .value(hasItem("Username is not available")))
       .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
           .value(hasItem("Email is not available")));
+    
+    requestRepo.findAll().forEach(r -> {
+      r.approve(clock);
+      requestRepo.save(r);
+    });
+    
+    mvc
+    .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+      .contentType(APPLICATION_JSON))
+    .andExpect(status().isCreated());
+    
+    requestRepo.findAll().forEach(r -> {
+      r.approve(clock);
+      requestRepo.save(r);
+    });
+    
+    mvc
+    .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+      .contentType(APPLICATION_JSON))
+    .andExpect(status().isCreated());
   }
 
   @Test

@@ -9,7 +9,11 @@ This compose file sets up:
 A safe startup procedure to have things running would be:
 
 ```bash
+$ docker-compose up -d trust
 $ docker-compose up -d db 
+
+# Wait that db and trust setup is over
+
 $ docker-compose up -d kc
 $ docker-compose up -d nginx
 $ docker-compose up -d iam-api
@@ -19,12 +23,10 @@ $ docker-compose up -d iam-api
 
 Images are set in the .env file.
 
-The Keycloak configuration needs to be run only once (the state is then
-persisted in the database). Interesting environment variables:
+Interesting environment variables:
 
 | Env variable           | Meaning                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------ |
-| IAM_KC_SKIP_SETUP      | Skips Keycloak tenants configuration.                                                      |
 | IAM_DASHBOARD_BASE_URL | Sets the dashboard base URL used to configure the iam-dashboard public client in KC realms |
 
 ## Service endpoints
@@ -34,8 +36,8 @@ virtual hosting.
 
 | Service  | Endpoint                 |
 | -------- | ------------------------ |
-| Keycloak | https://kc.test.example  |
-| IAM API  | https://api.test.example |
+| Keycloak | https://kc.test.io  |
+| IAM API  | https://api.test.io |
 
 Add entries to your `/etc/hosts` file for the endpoints above to make
 things work seamlessly.
@@ -47,7 +49,7 @@ wildcard certificate can be found
 ## IAM API docs
 
 API docs for the IAM API server can be found at
-[here](https://api.test.example/swagger-ui/api-docs.html).
+[here](https://api.test.io/swagger-ui/api-docs.html).
 
 ## Tenants and user accounts
 

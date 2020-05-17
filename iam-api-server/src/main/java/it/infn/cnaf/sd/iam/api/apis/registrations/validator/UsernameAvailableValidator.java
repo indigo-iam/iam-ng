@@ -32,7 +32,7 @@ public class UsernameAvailableValidator implements ConstraintValidator<UsernameA
   public boolean isValid(String value, ConstraintValidatorContext context) {
 
     Optional<RegistrationRequestEntity> request =
-        requestRepo.findByRealmNameAndUsername(RealmContext.getCurrentRealmName(), value);
+        requestRepo.findPendingByRealmNameAndUsername(RealmContext.getCurrentRealmName(), value);
 
     boolean hasPendingRequest = request.isPresent() && !done.equals(request.get().getStatus());
 

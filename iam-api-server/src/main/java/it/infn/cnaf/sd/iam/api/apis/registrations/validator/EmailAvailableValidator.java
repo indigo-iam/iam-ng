@@ -46,7 +46,7 @@ public class EmailAvailableValidator implements ConstraintValidator<EmailAvailab
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
     Optional<RegistrationRequestEntity> request =
-        requestRepo.findByRealmNameAndEmail(RealmContext.getCurrentRealmName(), value);
+        requestRepo.findPendingByRealmNameAndEmail(RealmContext.getCurrentRealmName(), value);
 
     boolean hasPendingRequest = request.isPresent() && !done.equals(request.get().getStatus());
 

@@ -34,10 +34,22 @@ public class RealmUtils {
     this.properties = properties;
   }
   
+  public String realmAdminBaseContext(String realmName) {
+    return String.format("%s/admin/realms/%s", properties.getKeycloakAdminBaseUrl(), realmName);
+  }
+  
   public String realmTrustedTokenIssuerAsString(String realmName) {
     return String.format("%s/realms/%s", properties.getKeycloakBaseUrl(), realmName);
   }
 
+  public String realmAdminBaseContext() {
+    String currentRealm = RealmContext.getCurrentRealmName();
+    if (Objects.isNull(currentRealm)) {
+      throw new InvalidRequestError("Unspecified realm");
+    }
+    return realmAdminBaseContext(currentRealm);
+  }
+  
   public URL realmTrustedTokenIssuer() {
     String currentRealm = RealmContext.getCurrentRealmName();
     if (Objects.isNull(currentRealm)) {

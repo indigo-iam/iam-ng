@@ -3,6 +3,9 @@ set -ex
 
 UUID_GREP_EXP='[a-fA-F0-9]\{8\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{4\}-[a-fA-F0-9]\{12\}'
 
+MAIL_HOST=${MAIL_HOST:-mailhog}
+MAIL_HOST_PORT=${MAIL_HOST_PORT:-1025}
+
 JBOSS_HOME=/opt/jboss/keycloak
 KC_CLI=${JBOSS_HOME}/bin/kcadm.sh
 
@@ -11,6 +14,8 @@ KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD:-password}
 
 IAM_API_CLIENT_NAME=${IAM_API_CLIENT_NAME:-iam-api}
 IAM_API_CLIENT_SECRET=${IAM_API_CLIENT_SECRET:-secret}
+
+IAM_CLI_CLIENT_NAME=${IAM_CLI_CLIENT_NAME:-iam-cli}
 
 IAM_DASHBOARD_CLIENT_NAME=${IAM_DASHBOARD_CLIENT_NAME:-iam-dashboard}
 
@@ -33,23 +38,41 @@ for realm in ${IAM_REALM_NAMES}; do
 
   ${KC_CLI} create realms -s realm=${realm} -s enabled=true
 
+  # Set mailhog SMTP server
+  ${KC_CLI} update realms/${realm} -s "smtpServer.host=${MAIL_HOST}" \
+    -s "smtpServer.port=${MAIL_HOST_PORT}" \
+    -s "smtpServer.from=${realm}@kc.test.io" \
+    -s "smtpServer.auth=false" \
+    -s "smtpServer.ssl=false"
+
   ${KC_CLI} create roles -r ${realm} -s name=iam-user
   ${KC_CLI} create roles -r ${realm} -s name=iam-admin 
   ${KC_CLI} create roles -r ${realm} -s name=iam-owner
 
-  ${KC_CLI} add-roles -r ${realm} --rname iam-admin --rolename iam-user
+  ${KC_CLI} add-roles -r ${realm} --rname iam-admin --rolename iam-user --rolename iam-owner
   ${KC_CLI} add-roles -r ${realm} --rname iam-owner --rolename iam-user
+
+  ${KC_CLI} create client-scopes -r ${realm} \
+    -s name="iam" \
+    -s protocol="openid-connect" \
+    -s 'attributes."include.in.token.scope"=false' \
+    -s 'attributes."display.on.consent.screen"=false'
+
+  ${KC_CLI} create clients -r ${realm} \
+    -s clientId=${IAM_CLI_CLIENT_NAME} \
+    -s enabled=true \
+    -s standardFlowEnabled=false \
+    -d directGrantsEnabled=true \
+    -s description="The IAM API cli"
 
   ${KC_CLI} create clients -r ${realm} \
     -s clientId=${IAM_API_CLIENT_NAME} \
     -s enabled=true \
-    -s clientAuthenticatorType=client-secret \
+    -s publicClient=true \
     -s secret=${IAM_API_CLIENT_SECRET} \
     -s serviceAccountsEnabled=true \
     -s standardFlowEnabled=false \
     -s description="The IAM API server client registration"
-
-  # api_client_id=$(${KC_CLI} get clients -r ${realm} -q clientId=${IAM_API_CLIENT_NAME} --fields id | grep -o -e ${UUID_GREP_EXP} )
 
   ## Add management roles for the realm
   ${KC_CLI} add-roles -r ${realm} \

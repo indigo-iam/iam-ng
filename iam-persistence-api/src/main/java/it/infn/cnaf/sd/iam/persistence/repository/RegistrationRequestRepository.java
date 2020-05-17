@@ -48,13 +48,13 @@ public interface RegistrationRequestRepository
       String emailChallenge);
 
   @Query("select r from RegistrationRequestEntity r where r.realm.name = :realmName and "
-      + "r.requesterInfo.email = :email")
-  Optional<RegistrationRequestEntity> findByRealmNameAndEmail(String realmName,
+      + "r.requesterInfo.email = :email and r.status in ('created', 'confirmed')")
+  Optional<RegistrationRequestEntity> findPendingByRealmNameAndEmail(String realmName,
       String email);
 
   @Query("select r from RegistrationRequestEntity r where r.realm.name = :realmName and "
-      + "r.requesterInfo.username = :username")
-  Optional<RegistrationRequestEntity> findByRealmNameAndUsername(String realmName,
+      + "r.requesterInfo.username = :username and r.status in ('created', 'confirmed')")
+  Optional<RegistrationRequestEntity> findPendingByRealmNameAndUsername(String realmName,
       String username);
 
 }

@@ -93,6 +93,7 @@ export class RegistrationComponent implements OnInit {
     this.blockUIRegForm.start();
     this.registrationService.createRegistration(this.RegistrationForm, this.realmName).subscribe(
       (response) => {
+        console.log(response);
         this.blockUIRegForm.stop();
         if (response.message && response.message === 'Request created') {
           this.registrationSuccess = true;
@@ -100,12 +101,13 @@ export class RegistrationComponent implements OnInit {
           this.cookieService.set('requestChallenge', response.requestChallenge);
         }
         if (response.error && response.error === 'bad_request') {
-          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
+          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
         }
       },
       (error) => {
+        console.log(error);
         this.blockUIRegForm.stop();
-        this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!');
+        this.snackBar.open('AAA There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
       }
     );
   }

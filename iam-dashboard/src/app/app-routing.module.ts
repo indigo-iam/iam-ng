@@ -51,7 +51,7 @@ const routes: Routes = [
         canActivate: [AppAuthGuard] // Run the auth guard against the page
       },
       {
-        path: ':realm/client-management',
+        path: ':realm/dashboard/client-management',
         component: ClientManagementComponent,
         data: {
           roles: ['iam-admin']

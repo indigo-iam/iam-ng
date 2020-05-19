@@ -1,6 +1,6 @@
 {
   "iamApiBaseUrl": "/dev-api-test",
-  "keycloakBaseUrl": "https://kc.test.example/auth/",
+  "keycloakBaseUrl": "https://kc.test.io/auth/",
   "fallbackRealm": "master",
   "keycloakClientId": "iam-dashboard",
   "customAttributes": {

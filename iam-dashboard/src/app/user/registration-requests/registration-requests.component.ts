@@ -1,6 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { RegistrationService } from '../registration/registration.service';
+import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
+import { ACTION_REJECT, Action, ACTION_APPROVE } from './registration-request-action';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-registration-requests',
@@ -9,44 +16,86 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class RegistrationRequestsComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'submitted', 'email', 'approve'];
-  dataSource = new MatTableDataSource<RegistrationRequest>(REGISTRATION_REQUESTS);
+  realmName: string;
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  dataSource;
+  displayedColumns: string[] = ['username', 'givenName', 'familyName', 'email', 'submitted', 'approve'];
+  registrationRequests;
 
-  constructor() { }
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
+
+  constructor(private route: ActivatedRoute, private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.route.paramMap.subscribe((paramMap) => {
+      this.realmName = paramMap.get('realm');
+    });
+
+    this.updateTable();
+  }
+
+  updateTable() {
+    this.blockUIregistrationRequestsTable.start();
+    this.registrationService.getRegistrationRequestsPaginated(this.realmName, 0, 10).subscribe(
+      (response: any) => {
+        this.registrationRequests = response.resources;
+        console.log(response);
+        this.dataSource = new MatTableDataSource(this.registrationRequests);
+        this.dataSource.paginator = this.paginator;
+        this.blockUIregistrationRequestsTable.stop();
+      },
+      (error) => {
+        this.sb.open('An error occoured when getting registration requests: ' + error.message, 'Close');
+        this.blockUIregistrationRequestsTable.stop();
+      }
+    );
+  }
+
+  getNext(event: PageEvent) {
+    this.blockUIregistrationRequestsTable.start();
+    const offset = event.pageSize * event.pageIndex;
+    this.registrationService.getRegistrationRequestsPaginated(this.realmName, offset, event.pageSize).subscribe(
+      (response: any) => {
+        this.registrationRequests = response.resources;
+        this.dataSource = new MatTableDataSource(this.registrationRequests);
+        this.blockUIregistrationRequestsTable.stop();
+      },
+      (error) => {
+        this.sb.open('An error occoured changing pages: ' + error.message, 'Close');
+        this.blockUIregistrationRequestsTable.stop();
+      }
+    );
+  }
+
+  actionRequest(requestId: string, type: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'Are you sure you wish to ' + type + ' this request?'
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result) => {
+        if(result) {
+
+          let action: Action;
+          if (type === 'reject') {
+            action = ACTION_REJECT;
+          } else {
+            action = ACTION_APPROVE;
+          };
+
+          this.registrationService.actionRegistrationRequest(this.realmName, requestId, action).subscribe(
+            (r) => {
+              this.sb.open('Request ' + type + 'ed successfully', 'Close');
+              this.updateTable();
+            },
+            (error) => {
+              this.sb.open('Request modification was unsuccessful ' + error.message, 'Close');
+            }
+          );
+        }
+      }
+    );
   }
 
 }
-
-export interface RegistrationRequest {
-  name: string;
-  submitted: string;
-  email: string;
-}
-
-const REGISTRATION_REQUESTS: RegistrationRequest[] = [
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-  {name: 'John Smith', submitted: '2020-01-01T01:01', email: 'e@example.com'},
-];

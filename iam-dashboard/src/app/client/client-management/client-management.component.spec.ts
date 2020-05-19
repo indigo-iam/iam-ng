@@ -16,8 +16,12 @@ describe('ClientManagementComponent', () => {
   let dialog;
 
   beforeEach(async(() => {
-    clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret']);
+    clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret', 'getClientsOffset']);
     clientManagementService.getClients.and.returnValue(of(
+      SAML_CLIENT_LIST
+    ));
+
+    clientManagementService.getClientsOffset.and.returnValue(of(
       SAML_CLIENT_LIST
     ));
 
@@ -65,6 +69,7 @@ describe('ClientManagementComponent', () => {
 
   it('should not update table on error', () => {
     clientManagementService.getClients.and.returnValue(throwError({status: 500, message: 'Internal server error'}));
+    clientManagementService.getClientsOffset.and.returnValue(throwError({status: 500, message: 'Internal server error'}));
     component.updateTable();
     expect(sb.open).toHaveBeenCalled();
   });

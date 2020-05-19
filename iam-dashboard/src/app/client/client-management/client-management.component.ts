@@ -2,13 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ClientManagementService } from './client-management.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { NewOrEditClientComponent } from '../new-or-edit-client/new-or-edit-client.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ClientDetailsComponent } from '../client-details/client-details.component';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
+import { Subject } from 'rxjs';
+import { debounce, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-client-management',
@@ -20,10 +22,11 @@ export class ClientManagementComponent implements OnInit {
   clients;
   realmName: string;
   dataSource;
+  searchQuery = new Subject<string>();
 
   displayedColumns: string[] = ['clientId', 'publicClient', 'redirectUris', 'edit'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('clientTable') blockUIclientTable: NgBlockUI;
 
   constructor(private clientManagementService: ClientManagementService, private sb: MatSnackBar, private route: ActivatedRoute, private dialog: MatDialog) { }
@@ -34,20 +37,58 @@ export class ClientManagementComponent implements OnInit {
     });
 
     this.updateTable();
+
+    this.search();
+  }
+
+  search() {
+    this.searchQuery.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((value) => {
+      this.blockUIclientTable.start();
+      this.clientManagementService.searchClients(this.realmName, value).subscribe(
+        (response) => {
+          this.clients = response;
+          this.dataSource = new MatTableDataSource(this.clients);
+          this.blockUIclientTable.stop();
+        },
+        (error) => {
+          this.sb.open('An error occoured whilst searching: ' + error.message, 'Close');
+          this.blockUIclientTable.stop();
+        }
+      );
+    });
   }
 
   updateTable() {
     this.blockUIclientTable.start();
-    this.clientManagementService.getClients(this.realmName).subscribe(
+    this.clientManagementService.getClientsOffset(this.realmName, 0, 10).subscribe(
       (response) => {
         this.clients = response;
-        console.log(this.clients);
+        console.log(response);
         this.dataSource = new MatTableDataSource(this.clients);
         this.dataSource.paginator = this.paginator;
         this.blockUIclientTable.stop();
       },
       (error) => {
         this.sb.open('An error occoured when getting clients: ' + error.message, 'Close');
+        this.blockUIclientTable.stop();
+      }
+    );
+  }
+
+  getNext(event: PageEvent) {
+    this.blockUIclientTable.start();
+    const offset = event.pageSize * event.pageIndex;
+    this.clientManagementService.getClientsOffset(this.realmName, offset, event.pageSize).subscribe(
+      (response) => {
+        this.clients = response;
+        this.dataSource = new MatTableDataSource(this.clients);
+        this.blockUIclientTable.stop();
+      },
+      (error) => {
+        this.sb.open('An error occoured changing pages: ' + error.message, 'Close');
         this.blockUIclientTable.stop();
       }
     );

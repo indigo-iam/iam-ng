@@ -17,6 +17,14 @@ export class ClientManagementService {
     return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients');
   }
 
+  searchClients(realm: string, query: string) {
+    return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients?clientId=' + query + '&search=true')
+  }
+
+  getClientsOffset(realm: string, offset: number, numResults: number) {
+    return this.http.get(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients?first=' + offset + '&max=' + numResults);
+  }
+
   createClient(realm: string, clientInfo) {
     return this.http.post(this.keycloakBaseUrl + 'admin/realms/' + realm + '/clients', clientInfo);
   }

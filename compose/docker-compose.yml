@@ -33,8 +33,8 @@ services:
 
   db:
     image: ${DB_IMAGE}
-    volumes:
-    - data:/var/lib/mysql
+    # volumes:
+    #  - data:/var/lib/mysql
 
     environment:
       TZ: UTC
@@ -124,8 +124,9 @@ services:
 
     volumes:
       - setup:/iam:rw
+      - ./assets/keycloak/scripts/setup-iam-realms.sh:/opt/jboss/keycloak/iam/setup-iam-realms.sh:ro
       - ./assets/keycloak/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml:rw
-      - ./../iam-kc-user-storage-provider-ear/target/iam-kc-user-storage-provider-ear-2.0.0-SNAPSHOT.ear:/opt/jboss/keycloak/standalone/deployments/iam-provider.ear
+      # - ./../iam-kc-user-storage-provider-ear/target/iam-kc-user-storage-provider-ear-2.0.0-SNAPSHOT.ear:/opt/jboss/keycloak/standalone/deployments/iam-provider.ear
 
     depends_on:
       - db

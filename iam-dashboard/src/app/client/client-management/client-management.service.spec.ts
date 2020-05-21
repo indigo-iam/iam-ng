@@ -4,7 +4,7 @@ import { ClientManagementService } from './client-management.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppConfigService } from 'src/app/app-config.service';
 import { HttpClient } from '@angular/common/http';
-import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT } from 'src/app/utils/test-data';
+import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT, SAML_CLIENT_LIST } from 'src/app/utils/test-data';
 import { of } from 'rxjs';
 import { RealmService } from 'src/app/services/realm.service';
 
@@ -116,6 +116,28 @@ describe('ClientManagementService', () => {
     expect(req.request.method).toEqual('DELETE');
 
     req.flush({});
+  });
+
+  it('should get clients with an offset', () => {
+    service.getClientsOffset('alice', 0, 10).subscribe(res => {
+      expect(res).toEqual(SAML_CLIENT_LIST);
+    });
+
+    const req = http.expectOne('https://kc.test.example/admin/realms/alice/clients?first=0&max=10');
+    expect(req.request.method).toEqual('GET');
+
+    req.flush(SAML_CLIENT_LIST);
+  });
+
+  it('should search clients', () => {
+    service.searchClients('alice', 'test').subscribe(res => {
+      expect(res).toEqual(SAML_CLIENT_LIST);
+    });
+
+    const req = http.expectOne('https://kc.test.example/admin/realms/alice/clients?clientId=test&search=true');
+    expect(req.request.method).toEqual('GET');
+
+    req.flush(SAML_CLIENT_LIST);
   });
 
 });

@@ -5,6 +5,8 @@ import { AppConfigService } from '../../app-config.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { RegistrationConfigurationDTO } from '../../models/registration-configuration-dto';
 import { FormBuilder } from '@angular/forms';
+import { REGISTRATION_REQUESTS } from 'src/app/utils/test-data';
+import { ACTION_APPROVE } from '../registration-requests/registration-request-action';
 
 describe('RegistrationService', () => {
   let service: RegistrationService;
@@ -93,6 +95,31 @@ describe('RegistrationService', () => {
     const req = http.expectOne({url: 'https://api.test.example//Realms/alice/Registrations/confirm/abc', method: 'POST'});
 
     req.flush(mockEmailResponse);
+    http.verify();
+  });
+
+  it('should get reg requests paginated', () => {
+    service.getRegistrationRequestsPaginated('alice', 0, 10).subscribe(res => {
+      expect(res).toEqual(REGISTRATION_REQUESTS);
+    });
+
+    const req = http.expectOne('https://api.test.example//Realms/alice/Requests/registration/pending?startIndex=0&count=10');
+    expect(req.request.method).toEqual('GET');
+
+    req.flush(REGISTRATION_REQUESTS);
+    http.verify();
+  });
+
+
+  it('should action a registration request', () => {
+    service.actionRegistrationRequest('alice', '123', ACTION_APPROVE).subscribe(res => {
+      expect(res).toEqual({});
+    });
+
+    const req = http.expectOne({url: 'https://api.test.example//Realms/alice/Requests/registration/123?decision=approve', method: 'POST'});
+    expect(req.request.method).toEqual('POST');
+
+    req.flush({});
     http.verify();
   });
 

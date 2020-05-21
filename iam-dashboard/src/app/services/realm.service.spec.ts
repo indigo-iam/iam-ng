@@ -5,6 +5,7 @@ import { AppConfigService } from '../app-config.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ListResponseDTO } from '../models/list-response-dto';
 import { RealmDTO } from '../models/realm-dto';
+import { componentFactoryName } from '@angular/compiler';
 
 describe('RealmService', () => {
   let service: RealmService;
@@ -53,5 +54,18 @@ describe('RealmService', () => {
     expect(req.request.method).toEqual('GET');
 
     req.flush(mockRealms);
+  });
+
+  it('should get current realm', () => {
+    service.getCurrentRealm().subscribe(r => {
+      expect(r).toEqual('master');
+    });
+  });
+
+  it('should set current realm', () => {
+    service.setCurrentRealm('alice');
+    service.currentRealm.subscribe(r => {
+      expect(r).toEqual('alice');
+    });
   });
 });

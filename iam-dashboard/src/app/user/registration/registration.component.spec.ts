@@ -19,7 +19,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { RealmService } from '../../services/realm.service';
-import { convertToParamMap} from '@angular/router';
+import { convertToParamMap } from '@angular/router';
 
 class DummyComponent {
 
@@ -104,23 +104,25 @@ describe('RegistrationComponent', () => {
         FormBuilder,
         { provide: RegistrationService, useValue: rs },
         { provide: AppConfigService, useValue: appConfigService },
-        { provide: ActivatedRoute, useValue: {
-          paramMap: of(
-            convertToParamMap(of(
-              {
-                realm: 'alice'
-              }
-            ))
-          )
-        }},
-        { provide: HttpClient, useValue: httpClient},
-        { provide: RealmService, useValue: realmService},
+        {
+          provide: ActivatedRoute, useValue: {
+            paramMap: of(
+              convertToParamMap(of(
+                {
+                  realm: 'alice'
+                }
+              ))
+            )
+          }
+        },
+        { provide: HttpClient, useValue: httpClient },
+        { provide: RealmService, useValue: realmService },
 
         MatSnackBar
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -283,7 +285,7 @@ describe('RegistrationComponent', () => {
     expect(sb.open).not.toHaveBeenCalled();
   });
 
-  it('registration not a success on invalid inputs', () => {
+  it('registration not a success on http error', () => {
     spy = spyOn(sb, 'open');
 
     rs.createRegistration.and.returnValue(
@@ -303,10 +305,63 @@ describe('RegistrationComponent', () => {
     expect(rs.createRegistration).toHaveBeenCalled();
   });
 
+  it('registration not a success on invalid inputs', () => {
+    spy = spyOn(sb, 'open');
+
+    rs.createRegistration.and.returnValue(throwError(
+      {
+        status: 400,
+        error: {
+          error: 'bad_request',
+          errorDescription: 'Invalid registration request',
+          globalErrors: [],
+          fieldErrors: [
+            {
+              fieldName: 'registrationRequestDTO.requesterInfo.email',
+              fieldError: 'Email is not available'
+            },
+            {
+              fieldName: 'registrationRequestDTO.requesterInfo.username',
+              fieldError: 'Username is not available'
+            }
+          ]
+        }
+      }
+    )
+    );
+
+    expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
+
+    component.realmName = 'test';
+    component.register();
+
+
+    expect(rs.createRegistration).toHaveBeenCalled();
+    expect(component.RegistrationForm.get('email').getError('message')).toEqual('Email is not available');
+    expect(component.RegistrationForm.get('username').getError('message')).toEqual('Username is not available');
+    expect(sb.open).not.toHaveBeenCalled();
+
+    rs.createRegistration.and.returnValue(throwError(
+      {
+        status: 400,
+        error: {
+          error: 'bad_request',
+          errorDescription: 'Invalid registration request',
+          globalErrors: [],
+          fieldErrors: []
+        }
+      }
+    ));
+
+    component.register();
+
+    expect(sb.open).toHaveBeenCalled();
+  });
+
   it('fail snackbar shown with error in http request', () => {
     spy = spyOn(sb, 'open');
 
-    const response = new HttpErrorResponse({status: 500});
+    const response = new HttpErrorResponse({ status: 500 });
 
     rs.createRegistration.and.returnValue(throwError(response));
 

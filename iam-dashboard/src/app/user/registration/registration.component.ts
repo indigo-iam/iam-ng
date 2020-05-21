@@ -104,7 +104,7 @@ export class RegistrationComponent implements OnInit {
         console.log(error);
         this.blockUIRegForm.stop();
         if (error.error && error.error.error === 'bad_request') {
-          if (error.error.fieldErrors) {
+          if (error.error.fieldErrors.length !== 0) {
               error.error.fieldErrors.forEach(element => {
                 const control = element.fieldName.split('.')[2];
                 this.RegistrationForm.get(control).setErrors({error: true, message: element.fieldError});

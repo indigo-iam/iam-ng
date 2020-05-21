@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { ClientManagementComponent } from './client-management.component';
 import { ClientManagementService } from './client-management.service';
@@ -18,7 +18,7 @@ describe('ClientManagementComponent', () => {
   let dialog;
 
   beforeEach(async(() => {
-    clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret', 'getClientsOffset']);
+    clientManagementService = jasmine.createSpyObj(['getClients', 'deleteClient', 'getClientSecret', 'getClientsOffset', 'searchClients']);
     clientManagementService.getClients.and.returnValue(of(
       SAML_CLIENT_LIST
     ));
@@ -153,5 +153,52 @@ describe('ClientManagementComponent', () => {
     expect(dialog.open).not.toHaveBeenCalled();
     expect(sb.open).toHaveBeenCalled();
   });
+
+  it('should update table on page change event', () => {
+    component.clients = [];
+    component.getNext({pageSize: 10, pageIndex: 10, length: 10});
+    expect(sb.open).not.toHaveBeenCalled();
+    expect(component.clients).toEqual(SAML_CLIENT_LIST);
+  });
+
+  it('should not update table on page change event with http error', () => {
+    component.clients = [];
+    clientManagementService.getClientsOffset.and.returnValue(throwError({status: 500}));
+    component.getNext({pageSize: 10, pageIndex: 10, length: 10});
+    expect(sb.open).toHaveBeenCalled();
+    expect(component.clients).toEqual([]);
+  });
+
+  /*
+  * Important note: We use fakeAsync here because this function call (component.search()) includes a debounceTime - so we need to fake time passing
+  * as the debounce time is 300ms we wait 301ms
+  */
+ it('should search for clients', fakeAsync(() => {
+  component.search();
+  component.clients = [];
+
+  clientManagementService.searchClients.and.returnValue(of(
+    SAML_CLIENT_LIST
+  ));
+
+  component.searchQuery.next('test');
+  tick(301);
+
+  expect(component.clients).toEqual(SAML_CLIENT_LIST);
+}));
+
+it('should search for clients, but fail', fakeAsync(() => {
+  component.search();
+  component.clients = [];
+
+  clientManagementService.searchClients.and.returnValue(throwError({status: 500}));
+
+  component.searchQuery.next('test');
+  tick(301);
+
+  expect(sb.open).toHaveBeenCalled();
+
+  expect(component.clients).toEqual([]);
+}));
 
 });

@@ -5,29 +5,38 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { REGISTRATION_REQUESTS } from 'src/app/utils/test-data';
+import { RegistrationService } from '../registration/registration.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RealmService } from 'src/app/services/realm.service';
 
 describe('RegistrationRequestsComponent', () => {
   let component: RegistrationRequestsComponent;
   let fixture: ComponentFixture<RegistrationRequestsComponent>;
+  let registrationService;
+  let realmService;
 
   beforeEach(async(() => {
+    registrationService = jasmine.createSpyObj(['getRegistrationRequestsPaginated']);
+    registrationService.getRegistrationRequestsPaginated.and.returnValue(of(
+      REGISTRATION_REQUESTS
+    ));
+
+    realmService = jasmine.createSpyObj(['getCurrentRealm']);
+
+    realmService.getCurrentRealm.and.returnValue(of('alice'));
+
     TestBed.configureTestingModule({
       imports: [
         MatSnackBarModule,
-        MatButtonModule
+        MatButtonModule,
+        MatDialogModule
       ],
       declarations: [ RegistrationRequestsComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: {
-          paramMap: of(
-            convertToParamMap(of(
-              {
-                realm: 'alice'
-              }
-            ))
-          )
-        }},
-        MatSnackBar
+        MatSnackBar,
+        { provide: RegistrationService, useValue: registrationService},
+        { provide: RealmService, useValue: realmService}
       ]
     })
     .compileComponents();

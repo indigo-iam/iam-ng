@@ -18,16 +18,18 @@
 <form [formGroup]="RegistrationForm" *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess" layout-align="center">
   <mat-form-field appearance="outline">
     <mat-label>Given Name</mat-label>
-    <input matInput formControlName="firstName">
-    <mat-error *ngIf="RegistrationForm.get('firstName').hasError('required')">Given Name is required</mat-error>
+    <input matInput formControlName="givenName">
+    <mat-error *ngIf="RegistrationForm.get('givenName').hasError('required')">Given Name is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('givenName').hasError('error')">{{RegistrationForm.get('givenName').getError('message')}}</mat-error>
   </mat-form-field>
 
   <br>
 
   <mat-form-field appearance="outline">
     <mat-label>Family Name</mat-label>
-    <input matInput formControlName="lastName">
-    <mat-error *ngIf="RegistrationForm.get('lastName').hasError('required')">Family Name is required</mat-error>
+    <input matInput formControlName="familyName">
+    <mat-error *ngIf="RegistrationForm.get('familyName').hasError('required')">Family Name is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('familyName').hasError('error')">{{RegistrationForm.get('familyName').getError('message')}}</mat-error>
   </mat-form-field>
 
   <br>
@@ -38,6 +40,7 @@
     <mat-error *ngIf="RegistrationForm.get('email').hasError('required')">Email address is required</mat-error>
     <mat-error *ngIf="RegistrationForm.get('email').hasError('email')">A valid email address is required</mat-error>
     <mat-error *ngIf="RegistrationForm.errors?.emailInUse">This email address is already in use. Have you already created an account?</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('email').hasError('error')">{{RegistrationForm.get('email').getError('message')}}</mat-error>
   </mat-form-field>
 
   <br>
@@ -47,6 +50,7 @@
     <input matInput formControlName="username">
     <mat-error *ngIf="RegistrationForm.get('username').hasError('required')">Username is required</mat-error>
     <mat-error *ngIf="RegistrationForm.errors?.usernameInUse">This username is already in use. Have you already created an account?</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('username').hasError('error')">{{RegistrationForm.get('username').getError('message')}}</mat-error>
   </mat-form-field>
 
   <br>
@@ -55,6 +59,7 @@
     <mat-label>Notes</mat-label>
     <textarea matInput formControlName="notes"></textarea>
     <mat-error *ngIf="RegistrationForm.get('notes').hasError('required')">Notes is required</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('notes').hasError('error')">{{RegistrationForm.get('notes').getError('message')}}</mat-error>
     <mat-hint>Provide a clear explanation behind the motivation for this account request</mat-hint>
   </mat-form-field>
 
@@ -68,7 +73,7 @@
   <section>
     <mat-label>I confirm I have read and accept the Acceptable Usage Policy (AUP) and Privacy Policy </mat-label>
     <mat-checkbox formControlName="aup"></mat-checkbox>
-    <mat-error *ngIf="RegistrationForm.get('aup').hasError('required') || RegistrationForm.get('aup').hasError('requiredTrue')">You must confirm your acceptance of the AUP</mat-error>
+    <mat-error *ngIf="RegistrationForm.get('aup').hasError('required') || RegistrationForm.get('aup').hasError('requiredTrue')">You must confirm your acceptance of the AUP and privacy policy</mat-error>
   </section>
 
   <br>

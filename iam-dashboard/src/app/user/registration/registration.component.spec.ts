@@ -142,8 +142,8 @@ describe('RegistrationComponent', () => {
 
   it('form is valid when all inputs are made', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -153,8 +153,8 @@ describe('RegistrationComponent', () => {
 
   it('form is invalid with bad email', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -164,8 +164,8 @@ describe('RegistrationComponent', () => {
 
   it('form is invalid with no AUP signed', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -173,9 +173,9 @@ describe('RegistrationComponent', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
   });
 
-  it('form is invalid with no firstName', () => {
+  it('form is invalid with no givenName', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -183,9 +183,9 @@ describe('RegistrationComponent', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
   });
 
-  it('form is invalid with no lastName', () => {
+  it('form is invalid with no familyName', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
+    component.RegistrationForm.controls.givenName.setValue('John');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -195,8 +195,8 @@ describe('RegistrationComponent', () => {
 
   it('form is invalid with no username', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
     component.RegistrationForm.controls.aup.setValue(true);
@@ -205,8 +205,8 @@ describe('RegistrationComponent', () => {
 
   it('form is invalid with no notes', () => {
     expect(component.RegistrationForm.valid).toBeFalsy();
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.aup.setValue(true);
@@ -263,8 +263,8 @@ describe('RegistrationComponent', () => {
 
     expect(fixture.debugElement.query(By.css('regsuccess'))).toBeNull();
 
-    component.RegistrationForm.controls.firstName.setValue('John');
-    component.RegistrationForm.controls.lastName.setValue('Smith');
+    component.RegistrationForm.controls.givenName.setValue('John');
+    component.RegistrationForm.controls.familyName.setValue('Smith');
     component.RegistrationForm.controls.email.setValue('example@example.com');
     component.RegistrationForm.controls.username.setValue('JSmith');
     component.RegistrationForm.controls.notes.setValue('Requesting account');
@@ -283,7 +283,7 @@ describe('RegistrationComponent', () => {
     expect(sb.open).not.toHaveBeenCalled();
   });
 
-  it('fail snackbar shown with invalid registration', () => {
+  it('registration not a success on invalid inputs', () => {
     spy = spyOn(sb, 'open');
 
     rs.createRegistration.and.returnValue(
@@ -301,13 +301,12 @@ describe('RegistrationComponent', () => {
 
 
     expect(rs.createRegistration).toHaveBeenCalled();
-    expect(sb.open).toHaveBeenCalled();
   });
 
   it('fail snackbar shown with error in http request', () => {
     spy = spyOn(sb, 'open');
 
-    const response = new HttpErrorResponse({error: 'bad_request', status: 500});
+    const response = new HttpErrorResponse({status: 500});
 
     rs.createRegistration.and.returnValue(throwError(response));
 

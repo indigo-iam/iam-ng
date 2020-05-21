@@ -4,23 +4,29 @@ import { ClientManagementService } from './client-management.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppConfigService } from 'src/app/app-config.service';
 import { HttpClient } from '@angular/common/http';
-import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT } from 'src/app/utils/client-test-data';
+import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT } from 'src/app/utils/test-data';
+import { of } from 'rxjs';
+import { RealmService } from 'src/app/services/realm.service';
 
 describe('ClientManagementService', () => {
   let service: ClientManagementService;
   let appConfigService;
   let http: HttpTestingController;
+  let realmService;
 
   beforeEach(() => {
     appConfigService = jasmine.createSpyObj(['getKeycloakBaseUrl']);
     appConfigService.getKeycloakBaseUrl.and.returnValue('https://kc.test.example/');
+    realmService = jasmine.createSpyObj(['getCurrentRealm']);
+    realmService.getCurrentRealm.and.returnValue(of('alice'));
     TestBed.configureTestingModule(
       {
         imports: [
           HttpClientTestingModule
         ],
         providers: [
-          { provide: AppConfigService, useValue: appConfigService }
+          { provide: AppConfigService, useValue: appConfigService },
+          { provide: RealmService, useValue: realmService }
         ],
       }
     );

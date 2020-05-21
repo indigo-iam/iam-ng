@@ -9,12 +9,19 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { NavigationComponent } from './navigation.component';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { of } from 'rxjs';
+import { RealmService } from '../services/realm.service';
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
   let fixture: ComponentFixture<NavigationComponent>;
+  let realmService;
 
   beforeEach(async(() => {
+
+    realmService = jasmine.createSpyObj(['setCurrentRealm']);
+
     TestBed.configureTestingModule({
       declarations: [NavigationComponent],
       imports: [
@@ -25,6 +32,18 @@ describe('NavigationComponent', () => {
         MatListModule,
         MatSidenavModule,
         MatToolbarModule,
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: {
+          paramMap: of(
+            convertToParamMap(of(
+              {
+                realm: 'alice'
+              }
+            ))
+          )
+        }},
+        { provide: RealmService, useValue: realmService}
       ]
     }).compileComponents();
   }));

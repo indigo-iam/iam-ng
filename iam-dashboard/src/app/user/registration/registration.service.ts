@@ -30,8 +30,8 @@ export class RegistrationService {
       {
         requesterInfo: {
           username: registrationForm.get('username').value,
-          givenName: registrationForm.get('firstName').value,
-          familyName: registrationForm.get('lastName').value,
+          givenName: registrationForm.get('givenName').value,
+          familyName: registrationForm.get('familyName').value,
           email: registrationForm.get('email').value
         }
       });
@@ -50,7 +50,7 @@ export class RegistrationService {
   }
 
   actionRegistrationRequest(realm: string, requestId: string, decision: Action) {
-    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Requests/registration/' + requestId + '?=decision=' + decision.action, {});
+    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Requests/registration/' + requestId + '?decision=' + decision.action, {});
   }
 
 

@@ -44,12 +44,11 @@ export class RegistrationComponent implements OnInit {
 
     this.realmService.getRealms().subscribe(
       (response) => {
-        console.log(response);
         this.realms = response.resources;
         this.errorIfRealmNotDefined();
       },
       (error) => {
-        console.error('Error loading realms from API ' + error);
+        console.error('Error loading realms from API ' + error.message);
         this.snackBar.open('There was an error loading realms, are you connected to the Internet?');
         this.realms = [];
       }
@@ -60,7 +59,7 @@ export class RegistrationComponent implements OnInit {
         this.registrationConfiguration = response;
       },
       (error) => {
-        console.error('Error loading registration configuration from API ' + error);
+        console.error('Error loading registration configuration from API ' + error.message);
         this.snackBar.open('There was an error loading registration information, are you connected to the Internet?');
       }
     );
@@ -81,8 +80,8 @@ export class RegistrationComponent implements OnInit {
   }
 
   RegistrationForm = this.fb.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
+    givenName: ['', [Validators.required]],
+    familyName: ['', [Validators.required]],
     email: ['', [Validators.email, Validators.required, this.emailInUseValidator]],
     username: ['', [Validators.required, this.usernameInUseValidator]],
     notes: ['', [Validators.required]],
@@ -100,14 +99,22 @@ export class RegistrationComponent implements OnInit {
           this.cookieService.set('requestId', response.requestId);
           this.cookieService.set('requestChallenge', response.requestChallenge);
         }
-        if (response.error && response.error === 'bad_request') {
-          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
-        }
       },
       (error) => {
         console.log(error);
         this.blockUIRegForm.stop();
-        this.snackBar.open('AAA There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
+        if (error.error && error.error.error === 'bad_request') {
+          if (error.error.fieldErrors) {
+              error.error.fieldErrors.forEach(element => {
+                const control = element.fieldName.split('.')[2];
+                this.RegistrationForm.get(control).setErrors({error: true, message: element.fieldError});
+              });
+          } else {
+            this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
+          }
+        } else {
+          this.snackBar.open('There was an error during form submission. Please check you have entered all data in the form correctly and try again!', 'Close');
+        }
       }
     );
   }

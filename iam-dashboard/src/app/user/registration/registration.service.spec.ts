@@ -64,8 +64,8 @@ describe('RegistrationService', () => {
 
     const fb = new FormBuilder();
     const fg = fb.group({
-      firstName: [''],
-      lastName: [''],
+      givenName: [''],
+      familyName: [''],
       email: [''],
       username: [''],
     });

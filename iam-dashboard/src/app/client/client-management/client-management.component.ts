@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ClientManagementService } from './client-management.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +10,7 @@ import { ClientDetailsComponent } from '../client-details/client-details.compone
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Subject } from 'rxjs';
 import { debounce, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { RealmService } from 'src/app/services/realm.service';
 
 @Component({
   selector: 'app-client-management',
@@ -29,16 +29,14 @@ export class ClientManagementComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('clientTable') blockUIclientTable: NgBlockUI;
 
-  constructor(private clientManagementService: ClientManagementService, private sb: MatSnackBar, private route: ActivatedRoute, private dialog: MatDialog) { }
+  constructor(private clientManagementService: ClientManagementService, private sb: MatSnackBar, private dialog: MatDialog, private realmService: RealmService) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap) => {
-      this.realmName = paramMap.get('realm');
+    this.realmService.getCurrentRealm().subscribe(r => {
+      this.realmName = r;
+      this.updateTable();
+      this.search();
     });
-
-    this.updateTable();
-
-    this.search();
   }
 
   search() {

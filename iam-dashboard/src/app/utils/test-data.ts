@@ -170,3 +170,33 @@ export const SAML_CLIENT =
 export const SAML_CLIENT_LIST = [
   SAML_CLIENT
 ]
+
+export const REGISTRATION_REQUESTS = {
+  totalResults: 1,
+  itemsPerPage: 10,
+  startIndex: 0,
+  resources: [
+    {
+      kind: 'RegistrationRequest',
+      id: '3',
+      uuid: '6044c90e-1ce1-477b-b6bf-cdd7d1d3b023',
+      metadata: {
+        creationTime: '2020-05-20T12:58:54Z',
+        lastUpdateTime: '2020-05-20T12:58:54Z'
+      },
+      realm: {
+        name: 'alice'
+      },
+      requesterInfo: {
+        username: 'test3',
+        givenName: 'test',
+        familyName: 'test',
+        email: 'test@example.com',
+        emailVerified: false
+      },
+      otherInfo: {},
+      labels: [],
+      messages: []
+    }
+  ]
+}

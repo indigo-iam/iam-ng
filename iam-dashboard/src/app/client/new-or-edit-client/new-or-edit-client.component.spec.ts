@@ -6,7 +6,7 @@ import { FormBuilder } from '@angular/forms';
 import { ClientManagementService } from '../client-management/client-management.service';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
-import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT, CLIENT_NO_ORIGIN_OR_REDIRECT } from 'src/app/utils/client-test-data';
+import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT, CLIENT_NO_ORIGIN_OR_REDIRECT } from 'src/app/utils/test-data';
 
 describe('NewOrEditClientComponent', () => {
   let component: NewOrEditClientComponent;

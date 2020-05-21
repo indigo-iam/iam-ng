@@ -1,3 +1,7 @@
+<mat-card>
+
+<h2>Registration Requests for {{realmName}}</h2>
+
 <ng-container *blockUI="'registrationRequestsTable'">
 <table mat-table [dataSource]="dataSource">
 
@@ -16,7 +20,6 @@
     <td mat-cell *matCellDef="let request"> {{request.requesterInfo.familyName}} </td>
   </ng-container>
 
-
   <ng-container matColumnDef="submitted">
     <th mat-header-cell *matHeaderCellDef> Submitted </th>
     <td mat-cell *matCellDef="let request"> {{request.creationTime}} </td>
@@ -29,7 +32,7 @@
 
   <ng-container matColumnDef="approve">
     <th mat-header-cell *matHeaderCellDef> Approve? </th>
-    <td mat-cell *matCellDef="let request"><button mat-button (click)="actionRequest(request.id, 'approve')">Approve <mat-icon>add</mat-icon><span></span></button> <button mat-button (click)="actionRequest(request.id, 'reject')">Reject <mat-icon>clear</mat-icon></button></td>
+    <td mat-cell *matCellDef="let request"><button mat-stroked-button (click)="actionRequest(request.uuid, 'approve')">Approve <mat-icon>add</mat-icon><span></span></button> <button mat-stroked-button (click)="actionRequest(request.uuid, 'reject')">Reject <mat-icon>clear</mat-icon></button></td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -38,3 +41,4 @@
 
 <mat-paginator #paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons [pageIndex]=0 [pageSize]=10 (page)="getNext($event)"></mat-paginator>
 </ng-container>
+</mat-card>

@@ -39,11 +39,11 @@ const routes: Routes = [
     component: EmailConfirmationComponent
   },
   {
-    path: '',
+    path: ':realm',
     component: NavigationComponent,
     children: [
       {
-        path: ':realm/dashboard/requests/registration',
+        path: 'dashboard/requests/registration',
         component: RegistrationRequestsComponent,
         data: {
           roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
@@ -51,7 +51,7 @@ const routes: Routes = [
         canActivate: [AppAuthGuard] // Run the auth guard against the page
       },
       {
-        path: ':realm/dashboard/client-management',
+        path: 'dashboard/client-management',
         component: ClientManagementComponent,
         data: {
           roles: ['iam-admin']

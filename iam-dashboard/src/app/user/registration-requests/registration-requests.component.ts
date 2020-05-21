@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { RegistrationService } from '../registration/registration.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { ACTION_REJECT, Action, ACTION_APPROVE } from './registration-request-action';
 import { MatDialog } from '@angular/material/dialog';
+import { RealmService } from 'src/app/services/realm.service';
 
 @Component({
   selector: 'app-registration-requests',
@@ -25,14 +25,13 @@ export class RegistrationRequestsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
 
-  constructor(private route: ActivatedRoute, private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog) { }
+  constructor(private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap) => {
-      this.realmName = paramMap.get('realm');
+    this.realmService.getCurrentRealm().subscribe(r => {
+      this.realmName = r;
+      this.updateTable();
     });
-
-    this.updateTable();
   }
 
   updateTable() {

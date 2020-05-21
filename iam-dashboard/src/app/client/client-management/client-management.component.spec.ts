@@ -6,12 +6,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { SAML_CLIENT_LIST } from 'src/app/utils/client-test-data';
+import { SAML_CLIENT_LIST } from 'src/app/utils/test-data';
+import { RealmService } from 'src/app/services/realm.service';
 
 describe('ClientManagementComponent', () => {
   let component: ClientManagementComponent;
   let fixture: ComponentFixture<ClientManagementComponent>;
   let clientManagementService;
+  let realmService;
   let sb;
   let dialog;
 
@@ -24,6 +26,9 @@ describe('ClientManagementComponent', () => {
     clientManagementService.getClientsOffset.and.returnValue(of(
       SAML_CLIENT_LIST
     ));
+
+    realmService = jasmine.createSpyObj(['getCurrentRealm']);
+    realmService.getCurrentRealm.and.returnValue(of('alice'));
 
     sb = jasmine.createSpyObj('snackbar', ['open']);
     dialog = jasmine.createSpyObj('dialog', ['open']);
@@ -46,7 +51,8 @@ describe('ClientManagementComponent', () => {
           )
         }},
         { provide: MatSnackBar, useValue: sb },
-        { provide: MatDialog, useValue: dialog }
+        { provide: MatDialog, useValue: dialog },
+        { provide: RealmService, useValue: realmService }
       ]
     })
     .compileComponents();

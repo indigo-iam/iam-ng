@@ -1,13 +1,31 @@
+/**
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2016-2020
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package it.infn.cnaf.sd.iam.api.requests;
 
-import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision.approve;
 import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision.reject;
+import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO.approve;
+import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO.reject;
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.done;
 import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.approved;
 import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.rejected;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -242,7 +260,8 @@ public class RequestsCrudTests extends IntegrationTestSupport
         mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
 
     mvc.perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
-      .param("decision", reject.name())).andExpect(status().isForbidden());
+      .content(mapper.writeValueAsString(reject()))
+      .contentType(APPLICATION_JSON)).andExpect(status().isForbidden());
   }
 
   @Test
@@ -266,7 +285,8 @@ public class RequestsCrudTests extends IntegrationTestSupport
         mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
 
     mvc.perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
-      .param("decision", reject.name())).andExpect(status().isOk());
+      .content(mapper.writeValueAsString(reject()))
+      .contentType(APPLICATION_JSON)).andExpect(status().isOk());
 
     RegistrationRequestEntity e =
         requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
@@ -300,7 +320,8 @@ public class RequestsCrudTests extends IntegrationTestSupport
         mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
 
     mvc.perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
-      .param("decision", approve.name())).andExpect(status().isOk());
+      .content(mapper.writeValueAsString(approve()))
+      .contentType(APPLICATION_JSON)).andExpect(status().isOk());
 
     RegistrationRequestEntity e =
         requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
@@ -322,7 +343,143 @@ public class RequestsCrudTests extends IntegrationTestSupport
 
     mvc
       .perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
-        .param("decision", approve.name()))
+        .content(mapper.writeValueAsString(approve()))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.error", is("bad_request")))
+      .andExpect(jsonPath("$.errorDescription", is("Request already handled")));
+  }
+
+  @Test
+  @WithMockAdminUser
+  public void testRequestApprovalWithMessageWorksForAdminUser() throws Exception {
+    when(client.createUser(Mockito.any())).then(i -> i.getArgument(0));
+
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    String response = mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated())
+      .andReturn()
+      .getResponse()
+      .getContentAsString();
+
+    RegistrationRequestCreationResultDTO responseDto =
+        mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
+
+    mvc.perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
+      .content(mapper.writeValueAsString(approve("approval message")))
+      .contentType(APPLICATION_JSON)).andExpect(status().isOk());
+
+    RegistrationRequestEntity e =
+        requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
+          .orElseThrow(assertionError("Expected request not found"));
+
+    assertThat(e.getStatus(), is(done));
+    assertThat(e.getOutcome(), is(approved));
+    assertThat(e.getMessages(), hasSize(2));
+    assertThat(e.getMessages(), hasItem(hasProperty("message", is("approval message"))));
+    assertThat(e.getMessages(), hasItem(hasProperty("sender", is("admin"))));
+    verify(client).createUser(userCaptor.capture());
+    UserRepresentation user = userCaptor.getValue();
+
+    assertThat(user.getUsername(), is(req.getRequesterInfo().getUsername()));
+    assertThat(user.getFirstName(), is(req.getRequesterInfo().getGivenName()));
+    assertThat(user.getLastName(), is(req.getRequesterInfo().getFamilyName()));
+    assertThat(user.getEmail(), is(req.getRequesterInfo().getEmail()));
+
+    List<String> requestIdAttr =
+        user.getAttributes().get(DefaultRequestsService.REGISTRATION_REQUEST_ID);
+    assertThat(requestIdAttr, not(empty()));
+
+    mvc
+      .perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
+        .content(mapper.writeValueAsString(approve()))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.error", is("bad_request")))
+      .andExpect(jsonPath("$.errorDescription", is("Request already handled")));
+  }
+
+  @Test
+  @WithMockAdminUser
+  public void testRequestMessageValidation() throws Exception {
+    when(client.createUser(Mockito.any())).then(i -> i.getArgument(0));
+
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    String response = mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated())
+      .andReturn()
+      .getResponse()
+      .getContentAsString();
+
+    RegistrationRequestCreationResultDTO responseDto =
+        mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
+
+    mvc
+      .perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
+        .content(mapper.writeValueAsString(approve("<html>Hello</html>")))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errorDescription").value("Invalid request decision"))
+      .andExpect(
+          jsonPath("$.fieldErrors[?(@.fieldName == 'requestDecisionDTO.message')].fieldError")
+            .value(hasItem("invalid message")));
+  }
+
+
+  @Test
+  @WithMockAdminUser
+  public void testRequestRejectionWithMessageWorksForAdminUser() throws Exception {
+    when(client.createUser(Mockito.any())).then(i -> i.getArgument(0));
+
+    RealmEntity realm =
+        realmRepo.findByName(REALM_ALICE).orElseThrow(realmNotFoundError(REALM_ALICE));
+
+    RegistrationRequestEntity req = newTemplateRequest(clock, realm, null, 0);
+    RegistrationRequestDTO dto = cleanupDto(requestMapper.entityToDto(req));
+
+    String response = mvc
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated())
+      .andReturn()
+      .getResponse()
+      .getContentAsString();
+
+    RegistrationRequestCreationResultDTO responseDto =
+        mapper.readValue(response, RegistrationRequestCreationResultDTO.class);
+
+    mvc.perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
+      .content(mapper.writeValueAsString(reject("rejection message")))
+      .contentType(APPLICATION_JSON)).andExpect(status().isOk());
+
+    RegistrationRequestEntity e =
+        requestRepo.findByRealmNameAndUuid("alice", responseDto.getRequestId())
+          .orElseThrow(assertionError("Expected request not found"));
+
+    assertThat(e.getStatus(), is(done));
+    assertThat(e.getOutcome(), is(rejected));
+    assertThat(e.getMessages(), hasSize(2));
+    assertThat(e.getMessages(), hasItem(hasProperty("message", is("rejection message"))));
+    assertThat(e.getMessages(), hasItem(hasProperty("sender", is("admin"))));
+
+    mvc
+      .perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
+        .content(mapper.writeValueAsString(approve()))
+        .contentType(APPLICATION_JSON))
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.error", is("bad_request")))
       .andExpect(jsonPath("$.errorDescription", is("Request already handled")));
@@ -333,7 +490,8 @@ public class RequestsCrudTests extends IntegrationTestSupport
   public void testRequestNotFoundHandled() throws Exception {
     mvc
       .perform(post("/Realms/alice/Requests/registration/{requestId}", UUID.randomUUID().toString())
-        .param("decision", approve.name()))
+        .content(mapper.writeValueAsString(approve()))
+        .contentType(APPLICATION_JSON))
       .andExpect(status().isNotFound());
   }
 
@@ -362,7 +520,8 @@ public class RequestsCrudTests extends IntegrationTestSupport
 
     mvc
       .perform(post("/Realms/alice/Requests/registration/{requestId}", responseDto.getRequestId())
-        .param("decision", approve.name()))
+        .content(mapper.writeValueAsString(approve()))
+        .contentType(APPLICATION_JSON))
       .andExpect(status().isInternalServerError())
       .andExpect(jsonPath("$.errorDescription").value("Error contacting keycloak!"));
   }

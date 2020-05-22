@@ -240,6 +240,14 @@ public class RegistrationRequestEntity implements Serializable {
     setOutcome(rejected);
   }
   
+  public void addMessage(Clock clock, String message, String principal) {
+    RequestMessageEntity msg = new RequestMessageEntity();
+    msg.setCreationTime(Date.from(clock.instant()));
+    msg.setSender(principal);
+    msg.setMessage(message);
+    getMessages().add(msg);
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;

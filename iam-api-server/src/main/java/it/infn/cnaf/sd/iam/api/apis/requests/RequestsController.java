@@ -15,21 +15,28 @@
  */
 package it.infn.cnaf.sd.iam.api.apis.requests;
 
+import static it.infn.cnaf.sd.iam.api.common.utils.ValidationHelper.handleValidationError;
+
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.infn.cnaf.sd.iam.api.apis.registrations.RegistrationRequestMapper;
 import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
-import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO;
 import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestOutcomeDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.ListResponseDTO;
 import it.infn.cnaf.sd.iam.api.common.utils.PageUtils;
@@ -39,6 +46,8 @@ import it.infn.cnaf.sd.iam.api.common.utils.PageUtils;
 @Transactional
 @PreAuthorize("hasRole('IAM_OWNER')")
 public class RequestsController {
+
+  public static final String INVALID_REQUEST_DECISION_MSG = "Invalid request decision";
 
   public static final int PAGE_SIZE = 20;
 
@@ -63,9 +72,11 @@ public class RequestsController {
   }
 
   @PostMapping("/Requests/registration/{requestId}")
-  RequestOutcomeDTO approveRequest(@PathVariable final String requestId,
-      @RequestParam final RequestDecision decision) {
-    return service.setRequestDecision(requestId, decision);
+  RequestOutcomeDTO requestDecision(@PathVariable final String requestId,
+      @RequestBody @Validated final RequestDecisionDTO decision, BindingResult validationResult,
+      Principal principal) {
+    handleValidationError(INVALID_REQUEST_DECISION_MSG, validationResult);
+    return service.setRequestDecision(principal, requestId, decision);
   }
-  
+
 }

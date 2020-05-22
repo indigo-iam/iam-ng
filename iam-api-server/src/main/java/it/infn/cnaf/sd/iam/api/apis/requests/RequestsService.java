@@ -15,12 +15,13 @@
  */
 package it.infn.cnaf.sd.iam.api.apis.requests;
 
+import java.security.Principal;
 import java.util.function.Supplier;
 
 import org.springframework.data.domain.Pageable;
 
 import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
-import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision;
+import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO;
 import it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestOutcomeDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.ListResponseDTO;
 import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
@@ -28,13 +29,15 @@ import it.infn.cnaf.sd.iam.api.common.error.NotFoundError;
 public interface RequestsService {
 
   String NOT_FOUND_TEMPLATE = "Request not found for id: %s";
+
   default Supplier<NotFoundError> requestNotFound(String requestId) {
     return () -> new NotFoundError(String.format(NOT_FOUND_TEMPLATE, requestId));
   }
 
   ListResponseDTO<RegistrationRequestDTO> getPendingRequests(Pageable pageable);
-  
-  RequestOutcomeDTO setRequestDecision(String requestId, RequestDecision decision);
 
-  
+  RequestOutcomeDTO setRequestDecision(Principal principal, String requestId,
+      RequestDecisionDTO decision);
+
+
 }

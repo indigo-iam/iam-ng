@@ -1,1 +1,44 @@
-<p>user-management works!</p>
+<mat-card>
+    <h2>User Management</h2>
+
+    <mat-form-field appearance="outline" class="large-input">
+        <mat-label>Search</mat-label>
+        <input matInput name="search" #searchBox (input)="searchQuery.next(searchBox.value)">
+    </mat-form-field>
+
+    <table mat-table [dataSource]="dataSource" *blockUI="'userTable'">
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef> Username </th>
+            <td mat-cell *matCellDef="let user"> {{user.username}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let user"> {{user.givenName}} {{user.familyName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="emails">
+            <th mat-header-cell *matHeaderCellDef> Email(s) </th>
+            <td mat-cell *matCellDef="let user">
+                <p *ngFor="let e of user.emails"><a href="mailto:{{e.email}}">{{e.email}}</a></p>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef> Active </th>
+            <td mat-cell *matCellDef="let user"> <mat-icon *ngIf="user.active">verified_user</mat-icon><mat-icon *ngIf="!user.active">thumb_down</mat-icon></td>
+        </ng-container>
+
+        <ng-container matColumnDef="manage">
+            <th mat-header-cell *matHeaderCellDef> Manage </th>
+            <td mat-cell *matCellDef="let user"><a mat-stroked-button routerLink="../user/{{user.uuid}}">Manage</a></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator #paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons [pageIndex]=0 [pageSize]=10
+        (page)="getNext($event)"></mat-paginator>
+</mat-card>

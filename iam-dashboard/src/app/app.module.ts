@@ -43,12 +43,13 @@ import { MatListModule } from '@angular/material/list';
 import { NavigationComponent } from './navigation/navigation.component';
 import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 import { UserManagementComponent } from './user/user-management/user-management.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent, RealmChooserComponent, UserManagementComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent, RealmChooserComponent, UserManagementComponent, UserProfileComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

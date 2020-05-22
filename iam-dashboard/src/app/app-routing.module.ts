@@ -12,6 +12,8 @@ import { PermissionDeniedComponent } from './utils/permission-denied/permission-
 import { ClientManagementComponent } from './client/client-management/client-management.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
+import { UserManagementComponent } from './user/user-management/user-management.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
 const routes: Routes = [
   {
@@ -53,6 +55,22 @@ const routes: Routes = [
       {
         path: 'dashboard/client-management',
         component: ClientManagementComponent,
+        data: {
+          roles: ['iam-admin']
+        },
+        canActivate: [AppAuthGuard]
+      },
+      {
+        path: 'dashboard/user-management',
+        component: UserManagementComponent,
+        data: {
+          roles: ['iam-admin']
+        },
+        canActivate: [AppAuthGuard]
+      },
+      {
+        path: 'dashboard/user/:userid',
+        component: UserProfileComponent,
         data: {
           roles: ['iam-admin']
         },

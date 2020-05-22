@@ -1,0 +1,21 @@
+<div *blockUI="'userProfile'">
+    <mat-card class="card-spaced" style="margin-top: 10px;">
+        <mat-card-title>{{user.givenName}} {{user.familyName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="card-spaced">
+        <mat-card-title>User Details</mat-card-title>
+        <mat-card-content>
+            <mat-list>
+                <mat-divider></mat-divider>
+                <mat-list-item>ID: {{user.uuid}}</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>Email(s):</mat-list-item>
+                <mat-list style="margin-left:20px;">
+                    <div *ngFor="let email of user.emails">
+                        <mat-list-item><a href="mailto:{{email.email}}">{{email.email}}</a></mat-list-item>
+                    </div>
+                </mat-list>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</div>

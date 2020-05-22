@@ -61,17 +61,6 @@ describe('RegistrationRequestsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update table', () => {
-    component.updateTable();
-    expect(component.registrationRequests).toEqual(REGISTRATION_REQUESTS.resources);
-  });
-
-  it('should not update table on error', () => {
-    registrationService.getRegistrationRequestsPaginated.and.returnValue(throwError({status: 500, message: 'Internal server error'}));
-    component.updateTable();
-    expect(sb.open).toHaveBeenCalled();
-  });
-
   it('should action accept and reject request', () => {
     const dialogRef = jasmine.createSpyObj(['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of(true));

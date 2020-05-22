@@ -25,30 +25,15 @@ export class RegistrationRequestsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
 
+  defaultPageEvent: PageEvent = {pageIndex: 0, pageSize: 10, length: 10};
+
   constructor(private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService) { }
 
   ngOnInit(): void {
     this.realmService.getCurrentRealm().subscribe(r => {
       this.realmName = r;
-      this.updateTable();
+      this.getNext(this.defaultPageEvent);
     });
-  }
-
-  updateTable() {
-    this.blockUIregistrationRequestsTable.start();
-    this.registrationService.getRegistrationRequestsPaginated(this.realmName, 0, 10).subscribe(
-      (response: any) => {
-        this.registrationRequests = response.resources;
-        console.log(response);
-        this.dataSource = new MatTableDataSource(this.registrationRequests);
-        this.dataSource.paginator = this.paginator;
-        this.blockUIregistrationRequestsTable.stop();
-      },
-      (error) => {
-        this.sb.open('An error occoured when getting registration requests: ' + error.message, 'Close');
-        this.blockUIregistrationRequestsTable.stop();
-      }
-    );
   }
 
   getNext(event: PageEvent) {
@@ -58,6 +43,7 @@ export class RegistrationRequestsComponent implements OnInit {
       (response: any) => {
         this.registrationRequests = response.resources;
         this.dataSource = new MatTableDataSource(this.registrationRequests);
+        this.dataSource.paginator = this.paginator;
         this.blockUIregistrationRequestsTable.stop();
       },
       (error) => {
@@ -86,7 +72,7 @@ export class RegistrationRequestsComponent implements OnInit {
           this.registrationService.actionRegistrationRequest(this.realmName, requestId, action).subscribe(
             (r) => {
               this.sb.open('Request ' + type + 'ed successfully', 'Close');
-              this.updateTable();
+              this.getNext(this.defaultPageEvent);
             },
             (error) => {
               this.sb.open('Request modification was unsuccessful ' + error.message, 'Close');

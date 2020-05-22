@@ -24,3 +24,8 @@ jobs:
       run: mvn -B package
     - name: build & test (mysql)
       run: mvn -B -Dspring.profiles.active=mysql-test-tc test
+    - name: build docker image
+      env:
+        DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        DH_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      run: mvn -B -Djib.to.auth.username=$DH_USER -Djib.to.auth.password=$DH_PASSWORD -DskipTests jib:build

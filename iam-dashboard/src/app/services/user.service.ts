@@ -8,7 +8,7 @@ import { AppConfigService } from '../app-config.service';
 export class UserService {
 
   iamApiBaseUrl: string;
-  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) { 
+  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {
     this.iamApiBaseUrl = appConfigService.getIamApiBaseUrl();
   }
 

@@ -22,6 +22,7 @@ export class UpdateableTableService {
     let dataSource: MatTableDataSource<any>;
     service.getPaginated(realmName, offset, event.pageSize).subscribe(
       (response: any) => {
+        console.log(response);
         resources = response.resources;
         dataSource = new MatTableDataSource(resources);
         dataSource.paginator = paginator;

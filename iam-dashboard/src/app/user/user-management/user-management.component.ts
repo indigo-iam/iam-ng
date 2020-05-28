@@ -7,6 +7,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DEFAULT_PAGE_EVENT, UpdateableTableData } from 'src/app/utils/utils';
+import { UpdateableTableService } from 'src/app/services/updateable-table.service';
 
 @Component({
   selector: 'app-user-management',
@@ -25,12 +27,12 @@ export class UserManagementComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('userTable') blockUIuserTable: NgBlockUI;
 
-  constructor(private realmService: RealmService, private userService: UserService, private sb: MatSnackBar) { }
+  constructor(private realmService: RealmService, private userService: UserService, private sb: MatSnackBar, private updateableTableService: UpdateableTableService) { }
 
   ngOnInit(): void {
     this.realmService.getCurrentRealm().subscribe(r => {
       this.realmName = r;
-      this.updateTable();
+      this.getNext(DEFAULT_PAGE_EVENT);
     });
   }
 
@@ -54,36 +56,11 @@ export class UserManagementComponent implements OnInit {
     });*/
   }
 
-  updateTable() {
-    this.blockUIuserTable.start();
-    this.userService.getUsersPaginated(this.realmName, 0, 10).subscribe(
-      (response: any) => {
-        this.users = response.resources;
-        console.log(response);
-        this.dataSource = new MatTableDataSource(this.users);
-        this.dataSource.paginator = this.paginator;
-        this.blockUIuserTable.stop();
-      },
-      (error) => {
-        this.sb.open('An error occoured when getting users: ' + error.message, 'Close');
-        this.blockUIuserTable.stop();
-      }
-    );
-  }
-
   getNext(event: PageEvent) {
-    this.blockUIuserTable.start();
-    const offset = event.pageSize * event.pageIndex;
-    this.userService.getUsersPaginated(this.realmName, offset, event.pageSize).subscribe(
-      (response: any) => {
-        this.users = response.resources;
-        this.dataSource = new MatTableDataSource(this.users);
-        this.blockUIuserTable.stop();
-      },
-      (error) => {
-        this.sb.open('An error occoured changing pages: ' + error.message, 'Close');
-        this.blockUIuserTable.stop();
-      }
-    );
+    const res: Subject<UpdateableTableData> = this.updateableTableService.getNext(event, this.blockUIuserTable, this.realmName, this.paginator, this.userService);
+    res.subscribe(r => {
+      this.dataSource = r.dataSource;
+      this.users = r.resources;
+    });
   }
 }

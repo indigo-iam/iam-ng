@@ -200,3 +200,39 @@ export const REGISTRATION_REQUESTS = {
     }
   ]
 }
+
+export const USERS = {
+  totalResults: 1,
+  itemsPerPage: 10,
+  startIndex: 0,
+  resources: [
+    {
+      metadata: {
+        creationTime: '2020-05-26T09:09:45Z',
+        lastUpdateTime: '2020-05-26T09:09:45Z'
+      },
+      id: 1000,
+      uuid: '4868478e-f79e-40fc-83a9-48b8d91cd321',
+      username: 'test-user',
+      givenName: 'Test',
+      familyName: 'User',
+      active: true,
+      provisioned: false,
+      emails: [
+        {
+          primary: true,
+          email: 'test@example.com',
+          verified: true
+        },
+        {
+          primary: false,
+          email: 'test@other.example.com',
+          verified: false
+        }
+      ],
+      realm: {
+        name: 'alice'
+      }
+    }
+  ]
+}

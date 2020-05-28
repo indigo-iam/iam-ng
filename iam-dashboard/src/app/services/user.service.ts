@@ -9,7 +9,7 @@ export class UserService {
 
   iamApiBaseUrl: string;
   constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {
-    this.iamApiBaseUrl = appConfigService.getIamApiBaseUrl();
+    this.iamApiBaseUrl = this.appConfigService.getIamApiBaseUrl();
   }
 
   getUsersPaginated(realm: string, startIndex: number, count: number) {

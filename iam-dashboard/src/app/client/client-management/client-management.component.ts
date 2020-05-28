@@ -121,7 +121,10 @@ export class ClientManagementComponent implements OnInit {
 
   deleteClient(clientId: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: 'Are you sure you wish to delete this client?'
+      data: {
+        message: 'Are you sure you wish to delete this client?',
+        showInput: false
+      }
     });
 
     dialogRef.afterClosed().subscribe(

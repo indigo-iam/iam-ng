@@ -8,9 +8,21 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 })
 export class ConfirmationDialogComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public message: string, private dialogRef: MatDialogRef<ConfirmationDialogComponent>) { }
+  message = '';
+  showInput = false;
+  userInput = '';
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data, private dialogRef: MatDialogRef<ConfirmationDialogComponent>) { }
 
   ngOnInit(): void {
+    if(this.data) {
+      if(this.data.message) {
+        this.message = this.data.message;
+      }
+      if(this.data.showInput) {
+        this.showInput = true;
+      }
+    }
   }
 
   no(): void {

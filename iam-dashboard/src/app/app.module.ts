@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
+import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER, Inject, Injector } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './utils/page-not-found/page-not-found.component';
 import { AppConfigService } from './app-config.service';
@@ -45,7 +45,6 @@ import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 import { UserManagementComponent } from './user/user-management/user-management.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
-
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
@@ -76,7 +75,8 @@ const keycloakService: KeycloakService = new KeycloakService();
     }),
     LayoutModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    FormsModule
   ],
   providers: [
     {
@@ -107,9 +107,7 @@ const keycloakService: KeycloakService = new KeycloakService();
 })
 export class AppModule implements DoBootstrap {
 
-  constructor(private appConfigService: AppConfigService) {
-
-  }
+  constructor(private appConfigService: AppConfigService) {}
 
   async ngDoBootstrap(app) {
 

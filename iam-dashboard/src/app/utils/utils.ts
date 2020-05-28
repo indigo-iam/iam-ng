@@ -1,12 +1,13 @@
-import { Observable, of } from "rxjs";
+import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 export class Utils {
-  public static handleError<T> (result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error); // log to console instead
 
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
+}
+
+export const DEFAULT_PAGE_EVENT: PageEvent = { pageIndex: 0, pageSize: 10, length: 10 };
+
+export interface UpdateableTableData {
+    resources: any,
+    dataSource: MatTableDataSource<any>
 }

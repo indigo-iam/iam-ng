@@ -70,6 +70,7 @@ describe('RegistrationService', () => {
       familyName: [''],
       email: [''],
       username: [''],
+      notes: ['']
     });
 
     service.createRegistration(fg, 'alice').subscribe(res => {
@@ -99,7 +100,7 @@ describe('RegistrationService', () => {
   });
 
   it('should get reg requests paginated', () => {
-    service.getRegistrationRequestsPaginated('alice', 0, 10).subscribe(res => {
+    service.getPaginated('alice', 0, 10).subscribe(res => {
       expect(res).toEqual(REGISTRATION_REQUESTS);
     });
 
@@ -112,11 +113,11 @@ describe('RegistrationService', () => {
 
 
   it('should action a registration request', () => {
-    service.actionRegistrationRequest('alice', '123', ACTION_APPROVE).subscribe(res => {
+    service.actionRegistrationRequest('alice', '123', ACTION_APPROVE, 'yay good luck').subscribe(res => {
       expect(res).toEqual({});
     });
 
-    const req = http.expectOne({url: 'https://api.test.example//Realms/alice/Requests/registration/123?decision=approve', method: 'POST'});
+    const req = http.expectOne({url: 'https://api.test.example//Realms/alice/Requests/registration/123', method: 'POST'});
     expect(req.request.method).toEqual('POST');
 
     req.flush({});

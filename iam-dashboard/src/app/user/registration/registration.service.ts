@@ -5,15 +5,17 @@ import { RegistrationConfigurationDTO } from '../../models/registration-configur
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../../app-config.service';
 import { Action } from '../registration-requests/registration-request-action';
+import { PaginatedService } from 'src/app/utils/paginated.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationService {
+export class RegistrationService extends PaginatedService {
 
   iamApiBaseUrl: string;
 
   constructor(private http: HttpClient, private appConfigService: AppConfigService) {
+    super();
     this.iamApiBaseUrl = this.appConfigService.getIamApiBaseUrl();
   }
 
@@ -33,11 +35,16 @@ export class RegistrationService {
           givenName: registrationForm.get('givenName').value,
           familyName: registrationForm.get('familyName').value,
           email: registrationForm.get('email').value
-        }
+        },
+        messages: [
+          {
+            message: registrationForm.get('notes').value
+          }
+        ]
       });
   }
 
-  getRegistrationRequestsPaginated(realm: string, startIndex: number, count: number): Observable<any> {
+  getPaginated(realm: string, startIndex: number, count: number) {
     return this.http.get(this.iamApiBaseUrl + '/Realms/' + realm + '/Requests/registration/pending?startIndex=' + startIndex + '&count=' + count);
   }
 
@@ -49,8 +56,8 @@ export class RegistrationService {
     return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Registrations/confirm/' + token, {});
   }
 
-  actionRegistrationRequest(realm: string, requestId: string, decision: Action) {
-    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Requests/registration/' + requestId + '?decision=' + decision.action, {});
+  actionRegistrationRequest(realm: string, requestId: string, decision: Action, reason: string) {
+    return this.http.post<any>(this.iamApiBaseUrl + '/Realms/' + realm + '/Requests/registration/' + requestId, {decision: decision.action, message: reason});
   }
 
 

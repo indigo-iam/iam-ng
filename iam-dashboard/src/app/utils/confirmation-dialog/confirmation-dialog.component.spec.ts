@@ -15,7 +15,10 @@ describe('ClientDetailsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ConfirmationDialogComponent ],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: 'Hello World' },
+        { provide: MAT_DIALOG_DATA, useValue: {
+          message: 'Hello World',
+          showInput: true
+        } },
         { provide: MatDialogRef, useValue: matDialogRef }
       ]
     })

@@ -1,44 +1,67 @@
 <mat-card>
 
-<h2>Registration Requests for {{realmName}}</h2>
+  <h2>Registration Requests for {{realmName}}</h2>
 
-<ng-container *blockUI="'registrationRequestsTable'">
-<table mat-table [dataSource]="dataSource">
+  <ng-container *blockUI="'registrationRequestsTable'">
+    <table mat-table [dataSource]="dataSource">
 
-  <ng-container matColumnDef="username">
-    <th mat-header-cell *matHeaderCellDef> Username </th>
-    <td mat-cell *matCellDef="let request"> {{request.requesterInfo.username}} </td>
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Username </th>
+        <td mat-cell *matCellDef="let request">{{request.requesterInfo.username}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="givenName">
+        <th mat-header-cell *matHeaderCellDef> First Name </th>
+        <td mat-cell *matCellDef="let request">{{request.requesterInfo.givenName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="familyName">
+        <th mat-header-cell *matHeaderCellDef> Last Name </th>
+        <td mat-cell *matCellDef="let request">{{request.requesterInfo.familyName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="submitted">
+        <th mat-header-cell *matHeaderCellDef> Submitted </th>
+        <td mat-cell *matCellDef="let request">{{request.metadata.creationTime}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let request">{{request.requesterInfo.email}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef> User notes </th>
+        <td mat-cell *matCellDef="let request"><ng-container *ngFor="let m of request.messages">{{m.message}} </ng-container></td>
+      </ng-container>
+
+      <ng-container matColumnDef="approve">
+        <th mat-header-cell *matHeaderCellDef> Approve? </th>
+        <td mat-cell *matCellDef="let request"><button mat-stroked-button
+            (click)="actionRequest(request.uuid, 'approve')">Approve <mat-icon>add</mat-icon><span></span></button>
+          <button mat-stroked-button (click)="actionRequest(request.uuid, 'reject')">Reject <mat-icon>clear</mat-icon>
+            </button></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons [pageIndex]=0 [pageSize]=10
+      (page)="getNext($event)"> </mat-paginator>
+      
+    <button mat-stroked-button (click)="actionSelected('approve')">Approve selected <mat-icon>add</mat-icon>
+      <span></span></button> <button mat-stroked-button (click)="actionSelected('reject')">Reject selected <mat-icon>
+        clear</mat-icon></button>
   </ng-container>
-
-  <ng-container matColumnDef="givenName">
-    <th mat-header-cell *matHeaderCellDef> First Name </th>
-    <td mat-cell *matCellDef="let request"> {{request.requesterInfo.givenName}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="familyName">
-    <th mat-header-cell *matHeaderCellDef> Last Name </th>
-    <td mat-cell *matCellDef="let request"> {{request.requesterInfo.familyName}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="submitted">
-    <th mat-header-cell *matHeaderCellDef> Submitted </th>
-    <td mat-cell *matCellDef="let request"> {{request.creationTime}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let request"> {{request.requesterInfo.email}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="approve">
-    <th mat-header-cell *matHeaderCellDef> Approve? </th>
-    <td mat-cell *matCellDef="let request"><button mat-stroked-button (click)="actionRequest(request.uuid, 'approve')">Approve <mat-icon>add</mat-icon><span></span></button> <button mat-stroked-button (click)="actionRequest(request.uuid, 'reject')">Reject <mat-icon>clear</mat-icon></button></td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-paginator #paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons [pageIndex]=0 [pageSize]=10 (page)="getNext($event)"></mat-paginator>
-</ng-container>
 </mat-card>

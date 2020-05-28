@@ -26,8 +26,8 @@ export class UpdateableTableService {
         dataSource = new MatTableDataSource(resources);
         dataSource.paginator = paginator;
         subject.next({
-          resources: resources,
-          dataSource: dataSource
+          resources,
+          dataSource
         })
         blockUi.stop();
       },

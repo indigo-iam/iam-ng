@@ -37,7 +37,7 @@ describe('UpdateableTableService', () => {
   });
 
   it('should get data from registration service', () => {
-    let ret = service.getNext(DEFAULT_PAGE_EVENT, bui, 'alice', paginator, registrationService);
+    const ret = service.getNext(DEFAULT_PAGE_EVENT, bui, 'alice', paginator, registrationService);
     expect(bui.start).toHaveBeenCalled();
     expect(bui.stop).toHaveBeenCalled();
     ret.subscribe(r => {
@@ -48,7 +48,7 @@ describe('UpdateableTableService', () => {
 
   it('should get data from registration service', () => {
     registrationService.getPaginated.and.returnValue(throwError({status: 500}));
-    let ret = service.getNext(DEFAULT_PAGE_EVENT, bui, 'alice', paginator, registrationService);
+    const ret = service.getNext(DEFAULT_PAGE_EVENT, bui, 'alice', paginator, registrationService);
     expect(bui.start).toHaveBeenCalled();
     expect(bui.stop).toHaveBeenCalled();
     expect(sb.open).toHaveBeenCalled();

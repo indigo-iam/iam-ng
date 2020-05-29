@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,7 +11,7 @@ import { RealmService } from 'src/app/services/realm.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DEFAULT_PAGE_EVENT, UpdateableTableData } from 'src/app/utils/utils';
 import { UpdateableTableService } from 'src/app/services/updateable-table.service';
-import { Subject } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { NotificationsService } from 'angular2-notifications';
 
 @Component({
@@ -19,7 +19,7 @@ import { NotificationsService } from 'angular2-notifications';
   templateUrl: './registration-requests.component.html',
   styleUrls: ['./registration-requests.component.scss']
 })
-export class RegistrationRequestsComponent implements OnInit {
+export class RegistrationRequestsComponent implements OnInit, OnDestroy {
 
   realmName: string;
 
@@ -27,6 +27,8 @@ export class RegistrationRequestsComponent implements OnInit {
   displayedColumns: string[] = ['select', 'username', 'givenName', 'familyName', 'email', 'submitted', 'notes', 'approve'];
   registrationRequests;
   selection: SelectionModel<any>;
+  source = interval(10000);
+  subscription;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
@@ -40,6 +42,13 @@ export class RegistrationRequestsComponent implements OnInit {
       this.selection = new SelectionModel(true, []);
     });
 
+    this.subscription = this.source.subscribe(() => {
+      this.getNext(DEFAULT_PAGE_EVENT);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   getNext(event: PageEvent) {

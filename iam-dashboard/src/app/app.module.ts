@@ -44,6 +44,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 import { UserManagementComponent } from './user/user-management/user-management.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 const keycloakService: KeycloakService = new KeycloakService();
 
@@ -76,7 +77,8 @@ const keycloakService: KeycloakService = new KeycloakService();
     LayoutModule,
     MatSidenavModule,
     MatListModule,
-    FormsModule
+    FormsModule,
+    SimpleNotificationsModule.forRoot()
   ],
   providers: [
     {

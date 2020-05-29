@@ -12,6 +12,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { DEFAULT_PAGE_EVENT, UpdateableTableData } from 'src/app/utils/utils';
 import { UpdateableTableService } from 'src/app/services/updateable-table.service';
 import { Subject } from 'rxjs';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'app-registration-requests',
@@ -30,7 +31,7 @@ export class RegistrationRequestsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
 
-  constructor(private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService, private updateableTableService: UpdateableTableService) { }
+  constructor(private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService, private updateableTableService: UpdateableTableService, private notificationsService: NotificationsService) { }
 
   ngOnInit(): void {
     this.realmService.getCurrentRealm().subscribe(r => {
@@ -128,7 +129,7 @@ export class RegistrationRequestsComponent implements OnInit {
               console.log(sel);
               this.registrationService.actionRegistrationRequest(this.realmName, sel.uuid, action, reason).subscribe(
                 (r) => {
-                  // Do nothing on success
+                  this.notificationsService.create('' + sel.requesterInfo.givenName + ' ' + sel.requesterInfo.familyName + ' (' + sel.requesterInfo.username + ') was actioned');
                 },
                 (error) => {
                   console.log(error);
@@ -136,6 +137,7 @@ export class RegistrationRequestsComponent implements OnInit {
                 }
               );
             });
+            this.getNext(DEFAULT_PAGE_EVENT);
           }
         }
       );

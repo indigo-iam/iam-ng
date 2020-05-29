@@ -12,6 +12,7 @@ import { RealmService } from 'src/app/services/realm.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { UpdateableTableService } from 'src/app/services/updateable-table.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { NotificationsService } from 'angular2-notifications';
 
 describe('RegistrationRequestsComponent', () => {
   let component: RegistrationRequestsComponent;
@@ -22,6 +23,7 @@ describe('RegistrationRequestsComponent', () => {
   let dialog;
   let updateableTableService;
   const subject = new Subject();
+  let notificationsService;
 
   beforeEach(async(() => {
     registrationService = jasmine.createSpyObj(['getPaginated', 'actionRegistrationRequest']);
@@ -42,6 +44,7 @@ describe('RegistrationRequestsComponent', () => {
     realmService.getCurrentRealm.and.returnValue(of('alice'));
 
     sb = jasmine.createSpyObj(['open']);
+    notificationsService = jasmine.createSpyObj(['create']);
 
     dialog = jasmine.createSpyObj('dialog', ['open', 'afterClosed']);
 
@@ -58,7 +61,8 @@ describe('RegistrationRequestsComponent', () => {
         { provide: RealmService, useValue: realmService },
         { provide: MatSnackBar, useValue: sb },
         { provide: MatDialog, useValue: dialog },
-        { provide: UpdateableTableService, useValue: updateableTableService }
+        { provide: UpdateableTableService, useValue: updateableTableService },
+        { provide: NotificationsService, useValue: notificationsService}
       ]
     })
     .compileComponents();
@@ -145,6 +149,7 @@ describe('RegistrationRequestsComponent', () => {
     component.actionSelected('approve');
     component.actionSelected('reject');
     expect(sb.open).not.toHaveBeenCalled();
+    expect(notificationsService.create).toHaveBeenCalled();
   });
 
   it('should try but fail action with server error', () => {

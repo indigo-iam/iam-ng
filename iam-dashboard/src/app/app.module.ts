@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, DoBootstrap, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER, Inject, Injector } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -102,7 +102,8 @@ const keycloakService: KeycloakService = new KeycloakService();
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
       multi: true
-    }
+    },
+    Title
   ],
   entryComponents: [AppComponent, CustomBlockUIComponent, NewOrEditClientComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -5,6 +5,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { shareReplay, map } from 'rxjs/operators';
 import { KeycloakService } from 'keycloak-angular';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { KeycloakService } from 'keycloak-angular';
 export class AppComponent implements OnInit {
   title = 'IAM Dashboard';
 
-  constructor(private router: Router, private loadingService: LoadingService) {
+  constructor(private router: Router, private loadingService: LoadingService, private titleService: Title) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.loadingService.show();
@@ -30,4 +31,7 @@ export class AppComponent implements OnInit {
 
   }
 
+  public setTitle(title: string) {
+    this.titleService.setTitle(title);
+  }
 }

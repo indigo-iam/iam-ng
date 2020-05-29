@@ -77,7 +77,11 @@ export class RegistrationRequestsComponent implements OnInit {
               this.getNext(DEFAULT_PAGE_EVENT);
             },
             (error) => {
-              this.sb.open('Request modification was unsuccessful ' + error.message, 'Close');
+              if (error.error && error.error.fieldErrors) {
+                this.sb.open('Invalid reason for request action! Make sure you have not entered any markup - plain text only please.', 'Close');
+              } else {
+                this.sb.open('Request modification was unsuccessful: ' + error.message, 'Close');
+              }
             }
           );
         }
@@ -132,8 +136,11 @@ export class RegistrationRequestsComponent implements OnInit {
                   this.notificationsService.create('' + sel.requesterInfo.givenName + ' ' + sel.requesterInfo.familyName + ' (' + sel.requesterInfo.username + ') was actioned');
                 },
                 (error) => {
-                  console.log(error);
-                  this.sb.open('Request modification was unsuccessful ' + error.message, 'Close');
+                  if (error.error && error.error.fieldErrors) {
+                    this.sb.open('Invalid reason for request action! Make sure you have not entered any markup - plain text only please.', 'Close');
+                  } else {
+                    this.sb.open('Request modification was unsuccessful: ' + error.message, 'Close');
+                  }
                 }
               );
             });

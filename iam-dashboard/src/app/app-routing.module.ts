@@ -18,37 +18,59 @@ import { UserProfileComponent } from './user/user-profile/user-profile.component
 const routes: Routes = [
   {
     path: '404',
-    component: PageNotFoundComponent
+    component: PageNotFoundComponent,
+    data: {
+      title: 'Page not found'
+    }
   },
   {
     path: '403',
-    component: PermissionDeniedComponent
+    component: PermissionDeniedComponent,
+    data: {
+      title: 'Permission denied'
+    }
   },
   {
     path: '',
-    component: RealmChooserComponent
+    component: RealmChooserComponent,
+    data: {
+      title: 'Choose a realm'
+    }
   },
   {
     path: ':realm',
-    component: LoginComponent
+    component: LoginComponent,
+    data: {
+      title: 'Login or register'
+    }
   },
   {
     path: ':realm/register',
-    component: RegistrationComponent
+    component: RegistrationComponent,
+    data: {
+      title: 'Register'
+    }
   },
   {
     path: ':realm/register/confirm/:token',
-    component: EmailConfirmationComponent
+    component: EmailConfirmationComponent,
+    data: {
+      title: 'Confirm your email address'
+    }
   },
   {
     path: ':realm',
     component: NavigationComponent,
+    data: {
+      title: 'IAM Dashboard'
+    },
     children: [
       {
         path: 'dashboard/requests/registration',
         component: RegistrationRequestsComponent,
         data: {
-          roles: ['iam-admin'] // Restrict this page for the admin role only (we pass this data to the Auth Guard)
+          roles: ['iam-admin'], // Restrict this page for the admin role only (we pass this data to the Auth Guard)
+          title: 'Registration requests'
         },
         canActivate: [AppAuthGuard] // Run the auth guard against the page
       },
@@ -56,7 +78,8 @@ const routes: Routes = [
         path: 'dashboard/client-management',
         component: ClientManagementComponent,
         data: {
-          roles: ['iam-admin']
+          roles: ['iam-admin'],
+          title: 'Client management'
         },
         canActivate: [AppAuthGuard]
       },
@@ -64,7 +87,8 @@ const routes: Routes = [
         path: 'dashboard/user-management',
         component: UserManagementComponent,
         data: {
-          roles: ['iam-admin']
+          roles: ['iam-admin'],
+          title: 'User management'
         },
         canActivate: [AppAuthGuard]
       },
@@ -72,7 +96,8 @@ const routes: Routes = [
         path: 'dashboard/user/:userid',
         component: UserProfileComponent,
         data: {
-          roles: ['iam-admin']
+          roles: ['iam-admin'],
+          title: 'User profile'
         },
         canActivate: [AppAuthGuard]
       }
@@ -80,7 +105,10 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: PageNotFoundComponent
+    component: PageNotFoundComponent,
+    data: {
+      title: 'Page not found'
+    }
   }
 ];
 

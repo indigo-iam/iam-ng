@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { LoadingService } from './utils/loading/loading.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { shareReplay, map } from 'rxjs/operators';
-import { KeycloakService } from 'keycloak-angular';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -23,12 +19,29 @@ export class AppComponent implements OnInit {
 
       if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
         this.loadingService.hide();
+        if (event instanceof NavigationEnd) {
+          const title = this.getTitle(this.router.routerState, this.router.routerState.root).reverse().join(' | ');
+          this.titleService.setTitle(title);
+        }
       }
     });
   }
 
   ngOnInit() {
 
+  }
+
+  // From: https://stackoverflow.com/questions/47900447/how-to-change-page-title-with-routing-in-angular-application
+  getTitle(state, parent) {
+    const data = [];
+    if (parent && parent.snapshot.data && parent.snapshot.data.title) {
+      data.push(parent.snapshot.data.title);
+    }
+
+    if (state && parent) {
+      data.push(... this.getTitle(state, state.firstChild(parent)));
+    }
+    return data;
   }
 
   public setTitle(title: string) {

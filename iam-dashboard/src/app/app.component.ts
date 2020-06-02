@@ -20,8 +20,10 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
         this.loadingService.hide();
         if (event instanceof NavigationEnd) {
-          const title = this.getTitle(this.router.routerState, this.router.routerState.root).reverse().join(' | ');
-          this.titleService.setTitle(title);
+          if (this.router.routerState) {
+            const title = this.getTitle(this.router.routerState, this.router.routerState.root).reverse().join(' | ');
+            this.titleService.setTitle(title);
+          }
         }
       }
     });

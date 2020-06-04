@@ -36,8 +36,8 @@ export class UpdateableTableService {
         this.sb.open('An error occoured changing pages: ' + error.message, 'Close');
         blockUi.stop();
         subject.next({
-          resources: undefined,
-          dataSource: undefined
+          resources: [],
+          dataSource: new MatTableDataSource([])
         })
       }
     );

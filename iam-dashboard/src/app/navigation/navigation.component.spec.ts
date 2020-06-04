@@ -9,9 +9,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { NavigationComponent } from './navigation.component';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, RouterModule } from '@angular/router';
 import { of } from 'rxjs';
 import { RealmService } from '../services/realm.service';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
+import { RouterTestingModule } from '@angular/router/testing';
+
+class DummyModule {}
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -32,6 +36,11 @@ describe('NavigationComponent', () => {
         MatListModule,
         MatSidenavModule,
         MatToolbarModule,
+        BlockUIModule.forRoot(),
+        RouterTestingModule.withRoutes([{
+          path: '',
+          component: DummyModule
+        }])
       ],
       providers: [
         { provide: ActivatedRoute, useValue: {
@@ -41,9 +50,11 @@ describe('NavigationComponent', () => {
                 realm: 'alice'
               }
             ))
-          )
+          ),
+          snapshot: {}
         }},
-        { provide: RealmService, useValue: realmService}
+        { provide: RealmService, useValue: realmService},
+        BlockUIService
       ]
     }).compileComponents();
   }));

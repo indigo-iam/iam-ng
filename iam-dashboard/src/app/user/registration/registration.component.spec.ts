@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrationComponent } from './registration.component';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -20,6 +20,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { RealmService } from '../../services/realm.service';
 import { convertToParamMap } from '@angular/router';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
+import { MatIconModule } from '@angular/material/icon';
 
 class DummyComponent {
 
@@ -90,6 +92,10 @@ describe('RegistrationComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule,
         MatSnackBarModule,
+        BlockUIModule.forRoot(),
+        MatIconModule,
+        MatCheckboxModule,
+        ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {
             path: '404',
@@ -117,8 +123,8 @@ describe('RegistrationComponent', () => {
         },
         { provide: HttpClient, useValue: httpClient },
         { provide: RealmService, useValue: realmService },
-
-        MatSnackBar
+        MatSnackBar,
+        BlockUIService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

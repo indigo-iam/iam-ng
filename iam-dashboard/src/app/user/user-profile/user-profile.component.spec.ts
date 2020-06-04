@@ -8,6 +8,10 @@ import { of, throwError } from 'rxjs';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { USERS } from 'src/app/utils/test-data';
+import { MatCardModule } from '@angular/material/card';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 
 describe('UserProfileComponent', () => {
   let component: UserProfileComponent;
@@ -24,7 +28,13 @@ describe('UserProfileComponent', () => {
     realmService.getCurrentRealm.and.returnValue(of('alice'));
     sb = jasmine.createSpyObj(['open']);
     TestBed.configureTestingModule({
-      imports: [  RouterTestingModule.withRoutes([]) ],
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        MatCardModule,
+        BlockUIModule.forRoot(),
+        MatListModule,
+        MatDividerModule
+      ],
       declarations: [ UserProfileComponent ],
       providers: [
         { provide: RealmService, useValue: realmService },
@@ -39,6 +49,7 @@ describe('UserProfileComponent', () => {
             ))
           )
         }},
+        BlockUIService
       ]
     })
     .compileComponents();

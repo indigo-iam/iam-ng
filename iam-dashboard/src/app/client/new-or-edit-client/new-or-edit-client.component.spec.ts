@@ -2,11 +2,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewOrEditClientComponent } from './new-or-edit-client.component';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ClientManagementService } from '../client-management/client-management.service';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { SINGLE_CLIENT_LIST, SINGLE_CLIENT, SAML_CLIENT, CLIENT_NO_ORIGIN_OR_REDIRECT } from 'src/app/utils/test-data';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('NewOrEditClientComponent', () => {
   let component: NewOrEditClientComponent;
@@ -35,7 +42,15 @@ describe('NewOrEditClientComponent', () => {
     TB_BASE = {
       imports: [
         MatSnackBarModule,
-        MatDialogModule
+        MatDialogModule,
+        MatInputModule,
+        MatCardModule,
+        BlockUIModule.forRoot(),
+        NoopAnimationsModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        MatIconModule
       ],
       declarations: [ NewOrEditClientComponent ],
       providers: [
@@ -46,7 +61,8 @@ describe('NewOrEditClientComponent', () => {
         { provide: MatDialogRef, useValue: matDialogRef },
         { provide: ClientManagementService, useValue: clientManagementService},
         { provide: MatSnackBar, useValue: sb },
-        FormBuilder
+        FormBuilder,
+        BlockUIService
       ]
     }
 

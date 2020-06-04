@@ -3,10 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { UpdateableTableService } from './updateable-table.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DEFAULT_PAGE_EVENT } from '../utils/utils';
-import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { REGISTRATION_REQUESTS } from '../utils/test-data';
 import { of, throwError } from 'rxjs';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 describe('UpdateableTableService', () => {
   let service: UpdateableTableService;
@@ -22,7 +21,9 @@ describe('UpdateableTableService', () => {
     registrationService.getPaginated.and.returnValue(of(
       REGISTRATION_REQUESTS
     ));
-    paginator = jasmine.createSpyObj(['']);
+
+    const table = new MatTableDataSource([]);
+    paginator = table.paginator;
 
     TestBed.configureTestingModule({
       providers: [
@@ -53,7 +54,7 @@ describe('UpdateableTableService', () => {
     expect(bui.stop).toHaveBeenCalled();
     expect(sb.open).toHaveBeenCalled();
     ret.subscribe(r => {
-      expect(r.resources).toEqual(undefined);
+      expect(r.resources).toEqual([]);
     });
 
   });

@@ -4,6 +4,9 @@ import { RealmChooserComponent } from './realm-chooser.component';
 import { RealmService } from '../services/realm.service';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RealmChooserComponent', () => {
   let component: RealmChooserComponent;
@@ -38,9 +41,14 @@ describe('RealmChooserComponent', () => {
     ));
 
     TestBed.configureTestingModule({
+      imports: [
+        MatButtonModule,
+        MatCardModule,
+        RouterTestingModule.withRoutes([])
+      ],
       declarations: [ RealmChooserComponent ],
       providers: [
-        { provide: RealmService, useValue: realmService }
+        { provide: RealmService, useValue: realmService },
       ]
     })
     .compileComponents();

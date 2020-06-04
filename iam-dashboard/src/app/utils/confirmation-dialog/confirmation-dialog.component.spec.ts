@@ -1,7 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ClientDetailsComponent', () => {
   let component: ConfirmationDialogComponent;
@@ -13,6 +17,13 @@ describe('ClientDetailsComponent', () => {
     matDialogRef = jasmine.createSpyObj(['close']);
 
     TestBed.configureTestingModule({
+      imports: [
+        MatInputModule,
+        MatDialogModule,
+        MatCardModule,
+        MatButtonModule,
+        NoopAnimationsModule
+      ],
       declarations: [ ConfirmationDialogComponent ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {

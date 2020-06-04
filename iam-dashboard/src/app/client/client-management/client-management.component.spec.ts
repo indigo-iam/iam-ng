@@ -8,6 +8,14 @@ import { of, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SAML_CLIENT_LIST } from 'src/app/utils/test-data';
 import { RealmService } from 'src/app/services/realm.service';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
 
 describe('ClientManagementComponent', () => {
   let component: ClientManagementComponent;
@@ -35,6 +43,14 @@ describe('ClientManagementComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        NoopAnimationsModule,
+        MatInputModule,
+        BlockUIModule.forRoot()
       ],
       declarations: [
         ClientManagementComponent
@@ -52,7 +68,8 @@ describe('ClientManagementComponent', () => {
         }},
         { provide: MatSnackBar, useValue: sb },
         { provide: MatDialog, useValue: dialog },
-        { provide: RealmService, useValue: realmService }
+        { provide: RealmService, useValue: realmService },
+        BlockUIService
       ]
     })
     .compileComponents();

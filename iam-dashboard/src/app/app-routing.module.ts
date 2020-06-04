@@ -52,6 +52,15 @@ const routes: Routes = [
     }
   },
   {
+    path: ':realm/registeridp',
+    component: RegistrationComponent,
+    data: {
+      title: 'Register with IdP',
+      idpRegistration: true
+    },
+    canActivate: [AppAuthGuard]
+  },
+  {
     path: ':realm/register/confirm/:token',
     component: EmailConfirmationComponent,
     data: {

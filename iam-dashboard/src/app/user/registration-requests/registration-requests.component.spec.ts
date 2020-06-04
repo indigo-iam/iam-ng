@@ -9,10 +9,17 @@ import { REGISTRATION_REQUESTS } from 'src/app/utils/test-data';
 import { RegistrationService } from '../registration/registration.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RealmService } from 'src/app/services/realm.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { UpdateableTableService } from 'src/app/services/updateable-table.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NotificationsService } from 'angular2-notifications';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 describe('RegistrationRequestsComponent', () => {
   let component: RegistrationRequestsComponent;
@@ -52,7 +59,15 @@ describe('RegistrationRequestsComponent', () => {
       imports: [
         MatSnackBarModule,
         MatButtonModule,
-        MatDialogModule
+        MatDialogModule,
+        MatCardModule,
+        MatInputModule,
+        MatTableModule,
+        NoopAnimationsModule,
+        MatPaginatorModule,
+        BlockUIModule.forRoot(),
+        MatIconModule,
+        MatCheckboxModule
       ],
       declarations: [ RegistrationRequestsComponent ],
       providers: [
@@ -62,7 +77,8 @@ describe('RegistrationRequestsComponent', () => {
         { provide: MatSnackBar, useValue: sb },
         { provide: MatDialog, useValue: dialog },
         { provide: UpdateableTableService, useValue: updateableTableService },
-        { provide: NotificationsService, useValue: notificationsService}
+        { provide: NotificationsService, useValue: notificationsService},
+        BlockUIService
       ]
     })
     .compileComponents();

@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { Router, NavigationEnd, NavigationStart, RouterEvent, NavigationCancel, NavigationError } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { LoadingService } from './utils/loading/loading.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 interface RouterEventTemplate {
   events: Observable<RouterEvent>;
@@ -22,7 +23,8 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        MatToolbarModule
+        MatToolbarModule,
+        RouterTestingModule.withRoutes([{}])
       ],
       declarations: [
         AppComponent

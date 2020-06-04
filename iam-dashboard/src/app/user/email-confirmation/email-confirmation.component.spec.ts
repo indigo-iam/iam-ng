@@ -5,6 +5,8 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { RegistrationService } from '../registration/registration.service';
 import { By } from '@angular/platform-browser';
+import { MatCardModule } from '@angular/material/card';
+import { BlockUIModule, BlockUIService } from 'ng-block-ui';
 
 describe('EmailConfirmationComponent', () => {
   let component: EmailConfirmationComponent;
@@ -33,6 +35,10 @@ describe('EmailConfirmationComponent', () => {
     ));
 
     TestBed.configureTestingModule({
+      imports: [
+        MatCardModule,
+        BlockUIModule.forRoot(),
+      ],
       declarations: [ EmailConfirmationComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: {
@@ -46,7 +52,8 @@ describe('EmailConfirmationComponent', () => {
           )
         }
       },
-      { provide: RegistrationService, useValue: rs}
+      { provide: RegistrationService, useValue: rs},
+      BlockUIService
       ]
     })
     .compileComponents();

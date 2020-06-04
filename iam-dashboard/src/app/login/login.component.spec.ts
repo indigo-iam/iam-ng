@@ -4,6 +4,11 @@ import { LoginComponent } from './login.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -17,6 +22,13 @@ describe('LoginComponent', () => {
     appConfigService.attributeExists.and.returnValue(true);
 
     TestBed.configureTestingModule({
+      imports: [
+        NoopAnimationsModule,
+        MatCardModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule
+      ],
       declarations: [ LoginComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: {

@@ -15,16 +15,22 @@
  */
 package it.infn.cnaf.sd.iam.api.config;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -40,6 +46,9 @@ import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 public class SecurityBeans {
 
   public static final Logger LOG = LoggerFactory.getLogger(ApiSecurityConfig.class);
+
+  @Autowired
+  IamProperties iamProperties;
 
   @Bean
   public ExecutorService singleThreadExecutorService() {
@@ -78,4 +87,22 @@ public class SecurityBeans {
     return new CompositeJwtDecoder(decoders, utils);
   }
 
+  @Bean
+  CorsFilter corsFilter() {
+    CorsConfiguration corsConfig = new CorsConfiguration();
+
+    if (iamProperties.getCors().isAllowAllOrigins()) {
+      corsConfig.setAllowedOrigins(newArrayList("*"));
+    } else if (!iamProperties.getCors().getAllowedOrigins().isEmpty()) {
+      corsConfig.setAllowedOrigins(iamProperties.getCors().getAllowedOrigins());
+    }
+
+    corsConfig.setAllowedMethods(newArrayList("*"));
+    corsConfig.setAllowedHeaders(newArrayList("*"));
+    corsConfig.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/Realms/**", corsConfig);
+    return new CorsFilter(source);
+  }
 }

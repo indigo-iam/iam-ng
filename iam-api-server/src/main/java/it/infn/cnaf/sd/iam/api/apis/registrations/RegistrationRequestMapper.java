@@ -17,8 +17,8 @@ package it.infn.cnaf.sd.iam.api.apis.registrations;
 
 import org.mapstruct.Mapper;
 
-import it.infn.cnaf.sd.iam.api.apis.common.DtoEntityMapper;
 import it.infn.cnaf.sd.iam.api.apis.registrations.dto.RegistrationRequestDTO;
+import it.infn.cnaf.sd.iam.api.common.DtoEntityMapper;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
 
 @Mapper(componentModel = "spring")

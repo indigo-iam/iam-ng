@@ -18,9 +18,12 @@ package it.infn.cnaf.sd.iam.api.requests;
 import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecision.reject;
 import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO.approve;
 import static it.infn.cnaf.sd.iam.api.apis.requests.dto.RequestDecisionDTO.reject;
+import static it.infn.cnaf.sd.iam.api.service.notification.DefaultNotificationFactory.MessageType.REGISTRATION_APPROVED;
+import static it.infn.cnaf.sd.iam.api.service.notification.DefaultNotificationFactory.MessageType.REGISTRATION_REJECTED;
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.done;
 import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.approved;
 import static it.infn.cnaf.sd.iam.persistence.entity.RequestOutcome.rejected;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -67,9 +70,11 @@ import it.infn.cnaf.sd.iam.api.utils.ClockUtils;
 import it.infn.cnaf.sd.iam.api.utils.IamTest;
 import it.infn.cnaf.sd.iam.api.utils.IntegrationTestSupport;
 import it.infn.cnaf.sd.iam.api.utils.WithMockAdminUser;
+import it.infn.cnaf.sd.iam.persistence.entity.EmailNotificationEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RealmEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus;
+import it.infn.cnaf.sd.iam.persistence.repository.EmailNotificationRepository;
 import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 import it.infn.cnaf.sd.iam.persistence.repository.RegistrationRequestRepository;
 
@@ -79,27 +84,30 @@ public class RequestsCrudTests extends IntegrationTestSupport
     implements RegistrationRequestTestUtils {
 
   @Autowired
-  RegistrationRequestMapper requestMapper;
+  private RegistrationRequestMapper requestMapper;
 
   @Autowired
-  RealmRepository realmRepo;
+  private RealmRepository realmRepo;
 
   @Autowired
-  RegistrationRequestRepository requestRepo;
+  private RegistrationRequestRepository requestRepo;
 
   @Autowired
-  ObjectMapper mapper;
+  private ObjectMapper mapper;
 
   @MockBean
-  KeycloakClientRepository repo;
+  private KeycloakClientRepository repo;
 
   @Mock
-  KeycloakClient client;
+  private KeycloakClient client;
+
+  @Autowired
+  private EmailNotificationRepository notificationRepository;
 
   @Captor
-  ArgumentCaptor<UserRepresentation> userCaptor;
+  private ArgumentCaptor<UserRepresentation> userCaptor;
 
-  Clock clock = ClockUtils.TEST_CLOCK;
+  private Clock clock = ClockUtils.TEST_CLOCK;
 
   @Before
   public void setup() {
@@ -294,6 +302,16 @@ public class RequestsCrudTests extends IntegrationTestSupport
 
     assertThat(e.getStatus(), is(done));
     assertThat(e.getOutcome(), is(rejected));
+
+    List<EmailNotificationEntity> notifications = newArrayList(notificationRepository.findAll());
+
+    assertThat(notifications, hasSize(2));
+    EmailNotificationEntity n = notifications.stream()
+      .filter(nn -> REGISTRATION_REJECTED.name().equals(nn.getType()))
+      .findAny()
+      .orElseThrow(assertionError("Expected notification not found"));
+
+    assertThat(n.getRealm().getName(), is("alice"));
   }
 
   @Test
@@ -329,6 +347,17 @@ public class RequestsCrudTests extends IntegrationTestSupport
 
     assertThat(e.getStatus(), is(done));
     assertThat(e.getOutcome(), is(approved));
+
+    List<EmailNotificationEntity> notifications = newArrayList(notificationRepository.findAll());
+
+    assertThat(notifications, hasSize(2));
+    EmailNotificationEntity n = notifications.stream()
+      .filter(nn -> REGISTRATION_APPROVED.name().equals(nn.getType()))
+      .findAny()
+      .orElseThrow(assertionError("Expected notification not found"));
+
+    assertThat(n.getRealm().getName(), is("alice"));
+
     verify(client).createUser(userCaptor.capture());
     UserRepresentation user = userCaptor.getValue();
 

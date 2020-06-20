@@ -41,4 +41,5 @@ public abstract class IntegrationTestSupport {
   protected Supplier<AssertionError> assertionError(String message) {
     return () -> new AssertionError(message);
   }
+  
 }

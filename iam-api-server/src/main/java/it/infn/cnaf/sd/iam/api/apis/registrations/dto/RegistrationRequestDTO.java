@@ -26,7 +26,7 @@ import javax.validation.constraints.Null;
 
 import com.google.common.collect.Lists;
 
-import it.infn.cnaf.sd.iam.api.apis.groups.dto.BaseDTO;
+import it.infn.cnaf.sd.iam.api.common.dto.BaseDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.LabelDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.MetadataDTO;
 import it.infn.cnaf.sd.iam.api.common.dto.RealmDTO;

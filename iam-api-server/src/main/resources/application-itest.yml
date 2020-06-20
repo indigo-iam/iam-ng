@@ -1,0 +1,17 @@
+spring:
+  mail:
+    host: localhost
+    port: 1025 
+iam:
+  oauth-keys-refresh-period-minutes: 30
+  api-base-url: https://api.local.io
+  dashboard-base-url: https://iam.local.io
+  keycloak-base-url: https://kc.local.io/auth
+  keycloak-admin-base-url: https://kc.local.io/auth
+  cors:
+    allow-all-origins: true
+  notification:
+    delivery-task-period-seconds: 5
+    cleanup-delivered-notifications: false
+    delivered-notifications-retention-period-days: 1
+    from: iam@localhost 

@@ -44,6 +44,7 @@ import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
 import it.infn.cnaf.sd.iam.api.kc.KeycloakClient;
 import it.infn.cnaf.sd.iam.api.kc.KeycloakClientRepository;
+import it.infn.cnaf.sd.iam.api.service.notification.NotificationFactory;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
 import it.infn.cnaf.sd.iam.persistence.repository.RegistrationRequestRepository;
 
@@ -54,19 +55,21 @@ public class DefaultRequestsService implements RequestsService, KeycloakAttribut
   public static final String APPROVED_TEMPLATE = "Request %s approved (User %s has been created)";
   public static final String REJECTED_TEMPLATE = "Request %s rejected";
 
-  final Clock clock;
-  final RegistrationRequestRepository repo;
-  final RegistrationRequestMapper mapper;
-  final KeycloakClientRepository kcRepo;
+  private final Clock clock;
+  private final RegistrationRequestRepository repo;
+  private final RegistrationRequestMapper mapper;
+  private final KeycloakClientRepository kcRepo;
+  private final NotificationFactory notificationFactory;
 
 
   @Autowired
   public DefaultRequestsService(Clock clock, RegistrationRequestRepository repo,
-      RegistrationRequestMapper mapper, KeycloakClientRepository kcRepo) {
+      RegistrationRequestMapper mapper, KeycloakClientRepository kcRepo, NotificationFactory nf) {
     this.clock = clock;
     this.repo = repo;
     this.mapper = mapper;
     this.kcRepo = kcRepo;
+    this.notificationFactory = nf;
   }
 
   @Override
@@ -126,10 +129,12 @@ public class DefaultRequestsService implements RequestsService, KeycloakAttribut
       request.approve(clock);
       KeycloakClient kcClient = kcRepo.getKeycloakClient();
       UserRepresentation user = kcClient.createUser(userFromRequest(request));
+      notificationFactory.createRegistrationApprovedMessage(request);
       return newOutcomeDto(format(APPROVED_TEMPLATE, request.getUuid(), user.getUsername()),
           mapper.entityToDto(request));
     } else {
       request.reject(clock);;
+      notificationFactory.createRegistrationRejectedMessage(request);
       return newOutcomeDto(format(REJECTED_TEMPLATE, request.getUuid()),
           mapper.entityToDto(request));
     }

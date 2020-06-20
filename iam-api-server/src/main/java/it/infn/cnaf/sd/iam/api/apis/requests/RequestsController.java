@@ -61,7 +61,7 @@ public class RequestsController {
   }
 
   @GetMapping("/Requests/registration/pending")
-  ListResponseDTO<RegistrationRequestDTO> getPendingRegistrationRequests(
+  public ListResponseDTO<RegistrationRequestDTO> getPendingRegistrationRequests(
       @RequestParam(required = false) final Integer count,
       @RequestParam(required = false) final Integer startIndex) {
 
@@ -72,7 +72,7 @@ public class RequestsController {
   }
 
   @PostMapping("/Requests/registration/{requestId}")
-  RequestOutcomeDTO requestDecision(@PathVariable final String requestId,
+  public RequestOutcomeDTO requestDecision(@PathVariable final String requestId,
       @RequestBody @Validated final RequestDecisionDTO decision, BindingResult validationResult,
       Principal principal) {
     handleValidationError(INVALID_REQUEST_DECISION_MSG, validationResult);

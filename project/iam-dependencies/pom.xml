@@ -41,12 +41,13 @@
     <revision>2.0.0-SNAPSHOT</revision>
     <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
     <license-maven-plugin.version>3.0</license-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
     <mapstruct.version>1.3.1.Final</mapstruct.version>
     <lombok.version>1.18.12</lombok.version>
     <validator-collection.version>2.2.0</validator-collection.version>
     <maven-ear-plugin.version>3.0.2</maven-ear-plugin.version>
     <springdoc-openapi.version>1.2.34</springdoc-openapi.version>
-    <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
+    <jib-maven-plugin.version>2.4.0</jib-maven-plugin.version>
     <flyway-test-extensions.version>6.1.0</flyway-test-extensions.version>
     <test-containers.version>1.12.5</test-containers.version>
     <kc.version>9.0.3</kc.version>

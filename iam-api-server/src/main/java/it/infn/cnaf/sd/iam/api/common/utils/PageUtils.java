@@ -15,6 +15,8 @@
  */
 package it.infn.cnaf.sd.iam.api.common.utils;
 
+import static java.util.Objects.isNull;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -49,10 +51,18 @@ public class PageUtils {
       }
     }
 
-    return PageRequest.of(validStartIndex, validCount, sort);
+    if (!isNull(sort)) {
+      return PageRequest.of(validStartIndex, validCount, sort);
+    } else {
+      return PageRequest.of(validStartIndex, validCount);
+    }
   }
 
   public static PageRequest buildPageRequest(Integer count, Integer startIndex, int maxPageSize) {
     return buildPageRequest(count, startIndex, maxPageSize, null);
+  }
+
+  public static PageRequest buildPageRequest(Integer count) {
+    return buildPageRequest(count, 0, count, null);
   }
 }

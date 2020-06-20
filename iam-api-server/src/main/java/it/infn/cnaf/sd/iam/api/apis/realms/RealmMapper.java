@@ -17,7 +17,7 @@ package it.infn.cnaf.sd.iam.api.apis.realms;
 
 import org.mapstruct.Mapper;
 
-import it.infn.cnaf.sd.iam.api.apis.common.DtoEntityMapper;
+import it.infn.cnaf.sd.iam.api.common.DtoEntityMapper;
 import it.infn.cnaf.sd.iam.api.common.dto.RealmDTO;
 import it.infn.cnaf.sd.iam.persistence.entity.RealmEntity;
 

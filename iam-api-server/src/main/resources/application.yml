@@ -17,7 +17,6 @@
 server:
   port: 9876
   
-  
 spring:
   application:
     name: IAM API server
@@ -37,13 +36,22 @@ spring:
     property-naming-strategy: LOWER_CAMEL_CASE
   flyway:
     enabled: false
+  
+  mail:
+    host: ${IAM_MAIL_HOST:localhost}
+    port: ${IAM_MAIL_PORT:25}
 
 iam:
   oauth-keys-refresh-period-minutes: 30
   api-base-url: ${IAM_API_BASE_URL:http://localhost:9876}
+  dashboard-base-url: ${IAM_DASHBOARD_BASE_URL:http://localhost:4200}
   keycloak-base-url: ${IAM_KC_BASE_URL:http://localhost:8080}
   keycloak-admin-base-url: ${IAM_KC_ADMIN_BASE_URL:http://localhost:8080}
   cors:
-    allow-all-origins: true  
+    allow-all-origins: true
+  notification:
+    cleanup-delivered-notifications: ${IAM_NOTIFICATION_CLEANUP_DELIVERED_NOTIFICATIONS:true}
+    delivered-notifications-retention-period-days: ${IAM_NOTIFICATION_DELIVERED_NOTIFICATIONS_RETENTION_PERIOD_DAYS:7}
+    from: ${IAM_NOTIFICATION_FROM:noreply@localhost} 
 
  

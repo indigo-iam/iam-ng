@@ -17,7 +17,6 @@ package it.infn.cnaf.sd.iam.api.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -43,6 +42,7 @@ public class MvcConfig implements WebMvcConfigurer {
     registry.addInterceptor(new RealmInterceptor(resolver, repo));
   }
 
+  /*
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
@@ -52,7 +52,11 @@ public class MvcConfig implements WebMvcConfigurer {
       registry.addMapping("/Realms/**")
         .allowedOrigins(iamProperties.getCors().getAllowedOrigins().toArray(new String[0]));
     }
+
+
   }
+  
+  **/
 
 
 }

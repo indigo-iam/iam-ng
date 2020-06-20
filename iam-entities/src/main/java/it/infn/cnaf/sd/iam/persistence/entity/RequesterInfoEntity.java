@@ -23,21 +23,20 @@ public class RequesterInfoEntity {
 
   @Column(name = "USERNAME", length = 128, nullable = false)
   private String username;
-  
+
   @Column(name = "GIVEN_NAME", length = 128, nullable = false)
   private String givenName;
 
   @Column(name = "FAMILY_NAME", length = 128, nullable = false)
   private String familyName;
-  
+
   @Column(name = "EMAIL", nullable = false, length = 128)
   private String email;
-  
+
   @Column(name = "EMAIL_VERIFIED", nullable = false)
-  private boolean emailVerified;  
-  
-  public RequesterInfoEntity() {
-  }
+  private boolean emailVerified;
+
+  public RequesterInfoEntity() {}
 
   public String getUsername() {
     return username;
@@ -70,13 +69,17 @@ public class RequesterInfoEntity {
   public void setEmail(String email) {
     this.email = email;
   }
-  
+
   public boolean isEmailVerified() {
     return emailVerified;
   }
-  
+
   public void setEmailVerified(boolean emailVerified) {
     this.emailVerified = emailVerified;
+  }
+
+  public String getName() {
+    return String.format("%s %s", getGivenName(), getFamilyName());
   }
 
 }

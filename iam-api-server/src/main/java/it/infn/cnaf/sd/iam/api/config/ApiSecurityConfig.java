@@ -32,6 +32,8 @@ import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEn
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  public static final String REALMS_RESOURCE = "/Realms";
+  public static final String REGISTRATIONS_RESOURCE = "/Realms/*/Registrations";
   public static final Logger LOG = LoggerFactory.getLogger(ApiSecurityConfig.class);
 
   @Autowired
@@ -50,16 +52,19 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
          .and()
            .anonymous()
          .and()
+           .cors()
+         .and()
            .authorizeRequests()
-             .mvcMatchers(HttpMethod.POST,"/Realms/*/Registrations").permitAll()
-             .mvcMatchers(HttpMethod.POST,"/Realms/*/Registrations/confirm/*").permitAll()
-             .mvcMatchers(HttpMethod.GET,"/Realms/*/Registrations/config").permitAll()
-             .mvcMatchers(HttpMethod.GET,"/Realms").permitAll()
-             .mvcMatchers(HttpMethod.HEAD,"/Realms").permitAll()
-             .mvcMatchers(HttpMethod.OPTIONS,"/Realms").permitAll()
+             .mvcMatchers(HttpMethod.POST,REGISTRATIONS_RESOURCE).permitAll()
+             .mvcMatchers(HttpMethod.POST,REGISTRATIONS_RESOURCE+"/confirm/*").permitAll()
+             .mvcMatchers(HttpMethod.GET,REGISTRATIONS_RESOURCE+"/config").permitAll()
+             .mvcMatchers(HttpMethod.GET,REALMS_RESOURCE).permitAll()
+             .mvcMatchers(HttpMethod.HEAD,REALMS_RESOURCE).permitAll()
+             .mvcMatchers(HttpMethod.OPTIONS,REALMS_RESOURCE).permitAll()
              .anyRequest().fullyAuthenticated()
          .and()
            .csrf().disable();
+         
     // @formatter:on
   }
 }

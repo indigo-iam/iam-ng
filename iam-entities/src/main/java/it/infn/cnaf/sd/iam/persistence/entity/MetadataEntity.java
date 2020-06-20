@@ -53,7 +53,10 @@ public class MetadataEntity {
     this.lastUpdateTime = lastUpdateTime;
   }
 
-  
+  public void touch(Clock clock) {
+    this.lastUpdateTime = Date.from(clock.instant());
+  }
+
   public static MetadataEntity fromInstant(Instant instant) {
     final Date now = Date.from(instant);
     MetadataEntity e = new MetadataEntity();
@@ -61,7 +64,7 @@ public class MetadataEntity {
     e.setLastUpdateTime(now);
     return e;
   }
-  
+
   public static MetadataEntity fromCurrentInstant(Clock clock) {
     final Date now = Date.from(clock.instant());
     MetadataEntity e = new MetadataEntity();

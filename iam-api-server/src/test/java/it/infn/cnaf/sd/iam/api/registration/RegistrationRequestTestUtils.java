@@ -102,6 +102,9 @@ public interface RegistrationRequestTestUtils {
     return () -> new AssertionError(format(ERROR_REALM_NOT_FOUND_TEMPLATE, realmName));
   }
   
+  default Supplier<AssertionError> notificationNotFoundError() {
+    return () -> new AssertionError("Expected notification not found");
+  }
   
 
   

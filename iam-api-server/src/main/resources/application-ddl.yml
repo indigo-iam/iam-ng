@@ -20,10 +20,10 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
-    show-sql: true
-    generate-ddl: true
+    show-sql: false
+    generate-ddl: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
   datasource:
     url: jdbc:mysql://${IAM_DB_HOST:iam.example}:${IAM_DB_PORT:3306}/iam?serverTimezone=UTC

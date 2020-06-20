@@ -18,9 +18,9 @@ package it.infn.cnaf.sd.iam.api.apis.registrations;
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.created;
 import static java.util.Objects.isNull;
 
-import java.sql.Date;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import it.infn.cnaf.sd.iam.api.apis.error.ErrorUtils;
 import it.infn.cnaf.sd.iam.api.common.error.InvalidRequestError;
 import it.infn.cnaf.sd.iam.api.common.realm.RealmContext;
+import it.infn.cnaf.sd.iam.api.service.notification.NotificationFactory;
 import it.infn.cnaf.sd.iam.persistence.entity.MetadataEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestAttachmentEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
@@ -42,11 +43,13 @@ public class DefaultRegistrationService
 
   private final Clock clock;
   private final RegistrationRequestRepository requestRepo;
+  private final NotificationFactory notificationFactory;
 
-
-  public DefaultRegistrationService(RegistrationRequestRepository requestRepo, Clock clock) {
-    this.requestRepo = requestRepo;
+  public DefaultRegistrationService(Clock clock, RegistrationRequestRepository requestRepo,
+      NotificationFactory notificationFactory) {
     this.clock = clock;
+    this.requestRepo = requestRepo;
+    this.notificationFactory = notificationFactory;
   }
 
 
@@ -74,8 +77,9 @@ public class DefaultRegistrationService
 
       attachment.setRequest(request);
       request.getAttachments().add(attachment);
-
     }
+
+    notificationFactory.createRegistrationConfirmationMessage(request);
 
     return requestRepo.save(request);
   }
@@ -99,10 +103,10 @@ public class DefaultRegistrationService
     request.setEmailChallenge(UUID.randomUUID().toString());
     request.setStatus(RegistrationRequestStatus.confirmed);
     request.getMetadata().setLastUpdateTime(Date.from(clock.instant()));
-    
+
+    notificationFactory.createHandleRegistrationMessage(request);
+
     return requestRepo.save(request);
   }
-
-
 
 }

@@ -23,20 +23,23 @@ import javax.validation.constraints.Size;
 
 import it.infn.cnaf.sd.iam.api.apis.registrations.validator.EmailAvailable;
 import it.infn.cnaf.sd.iam.api.apis.registrations.validator.UsernameAvailable;
-import it.infn.cnaf.sd.iam.api.apis.users.dto.UserDTO;
 
 public class RequesterInfoDTO {
+  
+ public static final String USERNAME_REGEXP = "^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\\$)$";
+  
+  public static final String NO_SPECIAL_CHARACTERS_REGEXP = "^[^<>%$]*$";
 
-  @Pattern(regexp = UserDTO.USERNAME_REGEXP,
-      message = "invalid username (does not match with regexp: '" + UserDTO.USERNAME_REGEXP + "')")
+  @Pattern(regexp = USERNAME_REGEXP,
+      message = "invalid username (does not match with regexp: '" + USERNAME_REGEXP + "')")
   @UsernameAvailable
   private String username;
   
-  @Pattern(regexp = UserDTO.NO_SPECIAL_CHARACTERS_REGEXP,
+  @Pattern(regexp = NO_SPECIAL_CHARACTERS_REGEXP,
       message = "name contains invalid characters")
   private String givenName;
   
-  @Pattern(regexp = UserDTO.NO_SPECIAL_CHARACTERS_REGEXP,
+  @Pattern(regexp = NO_SPECIAL_CHARACTERS_REGEXP,
       message = "family name contains invalid characters")
   private String familyName;
   

@@ -15,6 +15,7 @@
  */
 package it.infn.cnaf.sd.iam.api.registration;
 
+import static it.infn.cnaf.sd.iam.api.service.notification.DefaultNotificationFactory.MessageType.HANDLE_REGISTRATION;
 import static it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity.RegistrationRequestStatus.created;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -30,8 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Clock;
+import java.util.List;
 import java.util.UUID;
 
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,8 +55,10 @@ import it.infn.cnaf.sd.iam.api.kc.KeycloakClientRepository;
 import it.infn.cnaf.sd.iam.api.utils.ClockUtils;
 import it.infn.cnaf.sd.iam.api.utils.IamTest;
 import it.infn.cnaf.sd.iam.api.utils.IntegrationTestSupport;
+import it.infn.cnaf.sd.iam.persistence.entity.EmailNotificationEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RealmEntity;
 import it.infn.cnaf.sd.iam.persistence.entity.RegistrationRequestEntity;
+import it.infn.cnaf.sd.iam.persistence.repository.EmailNotificationRepository;
 import it.infn.cnaf.sd.iam.persistence.repository.RealmRepository;
 import it.infn.cnaf.sd.iam.persistence.repository.RegistrationRequestRepository;
 
@@ -63,24 +68,28 @@ public class RegistrationCrudTests extends IntegrationTestSupport
     implements RegistrationRequestTestUtils {
 
   @Autowired
-  RegistrationRequestMapper requestMapper;
+  private RegistrationRequestMapper requestMapper;
 
   @Autowired
-  RealmRepository realmRepo;
+  private RealmRepository realmRepo;
 
   @Autowired
-  RegistrationRequestRepository requestRepo;
+  private RegistrationRequestRepository requestRepo;
 
   @Autowired
-  ObjectMapper mapper;
+  private ObjectMapper mapper;
 
   @MockBean
-  KeycloakClientRepository repo;
+  private KeycloakClientRepository repo;
 
   @Mock
-  KeycloakClient client;
+  private KeycloakClient client;
 
-  Clock clock = ClockUtils.TEST_CLOCK;
+  @Autowired
+  private EmailNotificationRepository notificationRepository;
+
+
+  private Clock clock = ClockUtils.TEST_CLOCK;
 
   @Before
   public void setup() {
@@ -129,30 +138,32 @@ public class RegistrationCrudTests extends IntegrationTestSupport
         .contentType(APPLICATION_JSON))
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errorDescription").value("Invalid registration request"))
-      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
-        .value(hasItem("Username is not available")))
-      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
-          .value(hasItem("Email is not available")));
-    
+      .andExpect(jsonPath(
+          "$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
+            .value(hasItem("Username is not available")))
+      .andExpect(jsonPath(
+          "$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
+            .value(hasItem("Email is not available")));
+
     requestRepo.findAll().forEach(r -> {
       r.approve(clock);
       requestRepo.save(r);
     });
-    
+
     mvc
-    .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
-      .contentType(APPLICATION_JSON))
-    .andExpect(status().isCreated());
-    
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated());
+
     requestRepo.findAll().forEach(r -> {
       r.approve(clock);
       requestRepo.save(r);
     });
-    
+
     mvc
-    .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
-      .contentType(APPLICATION_JSON))
-    .andExpect(status().isCreated());
+      .perform(post("/Realms/alice/Registrations").content(mapper.writeValueAsString(dto))
+        .contentType(APPLICATION_JSON))
+      .andExpect(status().isCreated());
   }
 
   @Test
@@ -172,10 +183,12 @@ public class RegistrationCrudTests extends IntegrationTestSupport
         .contentType(APPLICATION_JSON))
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errorDescription").value("Invalid registration request"))
-      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
-        .value(hasItem("Username is not available")))
-      .andExpect(jsonPath("$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
-          .value(hasItem("Email is not available")));
+      .andExpect(jsonPath(
+          "$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.username')].fieldError")
+            .value(hasItem("Username is not available")))
+      .andExpect(jsonPath(
+          "$.fieldErrors[?(@.fieldName == 'registrationRequestDTO.requesterInfo.email')].fieldError")
+            .value(hasItem("Email is not available")));
 
 
   }
@@ -245,6 +258,15 @@ public class RegistrationCrudTests extends IntegrationTestSupport
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.message").value("Request confirmed succesfully"));
 
+    List<EmailNotificationEntity> notifications =
+        Lists.newArrayList(notificationRepository.findAll());
+
+    EmailNotificationEntity n = notifications.stream()
+      .filter(nn -> HANDLE_REGISTRATION.name().contentEquals(nn.getType()))
+      .findAny()
+      .orElseThrow(notificationNotFoundError());
+
+    assertThat(n.getRealm().getName(), is("alice"));
 
     mvc.perform(post("/Realms/alice/Registrations/confirm/{token}", validEmailChallenge))
       .andExpect(status().isNotFound());

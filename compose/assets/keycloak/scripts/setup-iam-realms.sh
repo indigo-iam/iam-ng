@@ -41,7 +41,7 @@ for realm in ${IAM_REALM_NAMES}; do
   # Set mailhog SMTP server
   ${KC_CLI} update realms/${realm} -s "smtpServer.host=${MAIL_HOST}" \
     -s "smtpServer.port=${MAIL_HOST_PORT}" \
-    -s "smtpServer.from=${realm}@kc.test.io" \
+    -s "smtpServer.from=${realm}@kc.local.io" \
     -s "smtpServer.auth=false" \
     -s "smtpServer.ssl=false"
 

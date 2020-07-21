@@ -1,7 +1,8 @@
 <div class="centered-parent">
   <mat-card class="page-basic page-card">
 
-    <img src="{{ registrationConfiguration.logoUrl }}" alt="{{ iamName }} Logo" class="logo">
+    <img src="{{ registrationConfiguration.logoUrl }}" alt="{{ iamName }} Logo" class="logo" *ngIf="registrationConfiguration.logoUrl">
+    <h1 *ngIf="!registrationConfiguration.logoUrl">{{ realmName | uppercase }}</h1>
 
 
     <mat-card-title *ngIf="!atttributeExists('welcomeTitle')">Register at {{ iamName }} for {{ realmName | uppercase }}

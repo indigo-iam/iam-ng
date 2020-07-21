@@ -95,38 +95,26 @@ describe('RegistrationRequestsComponent', () => {
   });
 
   it('should action accept and reject request', () => {
+    component.registrationRequests = REGISTRATION_REQUESTS.resources;
     const dialogRef = jasmine.createSpyObj(['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of(true));
     dialog.open.and.returnValue(dialogRef);
 
-    registrationService.actionRegistrationRequest.and.returnValue(of({}));
-
     component.actionRequest('id', 'accept');
     expect(dialog.open).toHaveBeenCalled();
     expect(dialogRef.afterClosed).toHaveBeenCalled();
-    expect(sb.open).toHaveBeenCalled();
-
-    registrationService.actionRegistrationRequest.and.returnValue(throwError({status: 500}));
-
-    component.actionRequest('id', 'accept');
-    expect(dialog.open).toHaveBeenCalled();
-    expect(dialogRef.afterClosed).toHaveBeenCalled();
-    expect(sb.open).toHaveBeenCalled();
-
-    registrationService.actionRegistrationRequest.and.returnValue(of({}));
 
     component.actionRequest('id', 'reject');
     expect(dialog.open).toHaveBeenCalled();
     expect(dialogRef.afterClosed).toHaveBeenCalled();
-    expect(sb.open).toHaveBeenCalled();
   });
 
   it('should not do anything when dialog closed', () => {
+    component.registrationRequests = REGISTRATION_REQUESTS.resources;
     const dialogRef = jasmine.createSpyObj(['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of(false));
     dialog.open.and.returnValue(dialogRef);
     component.actionRequest('id', 'reject');
-    expect(sb.open).not.toHaveBeenCalled();
   });
 
   it('should update table on page change event', fakeAsync(() => {
@@ -150,33 +138,25 @@ describe('RegistrationRequestsComponent', () => {
     expect(component.registrationRequests).toEqual([]);
   }));
 
-  it('should not action a 0 selection of requests', () => {
+  /*it('should not action a 0 selection of requests', () => {
     component.actionSelected('approve');
     expect(sb.open).toHaveBeenCalled();
-  });
+  });*/
 
   it('should action a selection of requests', () => {
+    component.registrationRequests = REGISTRATION_REQUESTS.resources;
     const dialogRef = jasmine.createSpyObj(['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of({confirm: true, userInput: 'a'}));
     dialog.open.and.returnValue(dialogRef);
-    registrationService.actionRegistrationRequest.and.returnValue(of({}));
 
     component.selection = new SelectionModel(true, REGISTRATION_REQUESTS.resources);
     component.actionSelected('approve');
     component.actionSelected('reject');
-    expect(sb.open).not.toHaveBeenCalled();
-    expect(notificationsService.create).toHaveBeenCalled();
+    expect(dialogRef.afterClosed).toHaveBeenCalled();
   });
 
-  it('should try but fail action with server error', () => {
-    const dialogRef = jasmine.createSpyObj(['afterClosed']);
-    dialogRef.afterClosed.and.returnValue(of({confirm: true, userInput: 'a'}));
-    dialog.open.and.returnValue(dialogRef);
-    registrationService.actionRegistrationRequest.and.returnValue(throwError({status: 500}));
-
-    component.selection = new SelectionModel(true, REGISTRATION_REQUESTS.resources);
-    component.actionSelected('approve');
-    component.actionSelected('reject');
-    expect(sb.open).toHaveBeenCalled();
-  });
+  it('clicked row should build up request messages', () => {
+    component.rowClicked(REGISTRATION_REQUESTS.resources[0]);
+    expect(component.messages).toEqual('<b>test3</b><p>please add me</p>');
+  })
 });

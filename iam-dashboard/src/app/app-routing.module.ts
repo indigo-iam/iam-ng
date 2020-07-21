@@ -14,6 +14,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 import { UserManagementComponent } from './user/user-management/user-management.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { DashboardRootComponent } from './dashboard-root/dashboard-root.component';
 
 const routes: Routes = [
   {
@@ -37,13 +38,13 @@ const routes: Routes = [
       title: 'Choose a realm'
     }
   },
-  {
+  /*{
     path: ':realm',
     component: LoginComponent,
     data: {
       title: 'Login or register'
     }
-  },
+  },*/
   {
     path: ':realm/register',
     component: RegistrationComponent,
@@ -69,11 +70,25 @@ const routes: Routes = [
   },
   {
     path: ':realm',
+    redirectTo: ':realm/dashboard',
+    pathMatch: 'full'
+  },
+  {
+    path: ':realm',
     component: NavigationComponent,
     data: {
       title: 'IAM Dashboard'
     },
     children: [
+      {
+        path: 'dashboard',
+        component: DashboardRootComponent,
+        data: {
+          title: 'IAM Dashboard',
+          roles: ['iam-admin']
+        },
+        canActivate: [AppAuthGuard]
+      },
       {
         path: 'dashboard/requests/registration',
         component: RegistrationRequestsComponent,

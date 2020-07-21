@@ -29,7 +29,6 @@ export class RegistrationComponent implements OnInit {
   };
   dataLoaded = false;
   registrationSuccess = false;
-  iamLogo = 'https://fakeimg.pl/200/';
 
   @BlockUI('regform') blockUIRegForm: NgBlockUI;
 

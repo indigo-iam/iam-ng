@@ -6,8 +6,8 @@
     <mat-card-title *ngIf="!attributeExists('loginTitle')">Login for {{ realmName | uppercase }}</mat-card-title>
 
     <div class="login-buttons">
-      <button mat-raised-button routerLink="dashboard" routerLinkActive="active">Access the dashboard</button>
-      <button mat-raised-button routerLink="register" routerLinkActive="active">Register</button>
+      <button mat-raised-button routerLink="dashboard" routerLinkActive="active" class="login-button">Access the dashboard</button> <br />
+      <button mat-raised-button routerLink="register" routerLinkActive="active" class="login-button">Register</button>
     </div>
   </mat-card>
 </div>

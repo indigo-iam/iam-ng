@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { RegistrationService } from '../registration/registration.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
-import { ACTION_REJECT, Action, ACTION_APPROVE } from './registration-request-action';
 import { MatDialog } from '@angular/material/dialog';
 import { RealmService } from 'src/app/services/realm.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -13,6 +12,7 @@ import { DEFAULT_PAGE_EVENT, UpdateableTableData } from 'src/app/utils/utils';
 import { UpdateableTableService } from 'src/app/services/updateable-table.service';
 import { Subject, interval } from 'rxjs';
 import { NotificationsService } from 'angular2-notifications';
+import { RegistrationActionDialogComponent } from '../registration-action-dialog/registration-action-dialog.component';
 
 @Component({
   selector: 'app-registration-requests',
@@ -24,16 +24,18 @@ export class RegistrationRequestsComponent implements OnInit, OnDestroy {
   realmName: string;
 
   dataSource;
-  displayedColumns: string[] = ['select', 'username', 'givenName', 'familyName', 'email', 'submitted', 'notes', 'approve'];
+  displayedColumns: string[] = ['select', 'username', 'givenName', 'familyName', 'email', 'submitted', 'approve'];
   registrationRequests;
   selection: SelectionModel<any>;
-  source = interval(10000);
+  source = interval(60000); // refresh every 60 seconds
   subscription;
+  dialogOpen = false;
+  messages = '<p>Click on a row to see a users request message(s)</p>';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @BlockUI('registrationRequestsTable') blockUIregistrationRequestsTable: NgBlockUI;
 
-  constructor(private sb: MatSnackBar, private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService, private updateableTableService: UpdateableTableService, private notificationsService: NotificationsService) { }
+  constructor(private registrationService: RegistrationService, private dialog: MatDialog, private realmService: RealmService, private updateableTableService: UpdateableTableService) { }
 
   ngOnInit(): void {
     this.realmService.getCurrentRealm().subscribe(r => {
@@ -43,7 +45,10 @@ export class RegistrationRequestsComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.source.subscribe(() => {
-      this.getNext(DEFAULT_PAGE_EVENT);
+      // Only refresh if we don't have any requests selected, otherwise the refresh will overwrite our selection!
+      if (this.selection.selected.length === 0 && !this.dialogOpen) {
+        this.getNext(DEFAULT_PAGE_EVENT);
+      }
     });
   }
 
@@ -60,40 +65,24 @@ export class RegistrationRequestsComponent implements OnInit, OnDestroy {
   }
 
   actionRequest(requestId: string, type: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    const dialogRef = this.dialog.open(RegistrationActionDialogComponent, {
       data: {
         message: 'Are you sure you wish to ' + type + ' this request? Please enter a reason that will be sent to the user.',
-        showInput: true
+        showInput: true,
+        selection: { selected: [this.registrationRequests.find(req => req.uuid === requestId)] },
+        type,
+        realmName: this.realmName
       }
     });
+
+    this.dialogOpen = true;
 
     dialogRef.afterClosed().subscribe(
       (result) => {
         if (result) {
-
-          const reason = result.userInput;
-
-          let action: Action;
-          if (type === 'reject') {
-            action = ACTION_REJECT;
-          } else {
-            action = ACTION_APPROVE;
-          };
-
-          this.registrationService.actionRegistrationRequest(this.realmName, requestId, action, reason).subscribe(
-            (r) => {
-              this.sb.open('Request ' + type + 'ed successfully', 'Close');
-              this.getNext(DEFAULT_PAGE_EVENT);
-            },
-            (error) => {
-              if (error.error && error.error.fieldErrors) {
-                this.sb.open('Invalid reason for request action! Make sure you have not entered any markup - plain text only please.', 'Close');
-              } else {
-                this.sb.open('Request modification was unsuccessful: ' + error.message, 'Close');
-              }
-            }
-          );
+          this.getNext(DEFAULT_PAGE_EVENT);
         }
+        this.dialogOpen = false;
       }
     );
   }
@@ -113,52 +102,36 @@ export class RegistrationRequestsComponent implements OnInit, OnDestroy {
   }
 
   actionSelected(type: string) {
-    if (this.selection.selected.length > 0) {
-      let selectionNames = '';
-      this.selection.selected.forEach(sel => {
-        selectionNames += '' + sel.requesterInfo.givenName + ' ' + sel.requesterInfo.familyName + ' (' + sel.requesterInfo.username + ')<br />';
-      });
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        data: {
-          message: 'Are you sure you wish to ' + type + ' the following requests? Please enter a reason that will be sent to the user(s). <br />' + selectionNames,
-          showInput: true
+    let selectionNames = '';
+    this.selection.selected.forEach(sel => {
+      selectionNames += '' + sel.requesterInfo.givenName + ' ' + sel.requesterInfo.familyName + ' (' + sel.requesterInfo.username + ')<br />';
+    });
+    const dialogRef = this.dialog.open(RegistrationActionDialogComponent, {
+      data: {
+        message: 'Are you sure you wish to ' + type + ' the following requests? Please enter a reason that will be sent to the user(s). <br />' + selectionNames,
+        showInput: true,
+        selection: this.selection,
+        type,
+        realmName: this.realmName
+      }
+    });
+
+    this.dialogOpen = true;
+
+    dialogRef.afterClosed().subscribe(
+      (result) => {
+        if (result) {
+          this.getNext(DEFAULT_PAGE_EVENT);
         }
-      });
+        this.dialogOpen = false;
+      }
+    );
+  }
 
-      dialogRef.afterClosed().subscribe(
-        (result) => {
-          if (result) {
-
-            const reason = result.userInput;
-
-            let action: Action;
-            if (type === 'reject') {
-              action = ACTION_REJECT;
-            } else {
-              action = ACTION_APPROVE;
-            };
-
-            this.selection.selected.forEach(sel => {
-              console.log(sel);
-              this.registrationService.actionRegistrationRequest(this.realmName, sel.uuid, action, reason).subscribe(
-                (r) => {
-                  this.notificationsService.create('' + sel.requesterInfo.givenName + ' ' + sel.requesterInfo.familyName + ' (' + sel.requesterInfo.username + ') was actioned');
-                },
-                (error) => {
-                  if (error.error && error.error.fieldErrors) {
-                    this.sb.open('Invalid reason for request action! Make sure you have not entered any markup - plain text only please.', 'Close');
-                  } else {
-                    this.sb.open('Request modification was unsuccessful: ' + error.message, 'Close');
-                  }
-                }
-              );
-            });
-            this.getNext(DEFAULT_PAGE_EVENT);
-          }
-        }
-      );
-    } else {
-      this.sb.open('Select a request to approve or reject!', 'Close');
+  rowClicked(row: any) {
+    this.messages = '<b>' + row.requesterInfo.username + '</b>';
+    for(let m of row.messages) {
+      this.messages += '<p>' + m.message + '</p>';
     }
   }
 

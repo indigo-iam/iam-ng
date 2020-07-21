@@ -1,6 +1,6 @@
 {
-  "iamApiBaseUrl": "/dev-api-test",
-  "keycloakBaseUrl": "https://kc.test.io/auth/",
+  "iamApiBaseUrl": "/dev-api-test/",
+  "keycloakBaseUrl": "https://kc.local.io/auth/",
   "fallbackRealm": "master",
   "keycloakClientId": "iam-dashboard",
   "customAttributes": {
@@ -8,17 +8,7 @@
       "registration": {
         "welcomeTitle": "<b>Welcome to the registration page for ALICE</b>",
         "welcomeText": "<i>When signing up please use your CERN email address, or an academic email address. Please do not use personal email addresses here.</i> <a href=\"https://google.com\">Google</a>"
-      },
-      "login": {
-        "loginTitle": "Sign in with your eduGAIN credentials to get access to the dashboard"
       }
-    }
-  },
-  "loginOrder": {
-    "alice": {
-      "edugain": 1,
-      "local": 2,
-      "register": 3
     }
   }
 }

@@ -14,6 +14,7 @@ import { of } from 'rxjs';
 import { RealmService } from '../services/realm.service';
 import { BlockUIModule, BlockUIService } from 'ng-block-ui';
 import { RouterTestingModule } from '@angular/router/testing';
+import { KeycloakService } from 'keycloak-angular';
 
 class DummyModule {}
 
@@ -21,10 +22,12 @@ describe('NavigationComponent', () => {
   let component: NavigationComponent;
   let fixture: ComponentFixture<NavigationComponent>;
   let realmService;
+  let keycloakService;
 
   beforeEach(async(() => {
 
     realmService = jasmine.createSpyObj(['setCurrentRealm']);
+    keycloakService = jasmine.createSpyObj(['logout']);
 
     TestBed.configureTestingModule({
       declarations: [NavigationComponent],
@@ -54,7 +57,8 @@ describe('NavigationComponent', () => {
           snapshot: {}
         }},
         { provide: RealmService, useValue: realmService},
-        BlockUIService
+        BlockUIService,
+        { provide: KeycloakService, useValue: keycloakService}
       ]
     }).compileComponents();
   }));

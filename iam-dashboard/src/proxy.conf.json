@@ -1,6 +1,6 @@
 {
   "/dev-api-test/*": {
-    "target": "https://api.test.io/",
+    "target": "https://api.local.io/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,

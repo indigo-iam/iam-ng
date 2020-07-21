@@ -196,7 +196,7 @@ export const REGISTRATION_REQUESTS = {
       },
       otherInfo: {},
       labels: [],
-      messages: []
+      messages: [ { message: 'please add me' } ]
     }
   ]
 }

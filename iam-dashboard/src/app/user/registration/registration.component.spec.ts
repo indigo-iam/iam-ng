@@ -286,7 +286,7 @@ describe('RegistrationComponent', () => {
 
     expect(component.registrationSuccess).toEqual(true);
 
-    expect(fixture.debugElement.query(By.css('#regsuccess')).nativeElement.textContent).toContain('You have successfully registered an account!');
+    expect(fixture.debugElement.query(By.css('#regsuccess')).nativeElement.textContent).toContain(' You have successfully submitted a registration request!  The test administrators will now view and take action upon your request, and you will recieve an email detailing this action.  This process is not automated. ');
 
     expect(sb.open).not.toHaveBeenCalled();
   });

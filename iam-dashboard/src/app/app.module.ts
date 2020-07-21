@@ -45,11 +45,14 @@ import { RealmChooserComponent } from './realm-chooser/realm-chooser.component';
 import { UserManagementComponent } from './user/user-management/user-management.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { RegistrationActionDialogComponent } from './user/registration-action-dialog/registration-action-dialog.component';
+import { DashboardRootComponent } from './dashboard-root/dashboard-root.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 const keycloakService: KeycloakService = new KeycloakService();
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent, RealmChooserComponent, UserManagementComponent, UserProfileComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, PageNotFoundComponent, LoadingComponent, EmailConfirmationComponent, RegistrationRequestsComponent, PermissionDeniedComponent, CustomBlockUIComponent, ClientManagementComponent, NewOrEditClientComponent, ClientDetailsComponent, ConfirmationDialogComponent, NavigationComponent, RealmChooserComponent, UserManagementComponent, UserProfileComponent, RegistrationActionDialogComponent, DashboardRootComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -72,13 +75,16 @@ const keycloakService: KeycloakService = new KeycloakService();
     ClipboardModule,
     TextFieldModule,
     BlockUIModule.forRoot({
-      template: CustomBlockUIComponent
+      template: CustomBlockUIComponent,
+      delayStart: 500,
+      delayStop: 500
     }),
     LayoutModule,
     MatSidenavModule,
     MatListModule,
     FormsModule,
-    SimpleNotificationsModule.forRoot()
+    SimpleNotificationsModule.forRoot(),
+    MatGridListModule
   ],
   providers: [
     {

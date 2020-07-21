@@ -130,7 +130,7 @@ export class RegistrationRequestsComponent implements OnInit, OnDestroy {
 
   rowClicked(row: any) {
     this.messages = '<b>' + row.requesterInfo.username + '</b>';
-    for(let m of row.messages) {
+    for(const m of row.messages) {
       this.messages += '<p>' + m.message + '</p>';
     }
   }

@@ -1,0 +1,44 @@
+<mat-card>
+<div class="client-management-header">
+<h2>Client Management</h2> 
+
+<button mat-raised-button color="primary" (click)="newClient()">New Client</button>
+</div>
+
+<mat-form-field appearance="outline" class="large-input">
+  <mat-label>Search</mat-label>
+  <input matInput name="search" #searchBox (input)="searchQuery.next(searchBox.value)">
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" *blockUI="'clientTable'">
+
+  <ng-container matColumnDef="clientId">
+    <th mat-header-cell *matHeaderCellDef> Client ID </th>
+    <td mat-cell *matCellDef="let client"> {{client.clientId}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="publicClient">
+    <th mat-header-cell *matHeaderCellDef> Client details </th>
+    <td mat-cell *matCellDef="let client">
+      <div *ngIf="client.publicClient">Public client (no secret needed)</div>
+      <div *ngIf="!client.publicClient && client.protocol == 'openid-connect'"><button mat-raised-button (click)="getClientSecret(client.id)">Get client secret</button></div>
+      <div *ngIf="!client.publicClient && client.protocol == 'saml'"><button mat-raised-button (click)="getClientSamlDetails(client.id)">Get SAML details</button></div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="redirectUris">
+    <th mat-header-cell *matHeaderCellDef> Redirect URI(s) </th>
+    <td mat-cell *matCellDef="let client"> <p *ngFor="let uri of client.redirectUris">{{uri}}</p></td>
+  </ng-container>
+
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef> Edit </th>
+    <td mat-cell *matCellDef="let client"><button mat-button (click)="editClient(client.clientId)">Edit</button> <button mat-button (click)="deleteClient(client.id)">Delete</button></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator #paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons [pageIndex]=0 [pageSize]=10 (page)="getNext($event)"></mat-paginator>
+</mat-card>

@@ -1,0 +1,18 @@
+<h2>Manage registration request(s)</h2>
+
+<p [innerHTML]="data.message"></p>
+
+<form [formGroup]="ReasonForm" layout-align="center">
+    <mat-form-field appearance="outline">
+        <mat-label>Reason</mat-label>
+        <input matInput formControlName="reason">
+        <mat-error *ngIf="ReasonForm.get('reason').hasError('required')">A reason is required</mat-error>
+        <mat-error *ngIf="ReasonForm.get('reason').hasError('error')">Invalid reason for request action! Make sure you
+            have not entered any markup - plain text only please.</mat-error>
+    </mat-form-field>
+</form>
+<br />
+
+
+<button mat-button (click)="no()">Cancel</button>
+<button mat-button (click)="action()">{{data.type | uppercase}} request</button>

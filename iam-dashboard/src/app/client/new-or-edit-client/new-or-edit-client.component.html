@@ -1,0 +1,96 @@
+<div *blockUI="'openIdForm'">
+  <h1>Client Creation</h1>
+  <div *ngIf="!protocolChosen && newClient">
+    <h3>Choose client protocol</h3>
+    <p>If you're not sure, it's probably openid-connect</p>
+    <button mat-raised-button (click)="setClientProtocol('openid-connect')">openid-connect</button>
+    <button mat-raised-button (click)="setClientProtocol('saml')">SAML</button>
+  </div>
+
+  <form [formGroup]="openIdForm" layout-align="center" *ngIf="!newClient || clientProtocol == 'openid-connect'">
+    <mat-form-field appearance="outline" class="large-input">
+      <mat-label>Client ID</mat-label>
+      <input matInput formControlName="id">
+      <mat-error *ngIf="openIdForm.get('id').hasError('required')">Client ID is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline" class="large-input">
+      <mat-label>Client Name</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="openIdForm.get('name').hasError('required')">Client Name is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline" class="large-input">
+      <mat-label>Homepage</mat-label>
+      <input matInput formControlName="homePage">
+      <mat-error *ngIf="openIdForm.get('homePage').hasError('required')">Homepage is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <mat-form-field appearance="outline" class="large-input">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description">
+      <mat-error *ngIf="openIdForm.get('description').hasError('required')">Description is required</mat-error>
+    </mat-form-field>
+
+    <br>
+
+    <p>Redirect URIs</p>
+    <div formArrayName="redirectUris" *ngFor="let redirectUris of openIdForm.get('redirectUris')['controls']; let i = index;">
+    <div [formGroupName]="i">
+      <mat-form-field appearance="outline" class="large-input">
+        <mat-label>Redirect URI</mat-label>
+        <input matInput formControlName="userInput">
+      <button mat-button (click)="removeRedirectUri(i)" aria-label="Clear" mat-icon-button matSuffix><mat-icon>close</mat-icon></button>
+      </mat-form-field>
+    </div>
+    </div>
+    <button mat-raised-button (click)="addRedirectUri()">Add new redirect URI</button>
+
+    <br>
+
+    <p>Web Origins</p>
+    <div formArrayName="webOrigins" *ngFor="let webOrigin of openIdForm.get('webOrigins')['controls']; let i = index;">
+    <div [formGroupName]="i">
+      <mat-form-field appearance="outline" class="large-input">
+        <mat-label>Web Origin</mat-label>
+        <input matInput formControlName="userInput">
+        <button mat-button (click)="removeWebOrigin(i)" aria-label="Clear" mat-icon-button matSuffix><mat-icon>close</mat-icon></button>
+      </mat-form-field>
+    </div>
+    </div>
+    <button mat-raised-button (click)="addWebOrigin()">Add new web origin</button>
+
+    <br>
+
+    <section *ngIf="clientProtocol == 'openid-connect' || data.client.protocol == 'openid-connect'">
+      <mat-label>Is this a public client? (e.g. a single page app where you cannot securely store a secret)</mat-label>
+      <mat-checkbox formControlName="public"></mat-checkbox>
+    </section>
+
+    <br>
+
+    <button mat-raised-button color="primary" [disabled]="!openIdForm.valid" (click)="save()">Save</button>
+    <br>
+    <button mat-raised-button  (click)="resetClientProtocol()" *ngIf="newClient">Choose another protocol</button>
+  </form>
+
+  <form [formGroup]="samlForm" layout-align="center" *ngIf="clientProtocol == 'saml' && newClient">
+    <mat-form-field appearance="outline" class="large-input">
+      <mat-label>SAML SP Metadata (XML Formatted)</mat-label>
+      <textarea matInput formControlName="xml" placeholder="Paste your XML formatted SP metadata here"></textarea>
+      <mat-error *ngIf="samlForm.get('xml').hasError('required')">SAML SP Metadata is required</mat-error>
+    </mat-form-field>
+
+    <br>
+    <button mat-raised-button color="primary" [disabled]="!samlForm.valid" (click)="createSamlClient()">Import to create client</button>
+    <br>
+    <button mat-raised-button  (click)="resetClientProtocol()">Choose another protocol</button>
+  </form>
+  <button mat-raised-button color="warn" (click)="close()">Cancel</button>
+</div>

@@ -1,0 +1,36 @@
+<h2>Client Secret Details</h2>
+<div *ngIf="data.protocol == 'openid-connect'">
+
+  <mat-form-field appearance="outline" class="large-input">
+    <mat-label>Client Secret</mat-label>
+    <input matInput value="{{data.secret}}" readonly>
+  </mat-form-field>
+  <button mat-raised-button [cdkCopyToClipboard]="data.secret">Copy</button>
+
+</div>
+
+<div *ngIf="data.protocol == 'saml'">
+
+  <div class="formButtonGrouping">
+  <mat-form-field appearance="outline" class="large-input">
+    <mat-label>SAML Signing Certificate</mat-label>
+    <textarea matInput value="{{data.samlCert}}" readonly></textarea>
+  </mat-form-field>
+  <button mat-raised-button [cdkCopyToClipboard]="data.samlCert">Copy</button>
+</div>
+
+  <br>
+
+  <div class="formButtonGrouping">
+  <mat-form-field appearance="outline" class="large-input">
+    <mat-label>SAML Signing Key</mat-label>
+    <textarea matInput value="{{data.samlKey}}" readonly></textarea>
+  </mat-form-field>
+  <button mat-raised-button [cdkCopyToClipboard]="data.samlKey">Copy</button>
+</div>
+
+</div>
+
+<br>
+
+<button mat-raised-button (click)="close()">Close</button>

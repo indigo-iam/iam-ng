@@ -1,0 +1,14 @@
+{
+  "iamApiBaseUrl": "/dev-api-test/",
+  "keycloakBaseUrl": "https://kc.local.io/auth/",
+  "fallbackRealm": "master",
+  "keycloakClientId": "iam-dashboard",
+  "customAttributes": {
+    "alice" : {
+      "registration": {
+        "welcomeTitle": "<b>Welcome to the registration page for ALICE</b>",
+        "welcomeText": "<i>When signing up please use your CERN email address, or an academic email address. Please do not use personal email addresses here.</i> <a href=\"https://google.com\">Google</a>"
+      }
+    }
+  }
+}

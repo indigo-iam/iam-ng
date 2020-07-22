@@ -1,0 +1,27 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
+      <mat-toolbar>Menu</mat-toolbar>
+      <mat-nav-list>
+        <a mat-list-item routerLink="dashboard">Dashboard Home</a>
+        <a mat-list-item routerLink="dashboard/requests/registration">Registration Requests</a>
+        <a mat-list-item routerLink="dashboard/client-management">Client Management</a>
+        <a mat-list-item routerLink="dashboard/user-management">User Management</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span id="title">IAM Dashboard</span>
+      <span class="spacer"></span>
+      <button type="button" aria-label="Logout" mat-button (click)="logout()">Logout</button>
+    </mat-toolbar>
+    
+    <router-outlet></router-outlet>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

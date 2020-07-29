@@ -1,0 +1,111 @@
+<div class="centered-parent">
+  <mat-card class="page-basic page-card">
+
+    <img src="{{ registrationConfiguration.logoUrl }}" alt="{{ iamName }} Logo" class="logo" *ngIf="registrationConfiguration.logoUrl">
+    <h1 *ngIf="!registrationConfiguration.logoUrl">{{ realmName | uppercase }}</h1>
+
+
+    <mat-card-title *ngIf="!atttributeExists('welcomeTitle')">Register at {{ iamName }} for {{ realmName | uppercase }}
+    </mat-card-title>
+    <mat-card-title *ngIf="atttributeExists('welcomeTitle')" [innerHtml]="getCustomAttribute('welcomeTitle')">
+    </mat-card-title>
+
+    <p *ngIf="atttributeExists('welcomeText') && !registrationSuccess" [innerHtml]="getCustomAttribute('welcomeText')"></p>
+
+    <p id="regsuccess" *ngIf="registrationSuccess">
+      You have successfully submitted a registration request! <br /> 
+      The {{ realmName }} administrators will now view and take action upon your request, and you will recieve an email detailing this action. <br />
+      This process is not automated.
+    </p>
+
+    <div *ngIf="dataLoaded">
+
+      <p *ngIf="!registrationConfiguration.registrationEnabled">Sorry, registration is currently disabled for
+        {{ realmName }}</p>
+
+      <div *blockUI="'regform'">
+        <form [formGroup]="RegistrationForm"
+          *ngIf="registrationConfiguration.registrationEnabled && !registrationSuccess" layout-align="center">
+          <mat-form-field appearance="outline">
+            <mat-label>Given Name</mat-label>
+            <input matInput formControlName="givenName">
+            <mat-error *ngIf="RegistrationForm.get('givenName').hasError('required')">Given Name is required</mat-error>
+            <mat-error *ngIf="RegistrationForm.get('givenName').hasError('error')">
+              {{RegistrationForm.get('givenName').getError('message')}}</mat-error>
+          </mat-form-field>
+
+          <br>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Family Name</mat-label>
+            <input matInput formControlName="familyName">
+            <mat-error *ngIf="RegistrationForm.get('familyName').hasError('required')">Family Name is required
+            </mat-error>
+            <mat-error *ngIf="RegistrationForm.get('familyName').hasError('error')">
+              {{RegistrationForm.get('familyName').getError('message')}}</mat-error>
+          </mat-form-field>
+
+          <br>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email">
+            <mat-error *ngIf="RegistrationForm.get('email').hasError('required')">Email address is required</mat-error>
+            <mat-error *ngIf="RegistrationForm.get('email').hasError('email')">A valid email address is required
+            </mat-error>
+            <mat-error *ngIf="RegistrationForm.errors?.emailInUse">This email address is already in use. Have you
+              already created an account?</mat-error>
+            <mat-error *ngIf="RegistrationForm.get('email').hasError('error')">
+              {{RegistrationForm.get('email').getError('message')}}</mat-error>
+          </mat-form-field>
+
+          <br>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-error *ngIf="RegistrationForm.get('username').hasError('required')">Username is required</mat-error>
+            <mat-error *ngIf="RegistrationForm.errors?.usernameInUse">This username is already in use. Have you already
+              created an account?</mat-error>
+            <mat-error *ngIf="RegistrationForm.get('username').hasError('error')">
+              {{RegistrationForm.get('username').getError('message')}}</mat-error>
+          </mat-form-field>
+
+          <br>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Notes</mat-label>
+            <textarea matInput formControlName="notes"></textarea>
+            <mat-error *ngIf="RegistrationForm.get('notes').hasError('required')">Notes is required</mat-error>
+            <mat-error *ngIf="RegistrationForm.get('notes').hasError('error')">
+              {{RegistrationForm.get('notes').getError('message')}}</mat-error>
+            <mat-hint>Provide a clear explanation behind the motivation for this account request</mat-hint>
+          </mat-form-field>
+
+          <br>
+          <br>
+          <br>
+
+          <a *ngIf="registrationConfiguration.aupUrl" href="{{ registrationConfiguration.aupUrl }}"
+            target="_blank">Acceptable Usage Policy</a> <br>
+          <a *ngIf="registrationConfiguration.privacyPolicyUrl" href="{{ registrationConfiguration.privacyPolicyUrl }}"
+            target="_blank">Privacy Policy</a>
+
+          <section>
+            <mat-label>I confirm I have read and accept the Acceptable Usage Policy (AUP) and Privacy Policy
+            </mat-label>
+            <mat-checkbox formControlName="aup"></mat-checkbox>
+            <mat-error
+              *ngIf="RegistrationForm.get('aup').hasError('required') || RegistrationForm.get('aup').hasError('requiredTrue')">
+              You must confirm your acceptance of the AUP and privacy policy</mat-error>
+          </section>
+
+          <br>
+
+          <button mat-raised-button color="primary" [disabled]="!RegistrationForm.valid"
+            (click)="register()">Register</button>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</div>

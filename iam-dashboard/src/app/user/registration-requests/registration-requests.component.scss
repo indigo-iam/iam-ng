@@ -1,0 +1,25 @@
+table {
+  width: 100%;
+}
+
+button {
+  margin-right: 10px;
+}
+
+.flex-parent {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-child {
+  flex: 0 0 100%;
+  margin: 10px;
+}
+
+.table-container {
+  max-width: 80%;
+}
+
+.notes-container {
+  max-width: 20%;
+}

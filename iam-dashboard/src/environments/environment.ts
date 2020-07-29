@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  keycloakUrl: 'https://localhost:8443/auth/',
+  keycloakClientId: 'iam-dashboard',
+  fallbackRealm: 'master',
+  apiBaseUrl: 'http://172.16.114.90:9876'
 };
 
 /*
@@ -14,3 +18,5 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+

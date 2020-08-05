@@ -3,22 +3,25 @@
 [![codecov](https://codecov.io/gh/stfc/iam-dashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/stfc/iam-dashboard)
 ![](https://github.com/stfc/iam-dashboard/workflows/Build,%20test,%20publish%20(master)/badge.svg)
 
-
 A dashboard for the IAM NG project, interfacing with the API and Keycloak (https://github.com/indigo-iam/iam-ng).
 
 ## Getting started
 
 To get started with the project - make sure you have installed NodeJS and npm.
 
-Follow the docker-compose instructions [here](https://github.com/indigo-iam/iam-ng/blob/master/compose/README.md). Make sure to have added the appropriate entries to your /etc/hosts or platform equivilent. 
+Follow the docker-compose instructions [here](https://github.com/indigo-iam/iam-ng/blob/master/compose/README.md). Make sure to have added the appropriate entries to your /etc/hosts or platform equivalent.
 
-Clone the repository into a directory of your choosing
+Clone the repository into a directory of your choosing.
 
-Run `npm ci` in the root of the cloned repository. This will install all the dependencies required for the project, into a node_modules folder. You may also wish to install the Angular CLI globally using `npm install -g @angular/cli`.
+Run `npm ci` in the root of the cloned repository. This will install all the
+dependencies required for the project, into a node_modules folder. You may also
+wish to install the Angular CLI globally using `npm install -g @angular/cli`.
 
-Edit appropriate configuration values in src/assets/app-config.json (does not need a recompile to take effect).
+Edit appropriate configuration values in src/assets/app-config.json (does not
+need a recompile to take effect).
 
-Run `ng serve` to run a local copy of the website on port 4000 with the Angular development server.
+Run `ng serve` to run a local copy of the website on port 4000 with the Angular
+development server.
 
 ## Build
 

@@ -4,7 +4,7 @@
         <mat-card-title>Which group are you looking for?</mat-card-title>
         <br>
         <ng-container *ngFor="let realm of realms">
-            <button mat-raised-button routerLink="{{realm.name}}"
+            <button mat-raised-button routerLink="{{realm.name}}/"
                 routerLinkActive="active">{{realm.name | uppercase}}</button>
             <br>
             <br>

@@ -125,6 +125,7 @@ services:
     volumes:
       - setup:/iam:rw
       - ./assets/keycloak/scripts/setup-iam-realms.sh:/opt/jboss/keycloak/iam/setup-iam-realms.sh:ro
+      - ../iam-keycloak-theme/:/opt/jboss/keycloak/themes/iam/
 
     depends_on:
       - db

@@ -1,0 +1,20 @@
+.login-pf body {
+    background: none;
+    background-color: #eeeeee;
+}
+
+#kc-header-wrapper {
+    color: #000000;
+}
+
+#legal-footer {
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 15px;
+    padding: 8px;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}

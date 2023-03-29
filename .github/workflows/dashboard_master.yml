@@ -64,7 +64,7 @@ jobs:
         path: iam-dashboard/dist
 
     - name: Publish to Docker Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: indigoiam/iam-dashboard
         username: ${{ secrets.DOCKERHUB_USERNAME }}
